@@ -1,0 +1,12 @@
+language: java
+jdk:
+- oraclejdk8
+sudo: false
+script: mvn clean package
+notifications:
+  email:
+    recipients:
+      - mishkinstvo@outlook.com
+      - viktor.mazepa@netcracker.com
+    on_success: always
+    on_failure: always
