@@ -8,5 +8,11 @@ notifications:
     recipients:
       - mishkinstvo@outlook.com
       - viktor.mazepa@netcracker.com
+      - boris.katran@gmail.com
+      - Ververo3@gmail.com
+      - veniqs@gmail.com
+      - seraphicps@gmail.com
+      - creshibon@gmail.com
+      - OHorsunenko@gmail.com
     on_success: always
     on_failure: always
