@@ -8,21 +8,27 @@
     <name>NC_4_2017_1_project</name>
     <url>http://maven.apache.org</url>
 
+    <properties>
+        <spring-mvc>4.3.7.RELEASE</spring-mvc>
+        <javax.servlet-api>3.1.0</javax.servlet-api>
+        <jstl>1.2</jstl>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>4.3.7.RELEASE</version>
+            <version>${spring-mvc}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>${javax.servlet-api}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <version>${jstl}</version>
         </dependency>
     </dependencies>
 
