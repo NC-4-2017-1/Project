@@ -1,4 +1,4 @@
-package com.team_four.data_visualizator.controllers;
+package com.dreamteam.datavisualizator.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

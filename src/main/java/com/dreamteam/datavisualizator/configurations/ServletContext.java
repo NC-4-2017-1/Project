@@ -1,4 +1,4 @@
-package com.team_four.data_visualizator.configurations;
+package com.dreamteam.datavisualizator.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@ComponentScan(basePackages = "com.team_four.data_visualizator")
+@ComponentScan(basePackages = "com.dreamteam.datavisualizator")
 @EnableWebMvc
 public class ServletContext extends WebMvcConfigurerAdapter {
 
