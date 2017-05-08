@@ -3,6 +3,11 @@ jdk:
 - oraclejdk8
 sudo: false
 script: mvn clean package
+after_success:
+  - echo "Smoke deployment initiated..."
+  - curl --upload-file 'target/NC_4_2017_1.war' "http://$NC_SERVER:$TOMCAT_PORT/manager/text/deploy?path=/dev&update=true" --user $TOMCAT_CREDENTIALS
+  - if [ -n "$TRAVIS_TAG" ]; then echo "Production deployment initiated..."; fi
+  - if [ -n "$TRAVIS_TAG" ]; then curl --upload-file 'target/NC_4_2017_1.war' "http://$NC_SERVER:$TOMCAT_PORT/manager/text/deploy?path=/production&update=true" --user $TOMCAT_CREDENTIALS; fi
 notifications:
   email:
     recipients:
