@@ -113,9 +113,9 @@
         </dependency>
     </dependencies>
     <build>
+        <!-- artifact id for travis deployment -->
+        <finalName>NC_4_2017_1</finalName>
         <plugins>
-            <!-- artifact id for travis deployment -->
-            <finalName>NC_4_2017_1</finalName>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
