@@ -1,4 +1,4 @@
-package com.dreamteam.datavisualizator.configurations;
+package com.dreamteam.datavisualizator.common.configurations;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
