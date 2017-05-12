@@ -16,19 +16,6 @@ public class HealthMonitorProject extends AbstractProject{
     private List<Selector> selectors;
     private Graphic graphic;
 
-    HealthMonitorProject(BigInteger id, String name, Date creationDate, User author, String description, ProjectTypes type,
-                         Map<String, String> connectionParameters, List<Selector> selectors, Graphic graphic){
-        this.setId(id);
-        this.setName(name);
-        this.setCreationDate(creationDate);
-        this.setAuthor(author);
-        this.setDescription(description);
-        this.setType(type);
-        this.setConnectionParameters(connectionParameters);
-        this.setSelectors(selectors);
-        this.setGraphic(graphic);
-    }
-
     public Map<String, String> getConnectionParameters() {
         return connectionParameters;
     }

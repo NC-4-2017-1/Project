@@ -11,12 +11,6 @@ public class CorrelationImpl implements Correlation{
     private Graphic secondGraphic;
     private BigDecimal correlationValue;
 
-    CorrelationImpl(Graphic firstGraphic, Graphic secondGraphic, BigDecimal correlationValue){
-        this.firstGraphic = firstGraphic;
-        this.secondGraphic = secondGraphic;
-        this.correlationValue = correlationValue;
-    }
-
     public void setFirstGraphic(Graphic firstGraphic) {
         this.firstGraphic = firstGraphic;
     }

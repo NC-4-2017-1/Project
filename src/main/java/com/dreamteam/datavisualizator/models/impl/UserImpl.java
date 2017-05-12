@@ -18,13 +18,6 @@ public class UserImpl implements User{
     private List<Project> userHaveAccessToProjects;
     private UserTypes type;
 
-    UserImpl(BigInteger id, String firstName, String lastName, String password){
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-    }
-
     public void setId(BigInteger id) {
         this.id = id;
     }
