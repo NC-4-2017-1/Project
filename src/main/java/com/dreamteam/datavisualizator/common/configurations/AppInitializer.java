@@ -9,7 +9,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
     }
 
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{};
+        return new Class[]{ApplicationContext.class};
     }
 
     protected String[] getServletMappings() {
