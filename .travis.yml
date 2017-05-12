@@ -19,5 +19,6 @@ notifications:
       - seraphicps@gmail.com
       - creshibon@gmail.com
       - OHorsunenko@gmail.com
+      - andrii.latyshev@NetCracker.com
     on_success: always
     on_failure: always
