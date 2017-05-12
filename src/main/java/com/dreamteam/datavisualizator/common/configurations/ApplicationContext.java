@@ -14,10 +14,10 @@ public class ApplicationContext {
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(System.getenv(""));
-        dataSource.setUrl(System.getenv(""));
-        dataSource.setUsername(System.getenv(""));
-        dataSource.setPassword(System.getenv(""));
+        dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+        dataSource.setUrl(System.getenv("SQL_JDBC_URL"));
+        dataSource.setUsername(System.getenv("SQL_LOGIN"));
+        dataSource.setPassword(System.getenv("SQL_PASSWORD"));
         return dataSource;
     }
 
