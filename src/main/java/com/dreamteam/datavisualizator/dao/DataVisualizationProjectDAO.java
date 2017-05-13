@@ -7,7 +7,7 @@ import com.dreamteam.datavisualizator.models.User;
 import java.math.BigInteger;
 import java.util.List;
 
-public interface DataVisualizationProject {
+public interface DataVisualizationProjectDAO {
     Project getProjectById(BigInteger id);
     Project getProjectByName(String projectName);
     List<Project> getProjectsByAuthor(User user);
