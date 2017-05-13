@@ -18,6 +18,55 @@ public class UserImpl implements User{
     private List<Project> userHaveAccessToProjects;
     private UserTypes type;
 
+    public static class Builder{
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String password;
+        private List<Project> userProjects;
+        private List<Project> userHaveAccessToProjects;
+        private UserTypes type;
+
+        public Builder(String email, String password){
+            this.email = email;
+            this.password = password;
+        }
+        public Builder firstName(String val){
+            firstName = val;
+            return this;
+        }
+        public Builder lastName(String val){
+            lastName = val;
+            return this;
+        }
+        public Builder userProjects(List<Project> val){
+            userProjects = val;
+            return this;
+        }
+        public Builder userHaveAccessToProjects(List<Project> val){
+            userHaveAccessToProjects = val;
+            return this;
+        }
+        public Builder type(UserTypes  val){
+            type = val;
+            return this;
+        }
+
+        public UserImpl build(){
+            return new UserImpl(this);
+        }
+    }
+
+    private UserImpl(Builder builder){
+        firstName = builder.firstName;
+        lastName = builder.lastName;
+        email = builder.email;
+        password = builder.password;
+        userProjects = builder.userProjects;
+        userHaveAccessToProjects = builder.userHaveAccessToProjects;
+        type = builder.type;
+    }
+
     public void setId(BigInteger id) {
         this.id = id;
     }
