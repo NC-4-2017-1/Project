@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.SQL_Query_Constants;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -42,7 +43,8 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
     }
 
     public boolean saveProject(Project project) {
-        return false;
+        generalTemplate.update(SQL_Query_Constants.INSERT_DV_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
+        return true;
     }
 
     public List<Graphic> getProjectGraphics(Project project) {

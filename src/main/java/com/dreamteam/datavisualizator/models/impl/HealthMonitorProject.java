@@ -2,7 +2,6 @@ package com.dreamteam.datavisualizator.models.impl;
 
 
 import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 
@@ -20,14 +19,14 @@ public class HealthMonitorProject extends AbstractProject{
     public static class Builder{
         private String name;
         private Date creationDate;
-        private User author;
+        private BigInteger author;
         private String description;
         private Collection<User> usersProjectAccessible;
         private Map<String, String> connectionParameters;
         private List<Selector> selectors;
         private Graphic graphic;
 
-        public Builder(String name, Date creationDate, User author){
+        public Builder(String name, Date creationDate, BigInteger author){
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;
