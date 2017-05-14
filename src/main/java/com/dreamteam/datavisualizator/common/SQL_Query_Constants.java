@@ -3,6 +3,7 @@ package com.dreamteam.datavisualizator.common;
 public interface SQL_Query_Constants {
     String INSERT_USER = "call insert_user(?,?,?,?)";
     String INSERT_DV_PROJECT = "call insert_dv_project(?,?,?)";
+    String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
     String SELECT_USER_BY_MAIL="select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
             " where obj_user.OBJECT_TYPE_ID = " +IdList.USER_OBJTYPE_ID.toString() +" "+
