@@ -10,7 +10,8 @@
 <body>
 <p>Hello</p>
 <%--<h1>System env <%= System.getenv("SQL_JDBC_URL") %></h1>--%>
-<h1>exec result:
-    <p>${userdao}</p></h1>
+<h1>exec result:</h1>
+<p>${userEMAIL}</p>
+<p>${userID}</p>
 </body>
 </html>

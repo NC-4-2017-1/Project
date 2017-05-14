@@ -72,11 +72,14 @@ public class UserDAOImpl implements UserDAO {
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             UserImpl.Builder builder = new UserImpl.Builder(rs.getString("email"),null);
-            builder.buildId(new BigInteger(rs.getString("id")));
+            builder.buildId(new BigInteger(new Integer(rs.getInt("id")).toString()));
             builder.firstName(rs.getString("first_name"));
             builder.lastName(rs.getString("last_name"));
             builder.type(UserTypes.REGULAR_USER);
             return builder.build();
         }
     }
+
+
+
 }

@@ -141,4 +141,17 @@ public class UserImpl implements User{
         return firstName + " " + lastName;
     }
 
+    @Override
+    public String toString() {
+        return "UserImpl{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", userProjects=" + userProjects +
+                ", userHaveAccessToProjects=" + userHaveAccessToProjects +
+                ", type=" + type +
+                '}';
+    }
 }
