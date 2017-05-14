@@ -13,7 +13,7 @@ public class UserDAOImpl implements UserDAO{
         return null;
     }
 
-    public User getUserByFullName(String fullname) {
+    public User getUserByFullName(String fullName) {
         return null;
     }
 

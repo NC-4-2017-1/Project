@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface UserDAO {
     User getUserById(BigInteger id);
-    User getUserByFullName(String fullname);
+    User getUserByFullName(String fullName);
     User getUserByEmail(String email);
     Collection<User> getAllUsersList();
     boolean deleteUser(User user);
