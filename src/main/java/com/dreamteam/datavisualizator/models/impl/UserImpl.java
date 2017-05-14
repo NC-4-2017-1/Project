@@ -19,6 +19,7 @@ public class UserImpl implements User{
     private UserTypes type;
 
     public static class Builder{
+        private BigInteger id;
         private String firstName;
         private String lastName;
         private String email;
@@ -30,6 +31,11 @@ public class UserImpl implements User{
         public Builder(String email, String password){
             this.email = email;
             this.password = password;
+        }
+
+        public Builder buildId(BigInteger val){
+            id = val;
+            return this;
         }
         public Builder firstName(String val){
             firstName = val;

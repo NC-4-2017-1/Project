@@ -14,7 +14,7 @@ public interface IdList {
 
     BigInteger USER_EMAIL_ATTR_ID = new BigInteger("1");
     BigInteger USER_FIRST_NAME_ATTR_ID = new BigInteger("2");
-    BigInteger USER_SECOND_NAME_ATTR_ID = new BigInteger("3");
+    BigInteger USER_LAST_NAME_ATTR_ID = new BigInteger("3");
     BigInteger USER_PASSWORD_ATTR_ID = new BigInteger("4");
     BigInteger USER_TYPE_ATTR_ID = new BigInteger("5");
     BigInteger PROJECT_DATE_ATTR_ID = new BigInteger("6");
