@@ -5,12 +5,14 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     public Graphic getProjectGraphic(Project project) {
         return null;

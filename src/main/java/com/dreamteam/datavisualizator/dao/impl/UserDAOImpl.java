@@ -3,11 +3,18 @@ package com.dreamteam.datavisualizator.dao.impl;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.UserTypes;
+import com.dreamteam.datavisualizator.models.impl.UserImpl;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 
-public class UserDAOImpl implements UserDAO{
+@Repository
+public class UserDAOImpl implements UserDAO {
 
     public User getUserById(BigInteger id) {
         return null;
@@ -55,5 +62,19 @@ public class UserDAOImpl implements UserDAO{
 
     public User authorizeUser(String email, String password) {
         return null;
+    }
+
+    private class UserRowMapper implements RowMapper {
+        public User mapRow(ResultSet rs, int rownum) throws SQLException {
+            UserImpl.Builder builder = new UserImpl.Builder(
+                    rs.getString("email"),
+                    rs.getString("password")
+            );
+            builder.firstName(rs.getString("first_name"));
+            builder.lastName(rs.getString("last_name"));
+            String type = rs.getString("type");
+            builder.type(UserTypes.ADMIN.toString().equals(type) ? UserTypes.ADMIN : UserTypes.REGULAR_USER.toString().equals(type) ? UserTypes.REGULAR_USER : null);
+            return builder.build();
+        }
     }
 }
