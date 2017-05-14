@@ -14,4 +14,5 @@ public interface User {
     List<Project> getUserHaveAccessProjects();
     UserTypes getUserType();
     String getPassword();
+    void setEmail(String email);
 }

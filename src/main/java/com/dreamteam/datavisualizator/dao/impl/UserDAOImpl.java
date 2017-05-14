@@ -30,7 +30,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public User getUserByEmail(String email) {
-        return generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_MAIL, new Object[]{email}, new UserRowMapper());
+        User user = generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_MAIL, new Object[]{email}, new UserRowMapper());
+        user.setEmail(email);
+        return user;
     }
 
     public Collection<User> getAllUsersList() {
@@ -71,10 +73,7 @@ public class UserDAOImpl implements UserDAO {
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
-            UserImpl.Builder builder = new UserImpl.Builder(
-                    rs.getString("email"),
-                    rs.getString("password")
-            );
+            UserImpl.Builder builder = new UserImpl.Builder(null,null);
             builder.buildId(new BigInteger(rs.getString("id")));
             builder.firstName(rs.getString("first_name"));
             builder.lastName(rs.getString("last_name"));
