@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.UserDAO;
+import com.dreamteam.datavisualizator.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +15,9 @@ public class IndexController {
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getHello(Model model) {
-       int iop = userdao.createUser("firstnam", "lastnam", "email", "passwordl");
-       model.addAttribute( "userdao", iop);
+
+      User user = userdao.getUserByEmail("email123");
+       model.addAttribute( "userdao", (user.getEmail() + " " + user.getFullName()));
         return "index";
     }
 }
