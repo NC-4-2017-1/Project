@@ -77,8 +77,7 @@ public class UserDAOImpl implements UserDAO {
             builder.buildId(new BigInteger(rs.getString("id")));
             builder.firstName(rs.getString("first_name"));
             builder.lastName(rs.getString("last_name"));
-            String type = rs.getString("type");
-            builder.type(UserTypes.ADMIN.toString().equals(type) ? UserTypes.ADMIN : UserTypes.REGULAR_USER.toString().equals(type) ? UserTypes.REGULAR_USER : null);
+            builder.type(UserTypes.REGULAR_USER);
             return builder.build();
         }
     }
