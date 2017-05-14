@@ -5,6 +5,8 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +17,9 @@ import java.util.Collection;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+
+    @Autowired
+    private JdbcTemplate generalTemlate;
 
     public User getUserById(BigInteger id) {
         return null;
@@ -37,6 +42,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public User createUser(String firstName, String lastName, String email, String password) {
+        generalTemlate.update("");
         return null;
     }
 
