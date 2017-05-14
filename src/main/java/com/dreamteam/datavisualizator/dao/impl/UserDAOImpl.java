@@ -22,17 +22,15 @@ public class UserDAOImpl implements UserDAO {
     private JdbcTemplate generalTemplate;
 
     public User getUserById(BigInteger id) {
-        return null;
+        return generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapper());
     }
 
     public User getUserByFullName(String fullName) {
-        return null;
+        return generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapper());
     }
 
     public User getUserByEmail(String email) {
-        User user = generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_MAIL, new Object[]{email}, new UserRowMapper());
-        user.setEmail(email);
-        return user;
+        return generalTemplate.queryForObject(SQL_Query_Constants.SELECT_USER_BY_MAIL, new Object[]{email}, new UserRowMapper());
     }
 
     public Collection<User> getAllUsersList() {
@@ -73,7 +71,7 @@ public class UserDAOImpl implements UserDAO {
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
-            UserImpl.Builder builder = new UserImpl.Builder(null,null);
+            UserImpl.Builder builder = new UserImpl.Builder(rs.getString("email"),null);
             builder.buildId(new BigInteger(rs.getString("id")));
             builder.firstName(rs.getString("first_name"));
             builder.lastName(rs.getString("last_name"));
