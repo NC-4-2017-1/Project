@@ -5,6 +5,7 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
@@ -13,7 +14,7 @@ public abstract class AbstractProject implements Project{
     private BigInteger id;
     private String name;
     private Date creationDate;
-    private User author;
+    private BigInteger author;
     private String description;
     private ProjectTypes type;
     private Collection<User> usersProjectAccessible;
@@ -43,11 +44,11 @@ public abstract class AbstractProject implements Project{
         return creationDate;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(BigInteger author) {
         this.author = author;
     }
 
-    public User getAuthor(){
+    public BigInteger getAuthor(){
         return author;
     }
 

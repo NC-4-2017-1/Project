@@ -16,12 +16,12 @@ public class DataVisualizationProject extends AbstractProject{
     public static class Builder{
         private String name;
         private Date creationDate;
-        private User author;
+        private BigInteger author;
         private String description;
         private Collection<User> usersProjectAccessible;
         private List<Graphic> graphics;
 
-        public Builder(String name, Date creationDate, User author){
+        public Builder(String name, Date creationDate, BigInteger author){
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;

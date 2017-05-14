@@ -10,7 +10,7 @@ public interface Project {
     String getName();
     Date getCreationDate();
     ProjectTypes getType();
-    User getAuthor();
+    BigInteger getAuthor();
     Collection<User> getUsersProjectAccessibleTo();
     String getDescription();
 }
