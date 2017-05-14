@@ -2,7 +2,6 @@ package com.dreamteam.datavisualizator.models.impl;
 
 
 import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 
 import java.math.BigInteger;
