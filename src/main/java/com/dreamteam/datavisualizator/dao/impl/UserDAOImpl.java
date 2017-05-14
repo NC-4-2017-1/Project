@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.SQL_Query_Constants;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
@@ -41,9 +42,8 @@ public class UserDAOImpl implements UserDAO {
         return false;
     }
 
-    public User createUser(String firstName, String lastName, String email, String password) {
-        generalTemlate.update("");
-        return null;
+    public Integer createUser(String firstName, String lastName, String email, String password) {
+        return generalTemlate.update(SQL_Query_Constants.INSERT_USER, firstName, lastName, email, password);
     }
 
     public User updateUsersEmail(User user, String email) {
