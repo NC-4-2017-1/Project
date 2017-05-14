@@ -18,9 +18,8 @@ import java.util.Collection;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
-
     @Autowired
-    private JdbcTemplate generalTemlate;
+    private JdbcTemplate generalTemplate;
 
     public User getUserById(BigInteger id) {
         return null;
@@ -43,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public Integer createUser(String firstName, String lastName, String email, String password) {
-        return generalTemlate.update(SQL_Query_Constants.INSERT_USER, firstName, lastName, email, password);
+        return generalTemplate.update(SQL_Query_Constants.INSERT_USER, firstName, lastName, email, password);
     }
 
     public User updateUsersEmail(User user, String email) {
