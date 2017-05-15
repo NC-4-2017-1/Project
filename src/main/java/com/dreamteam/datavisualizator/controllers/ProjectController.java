@@ -5,7 +5,7 @@ import com.dreamteam.datavisualizator.dao.impl.UserDAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-@Controller
+//@Controller
 public class ProjectController extends UserDAOImpl  {
     @Autowired
     DataVisualizationProjectDAO projectdao;
