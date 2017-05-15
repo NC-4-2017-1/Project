@@ -1,6 +1,5 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
-import com.dreamteam.datavisualizator.common.SQL_Query_Constants;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -74,7 +73,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     public boolean saveProject(Project project) {
-        generalTemplate.update(SQL_Query_Constants.INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
+        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
         return true;
     }
 
@@ -94,4 +93,5 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             return builder.build();
         }
     }
+    private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
 }
