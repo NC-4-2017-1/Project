@@ -12,7 +12,7 @@ public interface UserDAO {
     User getUserByEmail(String email);
     Collection<User> getAllUsersList();
     boolean deleteUser(User user);
-    Integer createUser(String firstName, String lastName, String email, String password);
+    void createUser(String firstName, String lastName, String email, String password);
     User updateUsersEmail(User user,String email);
     User updateUsersName(User user, String name);
     User updateUsersPassword(User user, String password);

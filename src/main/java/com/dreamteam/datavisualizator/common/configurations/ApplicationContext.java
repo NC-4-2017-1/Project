@@ -4,6 +4,7 @@ package com.dreamteam.datavisualizator.common.configurations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -30,5 +31,10 @@ public class ApplicationContext {
     @Bean(name="generalTemplate")
     public JdbcTemplate getJdbcTemplate(DataSource dataSource){
         return new JdbcTemplate(dataSource);
+    }
+
+    @Bean(name="simpleCallTemplate")
+    public SimpleJdbcCall getSimpleJdbcCall(JdbcTemplate generalTemplate){
+        return new SimpleJdbcCall(generalTemplate);
     }
 }
