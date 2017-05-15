@@ -11,12 +11,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class HealthMonitorProject extends AbstractProject{
+public class HealthMonitorProject extends AbstractProject {
     private Map<String, String> connectionParameters;
     private List<Selector> selectors;
     private Graphic graphic;
 
-    public static class Builder{
+    public static class Builder {
+        private BigInteger id;
         private String name;
         private Date creationDate;
         private BigInteger author;
@@ -26,38 +27,45 @@ public class HealthMonitorProject extends AbstractProject{
         private List<Selector> selectors;
         private Graphic graphic;
 
-        public Builder(String name, Date creationDate, BigInteger author){
+        public Builder(BigInteger id, String name, Date creationDate, BigInteger author) {
+            this.id = id;
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;
         }
-        public Builder description(String val){
+
+        public Builder description(String val) {
             description = val;
             return this;
         }
-        public Builder usersProjectAccessible(Collection<User> val){
+
+        public Builder usersProjectAccessible(Collection<User> val) {
             usersProjectAccessible = val;
             return this;
         }
-        public Builder connectionParameters(Map<String, String> val){
+
+        public Builder connectionParameters(Map<String, String> val) {
             connectionParameters = val;
             return this;
         }
-        public Builder selectors(List<Selector>  val){
+
+        public Builder selectors(List<Selector> val) {
             selectors = val;
             return this;
         }
-        public Builder graphic(Graphic val){
+
+        public Builder graphic(Graphic val) {
             graphic = val;
             return this;
         }
 
-        public HealthMonitorProject build(){
+        public HealthMonitorProject build() {
             return new HealthMonitorProject(this);
         }
     }
 
-    private HealthMonitorProject(Builder builder){
+    private HealthMonitorProject(Builder builder) {
+        this.setId(builder.id);
         this.setName(builder.name);
         this.setCreationDate(builder.creationDate);
         this.setAuthor(builder.author);

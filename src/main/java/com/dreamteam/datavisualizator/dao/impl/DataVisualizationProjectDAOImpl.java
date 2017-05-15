@@ -17,6 +17,7 @@ import java.util.List;
 
 @Repository
 public class DataVisualizationProjectDAOImpl implements DataVisualizationProjectDAO {
+    private enum DVProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION}
 
     @Autowired
     private JdbcTemplate generalTemplate;
@@ -54,19 +55,21 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
 
     }
 
-    private class DataVisualizationProjectRowMapper implements RowMapper{
+    private class DataVisualizationProjectRowMapper implements RowMapper {
         public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
             DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(
-                    rs.getString("name"),
-                    rs.getDate("creationDate"),
-                    new BigInteger(rs.getObject("author").toString())
+                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.ID.toString())),
+                    rs.getString(DVProjectColumnName.NAME.toString()),
+                    rs.getDate(DVProjectColumnName.CREATION_DATE.toString()),
+                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.AUTHOR.toString()))
             );
 
-            builder.description(rs.getString("description"));
+            builder.description(rs.getString(DVProjectColumnName.DESCRIPTION.toString()));
 //            builder.usersProjectAccessible();
 //            builder.graphics();
             return builder.build();
         }
     }
+
     private String INSERT_DV_PROJECT = "call insert_dv_project(?,?,?)";
 }

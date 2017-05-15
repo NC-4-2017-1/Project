@@ -18,6 +18,8 @@ import java.util.Collection;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+    private enum UserColumnName {ID, FIRST_NAME, LAST_NAME, EMAIL}
+
     @Autowired
     private JdbcTemplate generalTemplate;
 
@@ -71,45 +73,46 @@ public class UserDAOImpl implements UserDAO {
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
-            UserImpl.Builder builder = new UserImpl.Builder(rs.getString("email"),null);
-            builder.buildId(new BigInteger(new Integer(rs.getInt("id")).toString()));
-            builder.firstName(rs.getString("first_name"));
-            builder.lastName(rs.getString("last_name"));
+            UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.EMAIL.toString()), null);
+            builder.buildId(BigInteger.valueOf(rs.getLong(UserColumnName.ID.toString())));
+            builder.firstName(rs.getString(UserColumnName.FIRST_NAME.toString()));
+            builder.lastName(rs.getString(UserColumnName.LAST_NAME.toString()));
             builder.type(UserTypes.REGULAR_USER);
             return builder.build();
         }
     }
+
     private String INSERT_USER = "call insert_user(?,?,?,?)";
-    private String SELECT_USER_BY_MAIL="select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
+    private String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() +" "+
+            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID+" "+
+            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID +" "+
+            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " +IdList.USER_EMAIL_ATTR_ID +" "+
+            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
             " and email.value=?";
-    private String GET_ALL_USERS ="";
-    private String SELECT_USER_BY_FULLNAME="select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
+    private String GET_ALL_USERS = "";
+    private String SELECT_USER_BY_FULLNAME = "select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " +IdList.USER_OBJTYPE_ID.toString() +" "+
+            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID+" "+
+            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID +" "+
+            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " +IdList.USER_EMAIL_ATTR_ID +" "+
+            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
             " and obj_user.name=?";
-    private String SELECT_USER_BY_ID="select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email" +
+    private String SELECT_USER_BY_ID = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " +IdList.USER_OBJTYPE_ID.toString() +" "+
+            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID+" "+
+            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID +" "+
+            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " +IdList.USER_EMAIL_ATTR_ID +" "+
+            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
             " and obj_user.OBJECT_ID=?";
 
 }

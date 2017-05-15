@@ -23,12 +23,14 @@ import java.util.Map;
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
 
+    private enum HWProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION}
+
     @Autowired
     private JdbcTemplate generalTemplate;
 
-    public void setDataSourceTemplate(String serverName,String port, String sid, String username, String password) {
-        String url = "jdbc:oracle:thin:@"+serverName+":"+port+"/"+sid;
-        HMDataSource dataSourceHM = new HMDataSource(url,username, password);
+    public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
+        String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
+        HMDataSource dataSourceHM = new HMDataSource(url, username, password);
         templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
     }
 
@@ -92,14 +94,16 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private class HealthMonitorProjectRowMapper implements RowMapper {
         public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
             HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(
-                    rs.getString("name"),
-                    rs.getDate("creationDate"),
-                    new BigInteger(rs.getObject("author").toString())
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.ID.toString())),
+                    rs.getString(HWProjectColumnName.NAME.toString()),
+                    rs.getDate(HWProjectColumnName.CREATION_DATE.toString()),
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.AUTHOR.toString()))
             );
-            builder.description(rs.getString("description"));
+            builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
 
             return builder.build();
         }
     }
+
     private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
 }

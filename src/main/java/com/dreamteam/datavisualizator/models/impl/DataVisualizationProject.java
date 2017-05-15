@@ -9,10 +9,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class DataVisualizationProject extends AbstractProject{
+public class DataVisualizationProject extends AbstractProject {
     private List<Graphic> graphics;
 
-    public static class Builder{
+    public static class Builder {
+        private BigInteger id;
         private String name;
         private Date creationDate;
         private BigInteger author;
@@ -20,30 +21,35 @@ public class DataVisualizationProject extends AbstractProject{
         private Collection<User> usersProjectAccessible;
         private List<Graphic> graphics;
 
-        public Builder(String name, Date creationDate, BigInteger author){
+        public Builder(BigInteger id, String name, Date creationDate, BigInteger author) {
+            this.id = id;
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;
         }
-        public Builder description(String val){
+
+        public Builder description(String val) {
             description = val;
             return this;
         }
-        public Builder usersProjectAccessible(Collection<User> val){
+
+        public Builder usersProjectAccessible(Collection<User> val) {
             usersProjectAccessible = val;
             return this;
         }
-        public Builder graphics(List<Graphic> val){
+
+        public Builder graphics(List<Graphic> val) {
             graphics = val;
             return this;
         }
 
-        public DataVisualizationProject build(){
+        public DataVisualizationProject build() {
             return new DataVisualizationProject(this);
         }
     }
 
-    private DataVisualizationProject(Builder builder){
+    private DataVisualizationProject(Builder builder) {
+        this.setId(builder.id);
         this.setName(builder.name);
         this.setCreationDate(builder.creationDate);
         this.setAuthor(builder.author);
