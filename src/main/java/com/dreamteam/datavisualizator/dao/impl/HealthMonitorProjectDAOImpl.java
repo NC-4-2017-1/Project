@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -20,9 +21,16 @@ import java.util.Map;
 
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
+    private JdbcTemplate templateHM;
 
     @Autowired
     private JdbcTemplate generalTemplate;
+
+    public void setDataSourceTemplate(String serverName,String port, String sid, String username, String password) {
+        String url = "jdbc:oracle:thin:@"+serverName+":"+port+"/"+sid;
+        HMDataSource dataSourceHM = new HMDataSource(url,username, password);
+        templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
+    }
 
     public Graphic getProjectGraphic(Project project) {
         return null;
