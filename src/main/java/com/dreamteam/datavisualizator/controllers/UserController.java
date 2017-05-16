@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
+//@Controller
 public class UserController {
     @Autowired
     private UserDAO userDAO;
@@ -28,12 +28,12 @@ public class UserController {
         return "adminDashboardView";
     }
 
-    @RequestMapping(value = "/dashboardView", method = RequestMethod.GET)
+    @RequestMapping(path = "/dashboardView", method = RequestMethod.GET)
     public String userDashboard(Model model) {
         return "userDashboardView";
     }
 
-    @RequestMapping(value = "/creationView", method = RequestMethod.GET)
+    @RequestMapping(path = "/creationView", method = RequestMethod.GET)
     public String userCreation(Model model) {
         return "userCreationView";
     }
