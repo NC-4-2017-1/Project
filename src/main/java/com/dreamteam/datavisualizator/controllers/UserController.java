@@ -9,16 +9,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-//@Controller
+@Controller
 public class UserController {
     @Autowired
     private UserDAO userDAO;
 
     @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
-    public void deleteUser(User user,
-                           Model model) {
-        userDAO.deleteUser(user);
+    @ResponseBody
+    public boolean deleteUser(User user,
+                              Model model) {
+        return userDAO.deleteUser(user);
+    }
+
+    @RequestMapping(path = "/dashboardView", method = RequestMethod.GET)
+    public String adminDashboard(Model model) {
+        return "adminDashboardView";
+    }
+
+    @RequestMapping(value = "/dashboardView", method = RequestMethod.GET)
+    public String userDashboard(Model model) {
+        return "userDashboardView";
+    }
+
+    @RequestMapping(value = "/creationView", method = RequestMethod.GET)
+    public String userCreation(Model model) {
+        return "userCreationView";
     }
 
 }
