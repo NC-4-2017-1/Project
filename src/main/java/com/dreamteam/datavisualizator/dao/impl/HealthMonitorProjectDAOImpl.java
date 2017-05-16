@@ -6,7 +6,7 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
-import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
+import com.dreamteam.datavisualizator.models.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
 
-    private enum HWProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION}
+    private enum HWProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION, SID, PORT, SERVER_NAME, USER_NAME, PASSWORD}
 
     @Autowired
     private JdbcTemplate generalTemplate;
@@ -42,25 +42,18 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         return null;
     }
 
-    public Map<String, String> getProjectConnectionParameters(Project project) {
+    public Map<String, String> getProjectConnections(Project project) {  return null;  }
+
+    public Graphic createGraphic(int hourCount) {
         return null;
     }
 
-    public List<Date> getDataForGraphic(Map<String, String> map) {
+    public List<Selector> createSelectorList(Map<String, String> map) {
         return null;
     }
 
-    public List<Date> getDataForSelector(Map<String, String> map) {
-        return null;
-    }
-
-    public boolean saveGraphic(Map<String, String> map, Graphic graphic) {
-        return false;
-    }
-
-    public boolean saveSelector(Map<String, String> map, Selector selector) {
-        return false;
-    }
+    //public boolean saveGraphic(int hourCount, Graphic graphic) { return false;  }
+    //public boolean saveSelector(Map<String, String> map, Selector selector) {return false;}
 
     public Project getProjectById(BigInteger id) {
         return null;
@@ -97,12 +90,72 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
                     BigInteger.valueOf(rs.getLong(HWProjectColumnName.ID.toString())),
                     rs.getString(HWProjectColumnName.NAME.toString()),
                     rs.getDate(HWProjectColumnName.CREATION_DATE.toString()),
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.AUTHOR.toString()))
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.AUTHOR.toString())),
+                    rs.getString(HWProjectColumnName.SID.toString()),
+                    rs.getString(HWProjectColumnName.PORT.toString()),
+                    rs.getString(HWProjectColumnName.SERVER_NAME.toString()),
+                    rs.getString(HWProjectColumnName.USER_NAME.toString()),
+                    rs.getString(HWProjectColumnName.PASSWORD.toString())
             );
             builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
-
             return builder.build();
         }
+    }
+
+    private SelectorInstanceInfo createSelectorInstanceInfo (){
+        SelectorInstanceInfo selector = new SelectorInstanceInfo();
+        return  selector;
+    }
+
+    private SelectorSizeForTablespace createSelectorSizeForTablespace (){
+        SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
+        return  selector;
+    }
+
+    private SelectorSizeForIndexLob createSelectorSizeForIndexLob (String segment){
+        SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
+        selector.setSegment(segment);
+        return  selector;
+    }
+
+    private SelectorLastErrors createSelectorLastErrors (){
+        SelectorLastErrors selector = new SelectorLastErrors();
+        return  selector;
+    }
+
+    private SelectorActiveSessions createSelectorActiveSessions (int top){
+        SelectorActiveSessions selector = new SelectorActiveSessions();
+        selector.setTop(top);
+        return  selector;
+    }
+
+    private SelectorActiveQueries createSelectorActiveQueries (int top){
+        SelectorActiveQueries selector = new SelectorActiveQueries();
+        selector.setTop(top);
+        return  selector;
+    }
+
+    private SelectorQueriesResults createSelectorQueriesResults (int top){
+        SelectorQueriesResults selector = new SelectorQueriesResults();
+        selector.setTop(top);
+        return  selector;
+    }
+
+    private SelectorSqlQueryMonitor createSelectorSqlQueryMonitor (int top){
+        SelectorSqlQueryMonitor selector = new SelectorSqlQueryMonitor();
+        selector.setTop(top);
+        return  selector;
+    }
+
+    private SelectorDBLocks createSelectorDBLocks (){
+        SelectorDBLocks selector = new SelectorDBLocks();
+        return  selector;
+    }
+
+    private SelectorActiveJobs createSelectorActiveJobs (int hourCount){
+        SelectorActiveJobs selector = new SelectorActiveJobs();
+        selector.setHourCount(hourCount);
+        return  selector;
     }
 
     private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";

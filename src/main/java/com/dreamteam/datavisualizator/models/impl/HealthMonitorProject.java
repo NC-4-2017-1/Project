@@ -12,25 +12,40 @@ import java.util.List;
 import java.util.Map;
 
 public class HealthMonitorProject extends AbstractProject {
-    private Map<String, String> connectionParameters;
     private List<Selector> selectors;
     private Graphic graphic;
+    private  String sid;
+    private  String port;
+    private  String serverName;
+    private  String userName;
+    private  String password;
 
     public static class Builder {
         private BigInteger id;
         private String name;
         private Date creationDate;
-        private BigInteger author;
         private String description;
+        private BigInteger author;
+        private  String sid;
+        private  String port;
+        private  String serverName;
+        private  String userName;
+        private  String password;
+
         private Collection<User> usersProjectAccessible;
-        private Map<String, String> connectionParameters;
         private List<Selector> selectors;
         private Graphic graphic;
 
-        public Builder(BigInteger id, String name, Date creationDate, BigInteger author) {
+        public Builder(BigInteger id, String name, Date creationDate, BigInteger author,
+                       String sid, String port, String serverName, String userName, String password) {
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
+            this.sid = sid;
+            this.port = port;
+            this.serverName = serverName;
+            this.userName = userName;
+            this.password = password;
             this.author = author;
         }
 
@@ -41,11 +56,6 @@ public class HealthMonitorProject extends AbstractProject {
 
         public Builder usersProjectAccessible(Collection<User> val) {
             usersProjectAccessible = val;
-            return this;
-        }
-
-        public Builder connectionParameters(Map<String, String> val) {
-            connectionParameters = val;
             return this;
         }
 
@@ -68,20 +78,56 @@ public class HealthMonitorProject extends AbstractProject {
         this.setId(builder.id);
         this.setName(builder.name);
         this.setCreationDate(builder.creationDate);
-        this.setAuthor(builder.author);
         this.setDescription(builder.description);
+        this.setAuthor(builder.author);
+        this.setSid(builder.sid);
+        this.setPort(builder.port);
+        this.setServerName(builder.serverName);
+        this.setUserName(builder.userName);
+        this.setPassword(builder.password);
         this.setUsersProjectAccessible(builder.usersProjectAccessible);
-        this.connectionParameters = builder.connectionParameters;
         this.selectors = builder.selectors;
         this.graphic = builder.graphic;
     }
 
-    public Map<String, String> getConnectionParameters() {
-        return connectionParameters;
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 
-    public void setConnectionParameters(Map<String, String> connectionParameters) {
-        this.connectionParameters = connectionParameters;
+    public String getSid(){
+        return this.sid;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getPort(){
+        return this.port;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public String getServerName(){
+        return this.serverName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName(){
+        return this.userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword(){
+        return this.password;
     }
 
     public List<Selector> getSelectors() {

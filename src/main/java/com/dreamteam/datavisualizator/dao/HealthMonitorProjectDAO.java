@@ -14,11 +14,11 @@ public interface HealthMonitorProjectDAO {
 
     Graphic getProjectGraphic(Project project);
     List<Selector> getProjectSelectors(Project project);
-    Map<String,String> getProjectConnectionParameters(Project project);
-    List<Date> getDataForGraphic(Map<String,String> map);
-    List<Date> getDataForSelector(Map<String,String> map);
-    boolean saveGraphic(Map<String,String> map,Graphic graphic);
-    boolean saveSelector(Map<String,String> map, Selector selector);
+    Map<String, String> getProjectConnections(Project project);
+    Graphic createGraphic(int hourCount);
+    List<Selector> createSelectorList(Map<String, String> map);
+    //boolean saveGraphic(int hourCount,Graphic graphic);
+    //boolean saveSelector(Map<String,String> map, Selector selector);
 
     Project getProjectById(BigInteger id);
     Project getProjectByName(String projectName);
