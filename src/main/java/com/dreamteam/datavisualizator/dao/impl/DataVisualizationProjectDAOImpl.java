@@ -58,13 +58,10 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
         Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).description(description).graphics(graphics).build();
-        BigInteger insertedObjectId = createProjectObject("DV " + name);
-        generalTemplate.update(INSERT_DV_PROJECT_ATTR_VALUE, PROJECT_NAME_ATTR_ID, insertedObjectId, name);
+        BigInteger insertedObjectId = createProjectObject(name);
         generalTemplate.update(INSERT_DV_PROJECT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
         generalTemplate.update(INSERT_DV_PROJECT_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-
         generalTemplate.update(INSERT_DV_PROJECT_AUTHOR_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID , authorId, insertedObjectId);
-
         //!TODO Graphics save mechanics
         return project;
     }
