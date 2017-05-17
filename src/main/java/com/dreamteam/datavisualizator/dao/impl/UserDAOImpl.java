@@ -35,7 +35,6 @@ public class UserDAOImpl implements UserDAO {
         return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapper());
     }
 
-    @Transactional
     public User getUserByFullName(String fullName) {
         return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapper());
     }
@@ -45,11 +44,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public Collection<User> getAllUsersList() {
-        return null;
+        return generalTemplate.query(GET_ALL_USERS, new UserRowMapper());
     }
 
     public boolean deleteUser(User user) {
-        return false;
+        return false; //TODO method for deleting user from database
     }
 
     public void createUser(String firstName, String lastName, String email, String password) {
@@ -57,27 +56,27 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public User updateUsersEmail(User user, String email) {
-        return null;
+        return null; //TODO method for updating user email
     }
 
     public User updateUsersName(User user, String name) {
-        return null;
+        return null; //TODO method for updating user name
     }
 
     public User updateUsersPassword(User user, String password) {
-        return null;
+        return null; //TODO method for updating user password
     }
 
     public boolean giveUserAccessToProject(User user, Project project) {
-        return false;
+        return false; //TODO method for giving access to project
     }
 
     public boolean removeAccessToProjectFromUser(User user, Project project) {
-        return false;
+        return false;//TODO method for removing access to project
     }
 
     public User authorizeUser(String email, String password) {
-        return null;
+        return null;//TODO method for authorization
     }
 
     @Transactional
@@ -111,7 +110,15 @@ public class UserDAOImpl implements UserDAO {
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
             " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
             " and email.value=?";
-    private String GET_ALL_USERS = "";
+    private String GET_ALL_USERS = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
+            " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
+            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
+            " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
+            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
+            " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
+            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
+            " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
+            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID;
     private String SELECT_USER_BY_FULLNAME = "select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
             " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
