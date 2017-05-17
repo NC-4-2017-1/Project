@@ -1,7 +1,5 @@
 package com.dreamteam.datavisualizator.controllers;
 
-
-import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-//@Controller
+@Controller
 public class UserController {
     @Autowired
     private UserDAO userDAO;
@@ -23,19 +21,19 @@ public class UserController {
         return userDAO.deleteUser(user);
     }
 
-    @RequestMapping(path = "/dashboardView", method = RequestMethod.GET)
+    @RequestMapping(path = "/admin", method = RequestMethod.GET)
     public String adminDashboard(Model model) {
-        return "adminDashboardView";
+        return "adminDashboard";
     }
 
-    @RequestMapping(path = "/dashboardView", method = RequestMethod.GET)
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
     public String userDashboard(Model model) {
-        return "userDashboardView";
+        return "userDashboard";
     }
 
-    @RequestMapping(path = "/creationView", method = RequestMethod.GET)
+    @RequestMapping(path = "/creation", method = RequestMethod.GET)
     public String userCreation(Model model) {
-        return "userCreationView";
+        return "userCreation";
     }
 
 }
