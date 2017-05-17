@@ -19,6 +19,7 @@ public interface UserDAO {
     boolean giveUserAccessToProject(User user, Project project);
     boolean removeAccessToProjectFromUser(User user, Project project);
     User authorizeUser(String email, String password);
+    BigInteger createObject(BigInteger object_id, String name);
 
 
 }

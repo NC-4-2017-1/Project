@@ -9,19 +9,18 @@ import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Collection;
 
-@Repository
+@Repository("userDaoImpl")
 public class UserDAOImpl implements UserDAO {
     private enum UserColumnName {ID, FIRST_NAME, LAST_NAME, EMAIL}
 
@@ -52,13 +51,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public void createUser(String firstName, String lastName, String email, String password) {
-        simpleCallTemplate.withProcedureName(INSERT_USER);
-        SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("u_email", email)
-                .addValue("u_first_name", firstName)
-                .addValue("u_last_name", lastName)
-                .addValue("u_password", password);
-        simpleCallTemplate.execute(in);
+        //TODO method for creation user with attributes in database
     }
 
     public User updateUsersEmail(User user, String email) {
@@ -85,6 +78,14 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
+    public BigInteger createObject(BigInteger object_id, String name) {
+        simpleCallTemplate.withFunctionName("insert_object");
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("obj_type_id", object_id)
+                .addValue("obj_name", name);
+        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
+
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.EMAIL.toString()), null);
@@ -96,7 +97,7 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    private String INSERT_USER = "call insert_user(?,?,?,?)";
+    private String INSERT_OBJECT = "insert_object";
     private String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
             " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
