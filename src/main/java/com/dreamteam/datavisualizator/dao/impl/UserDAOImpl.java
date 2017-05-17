@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,6 +35,7 @@ public class UserDAOImpl implements UserDAO {
         return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapper());
     }
 
+    @Transactional
     public User getUserByFullName(String fullName) {
         return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapper());
     }
@@ -78,6 +80,7 @@ public class UserDAOImpl implements UserDAO {
         return null;
     }
 
+    @Transactional
     public BigInteger createObject(BigInteger object_id, String name) {
         simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()

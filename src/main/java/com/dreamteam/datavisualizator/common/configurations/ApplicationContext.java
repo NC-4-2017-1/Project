@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -24,17 +25,17 @@ public class ApplicationContext {
     }
 
     @Bean(name = "transactionManager")
-    public DataSourceTransactionManager getTransactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    public PlatformTransactionManager getTransactionManager() {
+        return new DataSourceTransactionManager(getDataSource());
     }
 
     @Bean(name="generalTemplate")
-    public JdbcTemplate getJdbcTemplate(DataSource dataSource){
-        return new JdbcTemplate(dataSource);
+    public JdbcTemplate getJdbcTemplate(){
+        return new JdbcTemplate(getDataSource());
     }
 
     @Bean(name="simpleCallTemplate")
-    public SimpleJdbcCall getSimpleJdbcCall(DataSource dataSource){
-        return new SimpleJdbcCall(dataSource);
+    public SimpleJdbcCall getSimpleJdbcCall(){
+        return new SimpleJdbcCall(getDataSource());
     }
 }
