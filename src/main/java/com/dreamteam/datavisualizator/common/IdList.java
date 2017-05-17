@@ -26,4 +26,6 @@ public interface IdList {
     BigInteger MATH_EXPECTATION_DVPROJECT_ATTR_ID = BigInteger.valueOf(12L);
     BigInteger DISPERSION_DVPROJECT_ATTR_ID = BigInteger.valueOf(13L);
     BigInteger JSON_RESULT_PROJECT_ATTR_ID = BigInteger.valueOf(14L);
+
+    BigInteger PROJECT_AUTHOR_RELATION_ATTR_ID = BigInteger.valueOf(17L);
 }

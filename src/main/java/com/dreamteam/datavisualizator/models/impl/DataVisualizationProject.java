@@ -12,6 +12,26 @@ import java.util.List;
 public class DataVisualizationProject extends AbstractProject {
     private List<Graphic> graphics;
 
+
+    private DataVisualizationProject(Builder builder) {
+        this.setId(builder.id);
+        this.setName(builder.name);
+        this.setCreationDate(builder.creationDate);
+        this.setAuthor(builder.author);
+        this.setDescription(builder.description);
+        this.setUsersProjectAccessible(builder.usersProjectAccessible);
+        this.graphics = builder.graphics;
+    }
+
+    public List<Graphic> getGraphics() {
+        return graphics;
+    }
+
+    public void setGraphics(List<Graphic> graphics) {
+        this.graphics = graphics;
+    }
+
+
     public static class Builder {
         private BigInteger id;
         private String name;
@@ -21,11 +41,15 @@ public class DataVisualizationProject extends AbstractProject {
         private Collection<User> usersProjectAccessible;
         private List<Graphic> graphics;
 
-        public Builder(BigInteger id, String name, Date creationDate, BigInteger author) {
-            this.id = id;
+        public Builder(String name, Date creationDate, BigInteger author) {
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;
+        }
+
+        public Builder id(BigInteger id) {
+            this.id = id;
+            return this;
         }
 
         public Builder description(String val) {
@@ -48,21 +72,4 @@ public class DataVisualizationProject extends AbstractProject {
         }
     }
 
-    private DataVisualizationProject(Builder builder) {
-        this.setId(builder.id);
-        this.setName(builder.name);
-        this.setCreationDate(builder.creationDate);
-        this.setAuthor(builder.author);
-        this.setDescription(builder.description);
-        this.setUsersProjectAccessible(builder.usersProjectAccessible);
-        this.graphics = builder.graphics;
-    }
-
-    public List<Graphic> getGraphics() {
-        return graphics;
-    }
-
-    public void setGraphics(List<Graphic> graphics) {
-        this.graphics = graphics;
-    }
 }

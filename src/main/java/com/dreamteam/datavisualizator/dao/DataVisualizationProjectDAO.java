@@ -13,7 +13,7 @@ public interface DataVisualizationProjectDAO {
     List<Project> getProjectsByAuthor(User user);
     List<Project> getProjectsUserHaveAccessTo(User user);
     boolean deleteProject(Project project);
-    boolean saveProject(Project project);
+    Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics);
     List<Graphic> getProjectGraphics(Project project);
     void getPreviewProjectDataForUser(User user);
 }
