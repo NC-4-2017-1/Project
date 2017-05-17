@@ -23,6 +23,7 @@ import java.util.Collection;
 
 @Repository("userDaoImpl")
 public class UserDAOImpl implements UserDAO {
+
     private enum UserColumnName {ID, FIRST_NAME, LAST_NAME, EMAIL}
 
     @Autowired
@@ -51,10 +52,6 @@ public class UserDAOImpl implements UserDAO {
         return false; //TODO method for deleting user from database
     }
 
-    public void createUser(String firstName, String lastName, String email, String password) {
-        //TODO method for creation user with attributes in database
-    }
-
     public User updateUsersEmail(User user, String email) {
         return null; //TODO method for updating user email
     }
@@ -80,10 +77,21 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Transactional
-    public BigInteger createObject(BigInteger object_id, String name) {
+    public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
+        User user = new UserImpl.Builder(email, password).firstName(firstName).lastName(lastName).type(type).build();
+        BigInteger insertedObjectId = createUserObject(lastName + " " + firstName);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_EMAIL_ATTR_ID, insertedObjectId, email);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_PASSWORD_ATTR_ID, insertedObjectId, password);
+        generalTemplate.update(INSERT_USER_ATTR_LIST_VALUE, IdList.USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
+        return user;
+    }
+
+    private BigInteger createUserObject(String name) {
         simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", object_id)
+                .addValue("obj_type_id", IdList.USER_OBJTYPE_ID)
                 .addValue("obj_name", name);
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
@@ -100,6 +108,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private String INSERT_OBJECT = "insert_object";
+    private String INSERT_USER_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
+    private String INSERT_USER_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
+
     private String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
             " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
