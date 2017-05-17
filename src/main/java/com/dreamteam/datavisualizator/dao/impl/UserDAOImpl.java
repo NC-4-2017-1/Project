@@ -1,6 +1,5 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
-import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
@@ -20,6 +19,8 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+
+import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository("userDaoImpl")
 public class UserDAOImpl implements UserDAO {
@@ -52,8 +53,11 @@ public class UserDAOImpl implements UserDAO {
         return false; //TODO method for deleting user from database
     }
 
+    @Transactional
     public User updateUsersEmail(User user, String email) {
-        return null; //TODO method for updating user email
+        user.setEmail(email);
+        generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, email, user.getId(), USER_EMAIL_ATTR_ID);
+        return user;
     }
 
     public User updateUsersName(User user, String name) {
@@ -61,7 +65,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public User updateUsersPassword(User user, String password) {
-        return null; //TODO method for updating user password
+        user.setPassword(password);
+        generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, password, user.getId(), USER_PASSWORD_ATTR_ID);
+        return user;
     }
 
     public boolean giveUserAccessToProject(User user, Project project) {
@@ -80,18 +86,18 @@ public class UserDAOImpl implements UserDAO {
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
         User user = new UserImpl.Builder(email, password).firstName(firstName).lastName(lastName).type(type).build();
         BigInteger insertedObjectId = createUserObject(lastName + " " + firstName);
-        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_EMAIL_ATTR_ID, insertedObjectId, email);
-        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
-        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
-        generalTemplate.update(INSERT_USER_ATTR_VALUE, IdList.USER_PASSWORD_ATTR_ID, insertedObjectId, password);
-        generalTemplate.update(INSERT_USER_ATTR_LIST_VALUE, IdList.USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_PASSWORD_ATTR_ID, insertedObjectId, password);
+        generalTemplate.update(INSERT_USER_ATTR_LIST_VALUE, USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
         return user;
     }
 
     private BigInteger createUserObject(String name) {
         simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", IdList.USER_OBJTYPE_ID)
+                .addValue("obj_type_id", USER_OBJTYPE_ID)
                 .addValue("obj_name", name);
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
@@ -107,48 +113,53 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    private String INSERT_OBJECT = "insert_object";
-    private String INSERT_USER_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
-    private String INSERT_USER_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
+    private static final String INSERT_OBJECT = "insert_object";
+    private static final String INSERT_USER_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
+    private static final String INSERT_USER_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
 
-    private String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
+    private static final String UPDATE_ATTRIBUTE_BY_USER_ID="update attributes" +
+            " set value = ?" +
+            " where object_id= ?" +
+            " and attr_id= ?";
+
+    private static final String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
+            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
+            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
+            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
+            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
             " and email.value=?";
-    private String GET_ALL_USERS = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
+    private static final String GET_ALL_USERS = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
+            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
+            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
+            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID;
-    private String SELECT_USER_BY_FULLNAME = "select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
+            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID;
+    private static final String SELECT_USER_BY_FULLNAME = "select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
+            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
+            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
+            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
+            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
             " and obj_user.name=?";
-    private String SELECT_USER_BY_ID = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email" +
+    private static final String SELECT_USER_BY_ID = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email" +
             " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + IdList.USER_OBJTYPE_ID.toString() + " " +
+            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
             " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + IdList.USER_FIRST_NAME_ATTR_ID + " " +
+            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + IdList.USER_LAST_NAME_ATTR_ID + " " +
+            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
             " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + IdList.USER_EMAIL_ATTR_ID + " " +
+            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
             " and obj_user.OBJECT_ID=?";
 
 }
