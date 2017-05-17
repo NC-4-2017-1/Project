@@ -34,7 +34,7 @@ public class ApplicationContext {
     }
 
     @Bean(name="simpleCallTemplate")
-    public SimpleJdbcCall getSimpleJdbcCall(JdbcTemplate generalTemplate){
-        return new SimpleJdbcCall(generalTemplate);
+    public SimpleJdbcCall getSimpleJdbcCall(DataSource dataSource){
+        return new SimpleJdbcCall(dataSource);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
@@ -50,23 +51,14 @@ public class UserDAOImpl implements UserDAO {
         return false;
     }
 
-//    public Integer createUser(String firstName, String lastName, String email, String password) {
-//        return generalTemplate.update(INSERT_USER, firstName, lastName, email, password);
-//    }
-
     public void createUser(String firstName, String lastName, String email, String password) {
-        simpleCallTemplate.withProcedureName(INSERT_USER).declareParameters(
-                new SqlParameter("u_email", Types.VARCHAR),
-                new SqlParameter("u_first_name", Types.VARCHAR),
-                new SqlParameter("u_last_name", Types.VARCHAR),
-                new SqlParameter("u_password", Types.VARCHAR)
-        );
-        simpleCallTemplate.execute(
-                new MapSqlParameterSource("u_email", email),
-                new MapSqlParameterSource("u_first_name", firstName),
-                new MapSqlParameterSource("u_last_name", lastName),
-                new MapSqlParameterSource("u_password", password)
-        );
+        simpleCallTemplate.withProcedureName(INSERT_USER);
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("u_email", email)
+                .addValue("u_first_name", firstName)
+                .addValue("u_last_name", lastName)
+                .addValue("u_password", password);
+        simpleCallTemplate.execute(in);
     }
 
     public User updateUsersEmail(User user, String email) {
