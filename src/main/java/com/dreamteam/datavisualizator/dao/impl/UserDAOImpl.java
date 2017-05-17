@@ -66,7 +66,7 @@ public class UserDAOImpl implements UserDAO {
 
     public User updateUsersPassword(User user, String password) {
         user.setPassword(password);
-        generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, password, user.getId(), USER_PASSWORD_ATTR_ID);
+        generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, password, user.getId(), PASSWORD_ATTR_ID);
         return user;
     }
 
@@ -89,7 +89,7 @@ public class UserDAOImpl implements UserDAO {
         generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
         generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
         generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
-        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_PASSWORD_ATTR_ID, insertedObjectId, password);
+        generalTemplate.update(INSERT_USER_ATTR_VALUE, PASSWORD_ATTR_ID, insertedObjectId, password);
         generalTemplate.update(INSERT_USER_ATTR_LIST_VALUE, USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
         return user;
     }

@@ -10,6 +10,7 @@ import com.dreamteam.datavisualizator.models.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
@@ -27,6 +28,9 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
 
     @Autowired
     private JdbcTemplate generalTemplate;
+
+    @Autowired
+    private SimpleJdbcCall simpleCallTemplate;
 
     public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
