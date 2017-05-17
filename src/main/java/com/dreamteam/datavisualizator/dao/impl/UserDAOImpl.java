@@ -79,7 +79,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public BigInteger createObject(BigInteger object_id, String name) {
-        simpleCallTemplate.withFunctionName("insert_object");
+        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("obj_type_id", object_id)
                 .addValue("obj_name", name);
