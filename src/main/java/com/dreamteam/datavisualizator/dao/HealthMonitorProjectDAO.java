@@ -4,9 +4,9 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
 
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +22,8 @@ public interface HealthMonitorProjectDAO {
 
     Project getProjectById(BigInteger id);
     Project getProjectByName(String projectName);
-    List<Project> getProjectsByAuthor(User user);
-    List<Project> getProjectsUserHaveAccessTo(User user);
+    List<HealthMonitorProject> getProjectsByAuthor(User user);
+    List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user);
     boolean deleteProject(Project project);
     boolean saveProject(Project project);
     void getPreviewProjectDataForUser(User user);

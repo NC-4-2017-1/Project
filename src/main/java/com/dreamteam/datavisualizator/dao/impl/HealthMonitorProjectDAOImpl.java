@@ -15,13 +15,10 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
@@ -94,12 +91,13 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new HealthMonitorProjectRowMapper());
     }
 
-    public List<Project> getProjectsByAuthor(User user) {
-        return null;
+    public List<HealthMonitorProject> getProjectsByAuthor(User user) {
+        return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+
     }
 
-    public List<Project> getProjectsUserHaveAccessTo(User user) {
-        return null;
+    public List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user) {
+        return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
     }
 
     public boolean deleteProject(Project project) {
