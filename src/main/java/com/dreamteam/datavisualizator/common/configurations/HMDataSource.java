@@ -3,6 +3,10 @@ package com.dreamteam.datavisualizator.common.configurations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class HMDataSource {
     private String url;
     private String username;
@@ -23,11 +27,16 @@ public class HMDataSource {
         return dataSource;
     }
 
-   /* public static void main(String[] args) {
-        String url = "jdbc:oracle:thin:@issue.pp.ua:8080/ORCL";
-        HMDataSource dataSourceHM = new HMDataSource(url,"system", "130703ce");
-        JdbcTemplate templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
-        Object o = templateHM.queryForObject("select sys_context('userenv', 'DB_NAME')   from dual",  String.class);
-        System.out.println((String)o);
-    }*/
+    public Connection createConnection() throws ClassNotFoundException, SQLException {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Connection conn = DriverManager.getConnection(url,username, password);
+            return conn;
+        } catch (ClassNotFoundException e) {
+            //todo
+        } catch (SQLException e) {
+            //todo
+        }
+        return null;
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.Map;
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
+    Connection connection;
 
     private enum HWProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION, SID, PORT, SERVER_NAME, USER_NAME, PASSWORD}
 
@@ -36,6 +38,18 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
         HMDataSource dataSourceHM = new HMDataSource(url, username, password);
         templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
+    }
+
+    public void setConnection(String serverName, String port, String sid, String username, String password) {
+        String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
+        HMDataSource dataSourceHM = new HMDataSource(url, username, password);
+        try {
+            this.connection = dataSourceHM.createConnection();
+        } catch (ClassNotFoundException e) {
+            //TODO
+        } catch (SQLException e) {
+            //TODO
+        }
     }
 
     public Graphic getProjectGraphic(Project project) {
