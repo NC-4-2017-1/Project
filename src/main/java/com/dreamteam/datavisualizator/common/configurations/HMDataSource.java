@@ -26,17 +26,4 @@ public class HMDataSource {
         dataSource.setPassword(password);
         return dataSource;
     }
-
-    public Connection createConnection() throws ClassNotFoundException, SQLException {
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            Connection conn = DriverManager.getConnection(url,username, password);
-            return conn;
-        } catch (ClassNotFoundException e) {
-            //todo
-        } catch (SQLException e) {
-            //todo
-        }
-        return null;
-    }
 }

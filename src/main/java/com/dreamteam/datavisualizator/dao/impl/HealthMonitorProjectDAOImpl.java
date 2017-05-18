@@ -40,18 +40,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
     }
 
-    public void setConnection(String serverName, String port, String sid, String username, String password) {
-        String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
-        HMDataSource dataSourceHM = new HMDataSource(url, username, password);
-        try {
-            this.connection = dataSourceHM.createConnection();
-        } catch (ClassNotFoundException e) {
-            //TODO
-        } catch (SQLException e) {
-            //TODO
-        }
-    }
-
     public Graphic getProjectGraphic(Project project) {
         return null;
     }
