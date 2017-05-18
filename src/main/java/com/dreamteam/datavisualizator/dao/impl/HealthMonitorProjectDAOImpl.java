@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
@@ -20,13 +21,37 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
-    Connection connection;
 
-    private enum HWProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION, SID, PORT, SERVER_NAME, USER_NAME, PASSWORD}
+
+    private enum HWProjectColumnName {
+        id("id"),
+        name("name"),
+        createDate("create_date"),
+        author("author"),
+        description("description"),
+        sid("sid"),
+        port("port"),
+        serverName("server_name"),
+        userName("user_name"),
+        password("password");
+        private final String columnName;
+
+        private HWProjectColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
+
 
     @Autowired
     private JdbcTemplate generalTemplate;
@@ -61,12 +86,12 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     //public boolean saveGraphic(int hourCount, Graphic graphic) { return false;  }
     //public boolean saveSelector(Map<String, String> map, Selector selector) {return false;}
 
-    public Project getProjectById(BigInteger id) {
-        return null;
+    public HealthMonitorProject getProjectById(BigInteger id) {
+        return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new HealthMonitorProjectRowMapper());
     }
 
     public Project getProjectByName(String projectName) {
-        return null;
+        return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new HealthMonitorProjectRowMapper());
     }
 
     public List<Project> getProjectsByAuthor(User user) {
@@ -90,20 +115,20 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
 
     }
 
-    private class HealthMonitorProjectRowMapper implements RowMapper {
+    private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
         public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
             HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.ID.toString())),
-                    rs.getString(HWProjectColumnName.NAME.toString()),
-                    rs.getDate(HWProjectColumnName.CREATION_DATE.toString()),
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.AUTHOR.toString())),
-                    rs.getString(HWProjectColumnName.SID.toString()),
-                    rs.getString(HWProjectColumnName.PORT.toString()),
-                    rs.getString(HWProjectColumnName.SERVER_NAME.toString()),
-                    rs.getString(HWProjectColumnName.USER_NAME.toString()),
-                    rs.getString(HWProjectColumnName.PASSWORD.toString())
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())),
+                    rs.getString(HWProjectColumnName.name.toString()),
+                    rs.getDate(HWProjectColumnName.createDate.toString()),
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString())),
+                    rs.getString(HWProjectColumnName.sid.toString()),
+                    rs.getString(HWProjectColumnName.port.toString()),
+                    rs.getString(HWProjectColumnName.serverName.toString()),
+                    rs.getString(HWProjectColumnName.userName.toString()),
+                    rs.getString(HWProjectColumnName.password.toString())
             );
-            builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
+            // builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
             return builder.build();
         }
     }
@@ -165,4 +190,54 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
+    private static final String SELECT_HMPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+            " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
+            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
+            " and sid.ATTR_ID=25" + IdList.HM_SID_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
+            " and port.ATTR_ID=" + IdList.HM_PORT_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
+            " and server_name.ATTR_ID=" + IdList.HM_SERVER_NAME_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
+            " and user_name.ATTR_ID=" + IdList.HM_USER_NAME_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
+            " and password.ATTR_ID=" + IdList.PASSWORD_ATTR_ID +
+            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and objects.object_id=?";
+    private String SELECT_HMPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+            " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
+            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
+            " and sid.ATTR_ID=25" + IdList.HM_SID_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
+            " and port.ATTR_ID=" + IdList.HM_PORT_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
+            " and server_name.ATTR_ID=" + IdList.HM_SERVER_NAME_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
+            " and user_name.ATTR_ID=" + IdList.HM_USER_NAME_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
+            " and password.ATTR_ID=" + IdList.PASSWORD_ATTR_ID +
+            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and objects.name=?";
+
+    private static final String SELECT_SELECTOR_INSTANCE_INFO = "select BANNER oracle_version, \n" +
+            "sys_context('userenv', 'DB_NAME') db_name,\n" +
+            "sys_context('userenv','CURRENT_SCHEMA') schem_name\n" +
+            "from v$version where rownum=1";
+
 }

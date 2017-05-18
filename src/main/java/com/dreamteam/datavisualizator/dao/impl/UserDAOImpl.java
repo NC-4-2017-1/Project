@@ -25,7 +25,23 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 @Repository("userDaoImpl")
 public class UserDAOImpl implements UserDAO {
 
-    private enum UserColumnName {ID, FIRST_NAME, LAST_NAME, EMAIL}
+    private enum UserColumnName {
+        id("id"),
+        firstName("first_name"),
+        lastName("last_name"),
+        email("email");
+        private final String columnName;
+
+        private UserColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
 
     @Autowired
     private JdbcTemplate generalTemplate;
@@ -104,10 +120,10 @@ public class UserDAOImpl implements UserDAO {
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
-            UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.EMAIL.toString()), null);
-            builder.buildId(BigInteger.valueOf(rs.getLong(UserColumnName.ID.toString())));
-            builder.firstName(rs.getString(UserColumnName.FIRST_NAME.toString()));
-            builder.lastName(rs.getString(UserColumnName.LAST_NAME.toString()));
+            UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.email.toString()), null);
+            builder.buildId(BigInteger.valueOf(rs.getLong(UserColumnName.id.toString())));
+            builder.firstName(rs.getString(UserColumnName.firstName.toString()));
+            builder.lastName(rs.getString(UserColumnName.lastName.toString()));
             builder.type(UserTypes.REGULAR_USER);
             return builder.build();
         }
@@ -117,7 +133,7 @@ public class UserDAOImpl implements UserDAO {
     private static final String INSERT_USER_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
     private static final String INSERT_USER_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
 
-    private static final String UPDATE_ATTRIBUTE_BY_USER_ID="update attributes" +
+    private static final String UPDATE_ATTRIBUTE_BY_USER_ID = "update attributes" +
             " set value = ?" +
             " where object_id= ?" +
             " and attr_id= ?";

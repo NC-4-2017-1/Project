@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -25,7 +26,23 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
 public class DataVisualizationProjectDAOImpl implements DataVisualizationProjectDAO {
-    private enum DVProjectColumnName {ID, NAME, CREATION_DATE, AUTHOR, DESCRIPTION}
+    private enum DVProjectColumnName {
+        id("id"),
+        name("name"),
+        createDate("create_date"),
+        author("author"),
+        description("description");
+        private final String columnName;
+
+        private DVProjectColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
 
 
     @Autowired
@@ -35,11 +52,11 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
     private JdbcTemplate generalTemplate;
 
     public Project getProjectById(BigInteger id) {
-        return null;
+        return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
     }
 
     public Project getProjectByName(String projectName) {
-        return null;
+        return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
     }
 
     public List<Project> getProjectsByAuthor(User user) {
@@ -61,7 +78,7 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
         BigInteger insertedObjectId = createProjectObject(name);
         generalTemplate.update(INSERT_DV_PROJECT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
         generalTemplate.update(INSERT_DV_PROJECT_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-        generalTemplate.update(INSERT_DV_PROJECT_AUTHOR_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID , authorId, insertedObjectId);
+        generalTemplate.update(INSERT_DV_PROJECT_AUTHOR_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
         //!TODO Graphics save mechanics
         return project;
     }
@@ -82,15 +99,15 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
 
     }
 
-    private class DataVisualizationProjectRowMapper implements RowMapper {
+    private class DataVisualizationProjectRowMapper implements RowMapper<DataVisualizationProject> {
         public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
             DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(
-                    rs.getString(DVProjectColumnName.NAME.toString()),
-                    rs.getDate(DVProjectColumnName.CREATION_DATE.toString()),
-                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.AUTHOR.toString()))
+                    rs.getString(DVProjectColumnName.name.toString()),
+                    rs.getDate(DVProjectColumnName.createDate.toString()),
+                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()))
             );
-            builder.id(BigInteger.valueOf(rs.getLong(DVProjectColumnName.ID.toString())));
-            builder.description(rs.getString(DVProjectColumnName.DESCRIPTION.toString()));
+            builder.id(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
+            builder.description(rs.getString(DVProjectColumnName.description.toString()));
 //            builder.usersProjectAccessible();
 //            builder.graphics();
             return builder.build();
@@ -101,4 +118,26 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
     private static final String INSERT_DV_PROJECT_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
     private static final String INSERT_DV_PROJECT_DATE_VALUE = "insert into attributes(attr_id, object_id, date_value) values (?, ?, ?)";
     private static final String INSERT_DV_PROJECT_AUTHOR_RELATION = "insert into objreference(attr_id, reference, object_id) values (?, ?, ?)";
+    private static final String SELECT_DVPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and objects.object_id=?";
+    private static final String SELECT_DVPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and objects.name=?";
+
+
 }
