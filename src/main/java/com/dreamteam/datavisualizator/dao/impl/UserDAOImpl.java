@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
@@ -132,7 +133,12 @@ public class UserDAOImpl implements UserDAO {
     private static final String INSERT_OBJECT = "insert_object";
     private static final String INSERT_USER_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
     private static final String INSERT_USER_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
-
+    private static final String GIVE_USER_ACESS_TO_PROJECT="insert into OBJREFERENCE(ATTR_ID,REFERENCE,OBJECT_ID)" +
+            " VALUES ("+ IdList.PROJECT_SHARED_RELATION_ATTR_ID +",?,?)";//first userId, second projectId
+    private static final String REMOVE_ACCESS_TO_PROJECT_FROM_USER="delete from OBJREFERENCE" +
+            " where OBJECT_ID=?" + //FIRST PROJECTiD
+            " and REFERENCE=?" + //second userId
+            " and ATTR_ID="+ IdList.PROJECT_SHARED_RELATION_ATTR_ID;
     private static final String UPDATE_ATTRIBUTE_BY_USER_ID = "update attributes" +
             " set value = ?" +
             " where object_id= ?" +
