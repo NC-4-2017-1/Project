@@ -163,6 +163,24 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and author.OBJECT_ID=?" +
             " and OBJECTS.OBJECT_TYPE_ID=" + IdList.DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
             " ORDER BY creation_date.date_value";
+    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json.value json," +
+            " average.value average, olimpic_average.value olimpic_average,math_expectation.value math_expectation, dispersion.value dispersion" +
+            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES average, ATTRIBUTES olimpic_average, " +
+            " ATTRIBUTES math_expectation, ATTRIBUTES dispersion, OBJREFERENCE reference" +
+            " where graph.OBJECT_ID=json.OBJECT_ID" +
+            " and json.ATTR_ID=" + IdList.JSON_RESULT_ATTR_ID +
+            " and graph.OBJECT_ID=average.OBJECT_ID" +
+            " and average.ATTR_ID=" + IdList.AVERAGE_DVPROJECT_ATTR_ID +
+            " and graph.OBJECT_ID=olimpic_average.OBJECT_ID" +
+            " and olimpic_average.ATTR_ID=" + IdList.OLIMPIC_AVERAGE_DVPROJECT_ATTR_ID +
+            " and graph.OBJECT_ID=math_expectation.OBJECT_ID" +
+            " and math_expectation.ATTR_ID=11" + IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID +
+            " and graph.OBJECT_ID=dispersion.OBJECT_ID" +
+            " and dispersion.ATTR_ID=" + IdList.DISPERSION_DVPROJECT_ATTR_ID +
+            " and reference.ATTR_ID=" + IdList.PROJECT_GRAPHICS_RELATION_ATTR_ID +
+            " and reference.REFERENCE=graph.OBJECT_ID" +
+            " and reference.OBJECT_ID=project.OBJECT_ID" +
+            " and project.OBJECT_ID=?";
 
 
 }
