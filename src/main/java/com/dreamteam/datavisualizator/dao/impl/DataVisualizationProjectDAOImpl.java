@@ -59,8 +59,8 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
         return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
     }
 
-    public List<Project> getProjectsByAuthor(User user) {
-        return null;
+    public List<DataVisualizationProject> getProjectsByAuthor(User user) {
+        return generalTemplate.query(SELECT_DV_PROJECT_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
     }
 
     public List<Project> getProjectsUserHaveAccessTo(User user) {
@@ -138,6 +138,16 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.name=?";
+    private static String SELECT_DV_PROJECT_BY_AUTHOR="select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and author.OBJECT_ID=?";
 
 
 }
