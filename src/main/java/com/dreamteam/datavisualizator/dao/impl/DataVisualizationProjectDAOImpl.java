@@ -63,8 +63,8 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
         return generalTemplate.query(SELECT_DV_PROJECT_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
     }
 
-    public List<Project> getProjectsUserHaveAccessTo(User user) {
-        return null;
+    public List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user) {
+        return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
     }
 
     public boolean deleteProject(Project project) {
@@ -138,7 +138,7 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.name=?";
-    private static String SELECT_DV_PROJECT_BY_AUTHOR="select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
+    private static String SELECT_DV_PROJECT_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
             " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
@@ -147,7 +147,22 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?";
+            " and author.OBJECT_ID=?" +
+            " and OBJECTS.OBJECT_TYPE_ID=" + IdList.DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
+            " ORDER BY creation_date.date_value";
+    private static final String SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
+            " description.value description" +
+            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
+            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
+            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " and OBJECTS.OBJECT_ID=description.object_id" +
+            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + IdList.PROJECT_SHARED_RELATION_ATTR_ID +
+            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
+            " and ref.REFERENCE=author.OBJECT_ID" +
+            " and author.OBJECT_ID=?" +
+            " and OBJECTS.OBJECT_TYPE_ID=" + IdList.DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
+            " ORDER BY creation_date.date_value";
 
 
 }

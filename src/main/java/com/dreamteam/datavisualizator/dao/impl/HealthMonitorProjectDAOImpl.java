@@ -190,7 +190,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
-    private static final String SELECT_PROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
+    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
@@ -200,8 +200,10 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?";
-    private static final String SELECT_PROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
+            " and author.OBJECT_ID=?"+
+            " and OBJECTS.OBJECT_TYPE_ID="+ IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
+            " ORDER BY creation_date.date_value";
+    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
@@ -211,7 +213,9 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.ATTR_ID=" + IdList.PROJECT_SHARED_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?";
+            " and author.OBJECT_ID=?"+
+            " and OBJECTS.OBJECT_TYPE_ID="+ IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
+            " ORDER BY creation_date.date_value";;
     private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json" +
             " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
