@@ -35,9 +35,9 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
         description("description"),
         json("json"),
         average("average"),
-        olympicAverage("olympicAverage"),
+        olympicAverage("olympic_average"),
         dispersion("dispersion"),
-        mathExpectation("mathExpectation");
+        mathExpectation("math_expectation");
         private final String columnName;
 
         private DVProjectColumnName(String columnName) {
