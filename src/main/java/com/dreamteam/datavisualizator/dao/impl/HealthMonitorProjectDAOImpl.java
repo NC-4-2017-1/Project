@@ -7,6 +7,7 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.*;
+import com.dreamteam.datavisualizator.services.ClobToStringService;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -158,6 +159,8 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
 
 
 
+
+
     private static final String INSERT_OBJECT = "insert_object";
     private static final String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
     private static final String INSERT_HM_PROJECT_ATTR_VALUE = "";
@@ -295,7 +298,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
             GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
             builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
-            builder.buildGraphicJson(new JsonObject().getAsJsonObject(rs.getClob(HWProjectColumnName.json.toString()).toString()));
+            builder.buildGraphicJson(new JsonObject().getAsJsonObject(ClobToStringService.clobToString(rs.getClob(HWProjectColumnName.json.toString()))));
             builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
             builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
             return builder.build();

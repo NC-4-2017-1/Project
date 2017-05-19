@@ -2,7 +2,7 @@ package com.dreamteam.datavisualizator.models.impl;
 
 
 import com.dreamteam.datavisualizator.models.Correlation;
-import com.dreamteam.datavisualizator.models.Countable;
+import com.dreamteam.datavisualizator.models.Calculable;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.google.gson.JsonObject;
 
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
-public class GraphicDVImpl implements Graphic,Countable{
+public class GraphicDVImpl implements Graphic, Calculable {
 
     private BigInteger id;
     private String name;
@@ -21,7 +21,7 @@ public class GraphicDVImpl implements Graphic,Countable{
     private BigDecimal dispersion;
     private BigDecimal mathExpectation;
 
-    private GraphicDVImpl(DVGraphBuilder builder){
+    private GraphicDVImpl(DVGraphBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.graphicJSON = builder.graphicJSON;
@@ -35,6 +35,14 @@ public class GraphicDVImpl implements Graphic,Countable{
 
     public JsonObject getGraphicJSON() {
         return graphicJSON;
+    }
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setGraphicJSON(JsonObject graphicJSON) {
@@ -81,7 +89,7 @@ public class GraphicDVImpl implements Graphic,Countable{
         this.mathExpectation = mathExpectation;
     }
 
-    public static class DVGraphBuilder{
+    public static class DVGraphBuilder {
         private BigInteger id;
         private String name;
         private JsonObject graphicJSON;
@@ -91,50 +99,50 @@ public class GraphicDVImpl implements Graphic,Countable{
         private BigDecimal dispersion;
         private BigDecimal mathExpectation;
 
-        public DVGraphBuilder(){
+        public DVGraphBuilder() {
         }
 
-        public DVGraphBuilder buildId(BigInteger val){
+        public DVGraphBuilder buildId(BigInteger val) {
             id = val;
             return this;
         }
 
-        public DVGraphBuilder buildName(String val){
+        public DVGraphBuilder buildName(String val) {
             name = val;
             return this;
         }
 
-        public DVGraphBuilder buildGraphicJSON(JsonObject val){
+        public DVGraphBuilder buildGraphicJSON(JsonObject val) {
             graphicJSON = val;
             return this;
         }
 
-        public DVGraphBuilder buildCorrelation(Map<Graphic, Correlation> val){
+        public DVGraphBuilder buildCorrelation(Map<Graphic, Correlation> val) {
             correlation = val;
             return this;
         }
 
-        public DVGraphBuilder buildAverage(BigDecimal val){
+        public DVGraphBuilder buildAverage(BigDecimal val) {
             average = val;
             return this;
         }
 
-        public DVGraphBuilder buildOlympicAverage(BigDecimal val){
+        public DVGraphBuilder buildOlympicAverage(BigDecimal val) {
             olympicAverage = val;
             return this;
         }
 
-        public DVGraphBuilder buildDispersion(BigDecimal val){
+        public DVGraphBuilder buildDispersion(BigDecimal val) {
             dispersion = val;
             return this;
         }
 
-        public DVGraphBuilder buildMathExpectation(BigDecimal val){
+        public DVGraphBuilder buildMathExpectation(BigDecimal val) {
             mathExpectation = val;
             return this;
         }
 
-        public GraphicDVImpl build(){
+        public GraphicDVImpl build() {
             return new GraphicDVImpl(this);
         }
 

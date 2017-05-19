@@ -2,7 +2,9 @@ package com.dreamteam.datavisualizator;
 
 import com.dreamteam.datavisualizator.dao.impl.DataVisualizationProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
+import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
+import com.dreamteam.datavisualizator.models.impl.GraphicHMImpl;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -82,8 +84,15 @@ public class BeforeTemplate {
     }
 
     void codeGoesHere() {
-     Project proj = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(77L));
-     LOGGER.info(proj.getName() + " " + proj.getType());
+        Project proj = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(77L));
+        Graphic graphic = healthMonitorProjectDAO.getProjectGraphic(proj);
+        LOGGER.info(proj.getName() + " " + proj.getType());
+        LOGGER.info(graphic);
+        LOGGER.info(graphic.getId());
+        LOGGER.info(graphic.getName());
+        LOGGER.info(((GraphicHMImpl)graphic).getHourCount());
+        //LOGGER.info(graphic.getGraphicJSON());
+
     }
 
 }
