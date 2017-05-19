@@ -29,34 +29,6 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
 
-
-    private enum HWProjectColumnName {
-        id("id"),
-        name("name"),
-        createDate("create_date"),
-        author("author"),
-        description("description"),
-        sid("sid"),
-        port("port"),
-        serverName("server_name"),
-        userName("user_name"),
-        password("password"),
-        hourCount("hour_count"),
-        json("json");
-
-        private final String columnName;
-
-        private HWProjectColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-
-        @Override
-        public String toString() {
-            return columnName;
-        }
-    }
-
-
     @Autowired
     private JdbcTemplate generalTemplate;
 
@@ -126,35 +98,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
                 .addValue("obj_type_id", USER_OBJTYPE_ID)
                 .addValue("obj_name", name);
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
-    }
-
-    private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
-        public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
-            HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())),
-                    rs.getString(HWProjectColumnName.name.toString()),
-                    rs.getDate(HWProjectColumnName.createDate.toString()),
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString())),
-                    rs.getString(HWProjectColumnName.sid.toString()),
-                    rs.getString(HWProjectColumnName.port.toString()),
-                    rs.getString(HWProjectColumnName.serverName.toString()),
-                    rs.getString(HWProjectColumnName.userName.toString()),
-                    rs.getString(HWProjectColumnName.password.toString())
-            );
-            // builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
-            return builder.build();
-        }
-    }
-
-    private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl>{
-        public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
-            GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
-            builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
-            builder.buildGraphicJson(new JsonObject().getAsJsonObject(rs.getClob(HWProjectColumnName.json.toString()).toString()));
-            builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
-            builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
-            return builder.build();
-        }
     }
 
     private SelectorInstanceInfo createSelectorInstanceInfo() {
@@ -257,13 +200,13 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private static final String SELECT_HMPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
-            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
+            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password, OBJREFERENCE ref " +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
             " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
             " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
             " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=25" + HM_SID_ATTR_ID +
+            " and sid.ATTR_ID=" + HM_SID_ATTR_ID +
             " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
             " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
             " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
@@ -279,13 +222,13 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private static final String SELECT_HMPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
-            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
+            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password, OBJREFERENCE ref " +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
             " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
             " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
             " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=25" + HM_SID_ATTR_ID +
+            " and sid.ATTR_ID=" + HM_SID_ATTR_ID +
             " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
             " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
             " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
@@ -302,4 +245,60 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " sys_context('userenv', 'DB_NAME') db_name," +
             " sys_context('userenv','CURRENT_SCHEMA') schem_name" +
             " from v$version where rownum=1";
+
+
+    private enum HWProjectColumnName {
+        id("id"),
+        name("name"),
+        createDate("creation_date"),
+        author("author"),
+        description("description"),
+        sid("sid"),
+        port("port"),
+        serverName("server_name"),
+        userName("user_name"),
+        password("password"),
+        hourCount("hour_count"),
+        json("json");
+
+        private final String columnName;
+
+        private HWProjectColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
+    private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
+        public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
+            HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())),
+                    rs.getString(HWProjectColumnName.name.toString()),
+                    rs.getDate(HWProjectColumnName.createDate.toString()),
+                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString())),
+                    rs.getString(HWProjectColumnName.sid.toString()),
+                    rs.getString(HWProjectColumnName.port.toString()),
+                    rs.getString(HWProjectColumnName.serverName.toString()),
+                    rs.getString(HWProjectColumnName.userName.toString()),
+                    rs.getString(HWProjectColumnName.password.toString())
+            );
+            // builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
+            return builder.build();
+        }
+    }
+
+    private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl>{
+        public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+            GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
+            builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
+            builder.buildGraphicJson(new JsonObject().getAsJsonObject(rs.getClob(HWProjectColumnName.json.toString()).toString()));
+            builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
+            builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
+            return builder.build();
+        }
+    }
 }

@@ -27,29 +27,6 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
 public class DataVisualizationProjectDAOImpl implements DataVisualizationProjectDAO {
-    private enum DVProjectColumnName {
-        id("id"),
-        name("name"),
-        createDate("create_date"),
-        author("author"),
-        description("description"),
-        json("json"),
-        average("average"),
-        olympicAverage("olympic_average"),
-        dispersion("dispersion"),
-        mathExpectation("math_expectation");
-        private final String columnName;
-
-        private DVProjectColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-
-        @Override
-        public String toString() {
-            return columnName;
-        }
-    }
-
 
     @Autowired
     private SimpleJdbcCall simpleCallTemplate;
@@ -103,35 +80,6 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
 
     public void getPreviewProjectDataForUser(User user) {
 
-    }
-
-    private class DataVisualizationProjectRowMapper implements RowMapper<DataVisualizationProject> {
-        public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
-            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(
-                    rs.getString(DVProjectColumnName.name.toString()),
-                    rs.getDate(DVProjectColumnName.createDate.toString()),
-                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()))
-            );
-            builder.id(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
-            builder.description(rs.getString(DVProjectColumnName.description.toString()));
-//            builder.usersProjectAccessible();
-//            builder.graphics();
-            return builder.build();
-        }
-    }
-
-    private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl>{
-        public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException{
-            GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
-            builder.buildId(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
-            builder.buildName(rs.getString(DVProjectColumnName.name.toString()));
-            builder.buildGraphicJSON(new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString()));
-            builder.buildAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString())));
-            builder.buildOlympicAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString())));
-            builder.buildDispersion(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString())));
-            builder.buildMathExpectation(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString())));
-            return builder.build();
-        }
     }
 
     private static final String INSERT_OBJECT = "insert_object";
@@ -201,6 +149,59 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and reference.REFERENCE=graph.OBJECT_ID" +
             " and reference.OBJECT_ID=project.OBJECT_ID" +
             " and project.OBJECT_ID=?";
+
+    private enum DVProjectColumnName {
+        id("id"),
+        name("name"),
+        createDate("create_date"),
+        author("author"),
+        description("description"),
+        json("json"),
+        average("average"),
+        olympicAverage("olympic_average"),
+        dispersion("dispersion"),
+        mathExpectation("math_expectation");
+        private final String columnName;
+
+        private DVProjectColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
+
+    private class DataVisualizationProjectRowMapper implements RowMapper<DataVisualizationProject> {
+        public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
+            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(
+                    rs.getString(DVProjectColumnName.name.toString()),
+                    rs.getDate(DVProjectColumnName.createDate.toString()),
+                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()))
+            );
+            builder.id(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
+            builder.description(rs.getString(DVProjectColumnName.description.toString()));
+//            builder.usersProjectAccessible();
+//            builder.graphics();
+            return builder.build();
+        }
+    }
+
+    private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl> {
+        public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+            GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
+            builder.buildId(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
+            builder.buildName(rs.getString(DVProjectColumnName.name.toString()));
+            builder.buildGraphicJSON(new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString()));
+            builder.buildAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString())));
+            builder.buildOlympicAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString())));
+            builder.buildDispersion(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString())));
+            builder.buildMathExpectation(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString())));
+            return builder.build();
+        }
+    }
 
 
 }
