@@ -144,7 +144,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             builder.buildGraphicJson(new JsonObject().getAsJsonObject(rs.getClob(HWProjectColumnName.json.toString()).toString()));
             builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
             builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
-            return null;
+            return builder.build();
         }
     }
 
