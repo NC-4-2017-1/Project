@@ -9,6 +9,8 @@ import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.*;
 import com.dreamteam.datavisualizator.services.ClobToStringService;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,6 +31,8 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
+    private static final Logger LOGGER = Logger.getLogger(HealthMonitorProjectDAOImpl.class);
+
     private JdbcTemplate templateHM;
 
     @Autowired
@@ -158,9 +163,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
 
-
-
-
     private static final String INSERT_OBJECT = "insert_object";
     private static final String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
     private static final String INSERT_HM_PROJECT_ATTR_VALUE = "";
@@ -190,7 +192,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and author.OBJECT_ID=?" +
             " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
             " ORDER BY creation_date.date_value";
-    private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json, hour_count.value hour_count" +
+    private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.big_value json, hour_count.value hour_count" +
             " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES hour_count, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
             " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
@@ -266,7 +268,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
 
         private final String columnName;
 
-        private HWProjectColumnName(String columnName) {
+        HWProjectColumnName(String columnName) {
             this.columnName = columnName;
         }
 
@@ -294,13 +296,22 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         }
     }
 
-    private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl>{
+    private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl> {
         public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
             GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
             builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
-            builder.buildGraphicJson(new JsonObject().getAsJsonObject(ClobToStringService.clobToString(rs.getClob(HWProjectColumnName.json.toString()))));
             builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
             builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
+
+            Clob clob = rs.getClob(HWProjectColumnName.json.toString());
+            LOGGER.info("clob = " + clob);
+            String clobString = ClobToStringService.clobToString(clob);
+            LOGGER.info("clobString = " + clobString);
+            //JsonObject jsonObj = new JsonObject().getAsJsonObject(clobString);
+            JsonObject jsonObj = new JsonParser().parse(clobString).getAsJsonObject();
+            LOGGER.info("jsonObj = " + jsonObj);
+
+            builder.buildGraphicJson(jsonObj);
             return builder.build();
         }
     }

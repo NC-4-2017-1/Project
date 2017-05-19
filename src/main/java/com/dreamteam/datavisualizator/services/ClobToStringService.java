@@ -11,26 +11,28 @@ public class ClobToStringService {
     private static final Logger LOGGER = Logger.getLogger(ClobToStringService.class);
 
     public static String clobToString(java.sql.Clob data) {
-        final StringBuilder sb = new StringBuilder();
+        if (data != null) {
+            final StringBuilder sb = new StringBuilder();
 
-        try {
-            final Reader reader = data.getCharacterStream();
-            final BufferedReader br = new BufferedReader(reader);
+            try {
+                final Reader reader = data.getCharacterStream();
+                final BufferedReader br = new BufferedReader(reader);
 
-            int b;
-            while (-1 != (b = br.read())) {
-                sb.append((char) b);
+                int b;
+                while (-1 != (b = br.read())) {
+                    sb.append((char) b);
+                }
+
+                br.close();
+            } catch (SQLException e) {
+                LOGGER.error("SQL. Could not convert CLOB to string", e);
+                e.printStackTrace();
+            } catch (IOException e) {
+                LOGGER.error("IO. Could not convert CLOB to string", e);
+                e.printStackTrace();
             }
 
-            br.close();
-        } catch (SQLException e) {
-            LOGGER.error("SQL. Could not convert CLOB to string", e);
-            return e.toString();
-        } catch (IOException e) {
-            LOGGER.error("IO. Could not convert CLOB to string", e);
-            return e.toString();
-        }
-
-        return sb.toString();
+            return sb.toString();
+        } else return null;
     }
 }

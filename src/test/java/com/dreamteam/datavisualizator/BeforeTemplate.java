@@ -51,6 +51,9 @@ public class BeforeTemplate {
 
         Field simpleCallHM = null;
         Field jdbcTemplateHM = null;
+
+
+        //!TODO user fields
         try {
             simpleCallDV = classDV.getDeclaredField("simpleCallTemplate");
             jdbcTemplateDV = classDV.getDeclaredField("generalTemplate");
