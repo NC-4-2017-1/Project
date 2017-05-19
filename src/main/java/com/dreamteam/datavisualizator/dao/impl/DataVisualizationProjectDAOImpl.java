@@ -5,6 +5,8 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
+import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,7 +32,12 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
         name("name"),
         createDate("create_date"),
         author("author"),
-        description("description");
+        description("description"),
+        json("json"),
+        average("average"),
+        olympicAverage("olympicAverage"),
+        dispersion("dispersion"),
+        mathExpectation("mathExpectation");
         private final String columnName;
 
         private DVProjectColumnName(String columnName) {
@@ -109,6 +116,20 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             builder.description(rs.getString(DVProjectColumnName.description.toString()));
 //            builder.usersProjectAccessible();
 //            builder.graphics();
+            return builder.build();
+        }
+    }
+
+    private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl>{
+        public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException{
+            GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
+            builder.buildId(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
+            builder.buildName(rs.getString(DVProjectColumnName.name.toString()));
+            builder.buildGraphicJSON(new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString()));
+            builder.buildAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString())));
+            builder.buildOlympicAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString())));
+            builder.buildDispersion(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString())));
+            builder.buildMathExpectation(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString())));
             return builder.build();
         }
     }
