@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import static com.dreamteam.datavisualizator.common.IdList.*;
+
 @Repository
 public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     private JdbcTemplate templateHM;
@@ -192,33 +194,33 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and author.OBJECT_ID=?"+
-            " and OBJECTS.OBJECT_TYPE_ID="+ IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
+            " and OBJECTS.OBJECT_TYPE_ID="+ HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
             " ORDER BY creation_date.date_value";
     private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + IdList.PROJECT_SHARED_RELATION_ATTR_ID +
+            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
+            " and ref.ATTR_ID=" + PROJECT_SHARED_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and author.OBJECT_ID=?"+
-            " and OBJECTS.OBJECT_TYPE_ID="+ IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
+            " and OBJECTS.OBJECT_TYPE_ID="+ HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
             " ORDER BY creation_date.date_value";;
     private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json" +
             " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
-            " and json.ATTR_ID=" + IdList.JSON_RESULT_ATTR_ID +
-            " and reference.ATTR_ID=" + IdList.PROJECT_GRAPHICS_RELATION_ATTR_ID +
+            " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
+            " and reference.ATTR_ID=" + PROJECT_GRAPHICS_RELATION_ATTR_ID +
             " and reference.REFERENCE=graph.OBJECT_ID" +
             " and reference.OBJECT_ID=project.OBJECT_ID" +
             " and project.OBJECT_ID=?";
@@ -227,20 +229,20 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
             " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
             " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=25" + IdList.HM_SID_ATTR_ID +
+            " and sid.ATTR_ID=25" + HM_SID_ATTR_ID +
             " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
-            " and port.ATTR_ID=" + IdList.HM_PORT_ATTR_ID +
+            " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
             " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
-            " and server_name.ATTR_ID=" + IdList.HM_SERVER_NAME_ATTR_ID +
+            " and server_name.ATTR_ID=" + HM_SERVER_NAME_ATTR_ID +
             " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
-            " and user_name.ATTR_ID=" + IdList.HM_USER_NAME_ATTR_ID +
+            " and user_name.ATTR_ID=" + HM_USER_NAME_ATTR_ID +
             " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
-            " and password.ATTR_ID=" + IdList.PASSWORD_ATTR_ID +
-            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and password.ATTR_ID=" + PASSWORD_ATTR_ID +
+            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.object_id=?";
@@ -249,20 +251,20 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
             " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + IdList.PROJECT_DATE_ATTR_ID +
+            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
             " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + IdList.PROJECT_DESCRIPTION_ATTR_ID +
+            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
             " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=25" + IdList.HM_SID_ATTR_ID +
+            " and sid.ATTR_ID=25" + HM_SID_ATTR_ID +
             " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
-            " and port.ATTR_ID=" + IdList.HM_PORT_ATTR_ID +
+            " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
             " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
-            " and server_name.ATTR_ID=" + IdList.HM_SERVER_NAME_ATTR_ID +
+            " and server_name.ATTR_ID=" + HM_SERVER_NAME_ATTR_ID +
             " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
-            " and user_name.ATTR_ID=" + IdList.HM_USER_NAME_ATTR_ID +
+            " and user_name.ATTR_ID=" + HM_USER_NAME_ATTR_ID +
             " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
-            " and password.ATTR_ID=" + IdList.PASSWORD_ATTR_ID +
-            " and ref.ATTR_ID=" + IdList.PROJECT_AUTHOR_RELATION_ATTR_ID +
+            " and password.ATTR_ID=" + PASSWORD_ATTR_ID +
+            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.name=?";
