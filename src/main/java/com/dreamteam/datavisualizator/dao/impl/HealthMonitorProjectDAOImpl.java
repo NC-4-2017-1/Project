@@ -11,9 +11,12 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -111,12 +114,18 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     public boolean saveProject(Project project) {
-        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
+//        project.setId(createHMProjectObject(project.getName()));
+//        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
+//        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
         return true;
     }
 
-    public void getPreviewProjectDataForUser(User user) {
-
+    private BigInteger createHMProjectObject(String name) {
+        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("obj_type_id", USER_OBJTYPE_ID)
+                .addValue("obj_name", name);
+        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 
     private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
@@ -204,7 +213,11 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         return selector;
     }
 
-    private String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
+
+
+    private static final String INSERT_OBJECT = "insert_object";
+    private static final String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
+    private static final String INSERT_HM_PROJECT_ATTR_VALUE = "";
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
@@ -231,7 +244,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and author.OBJECT_ID=?" +
             " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
             " ORDER BY creation_date.date_value";
-
     private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json, hour_count.value hour_count" +
             " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES hour_count, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
@@ -264,7 +276,7 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.object_id=?";
-    private String SELECT_HMPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+    private static final String SELECT_HMPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
             " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password" +
@@ -286,10 +298,8 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
             " and objects.name=?";
-
-    private static final String SELECT_SELECTOR_INSTANCE_INFO = "select BANNER oracle_version, \n" +
-            "sys_context('userenv', 'DB_NAME') db_name,\n" +
-            "sys_context('userenv','CURRENT_SCHEMA') schem_name\n" +
-            "from v$version where rownum=1";
-
+    private static final String SELECT_SELECTOR_INSTANCE_INFO = "select BANNER oracle_version," +
+            " sys_context('userenv', 'DB_NAME') db_name," +
+            " sys_context('userenv','CURRENT_SCHEMA') schem_name" +
+            " from v$version where rownum=1";
 }

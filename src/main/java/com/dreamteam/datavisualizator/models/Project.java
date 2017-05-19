@@ -13,4 +13,5 @@ public interface Project {
     BigInteger getAuthor();
     Collection<User> getUsersProjectAccessibleTo();
     String getDescription();
+    void setId(BigInteger id);
 }
