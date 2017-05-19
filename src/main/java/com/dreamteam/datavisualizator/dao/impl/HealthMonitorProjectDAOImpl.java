@@ -1,6 +1,5 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
-import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
@@ -8,6 +7,7 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.*;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -37,7 +37,10 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         port("port"),
         serverName("server_name"),
         userName("user_name"),
-        password("password");
+        password("password"),
+        hourCount("hour_count"),
+        json("json");
+
         private final String columnName;
 
         private HWProjectColumnName(String columnName) {
@@ -49,7 +52,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             return columnName;
         }
     }
-
 
 
     @Autowired
@@ -65,14 +67,16 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     public Graphic getProjectGraphic(Project project) {
-        return null;
+        return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
     }
 
     public List<Selector> getProjectSelectors(Project project) {
         return null;
     }
 
-    public Map<String, String> getProjectConnections(Project project) {  return null;  }
+    public Map<String, String> getProjectConnections(Project project) {
+        return null;
+    }
 
     public Graphic createGraphic(int hourCount) {
         return null;
@@ -133,63 +137,74 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
         }
     }
 
-    private SelectorInstanceInfo createSelectorInstanceInfo (){
+    private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl>{
+        public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+            GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
+            builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
+            builder.buildGraphicJson(new JsonObject().getAsJsonObject(rs.getClob(HWProjectColumnName.json.toString()).toString()));
+            builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
+            builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
+            return null;
+        }
+    }
+
+    private SelectorInstanceInfo createSelectorInstanceInfo() {
         SelectorInstanceInfo selector = new SelectorInstanceInfo();
-        return  selector;
+        return selector;
     }
 
-    private SelectorSizeForTablespace createSelectorSizeForTablespace (){
+    private SelectorSizeForTablespace createSelectorSizeForTablespace() {
         SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
-        return  selector;
+        return selector;
     }
 
-    private SelectorSizeForIndexLob createSelectorSizeForIndexLob (String segment){
+    private SelectorSizeForIndexLob createSelectorSizeForIndexLob(String segment) {
         SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
         selector.setSegment(segment);
-        return  selector;
+        return selector;
     }
 
-    private SelectorLastErrors createSelectorLastErrors (){
+    private SelectorLastErrors createSelectorLastErrors() {
         SelectorLastErrors selector = new SelectorLastErrors();
-        return  selector;
+        return selector;
     }
 
-    private SelectorActiveSessions createSelectorActiveSessions (int top){
+    private SelectorActiveSessions createSelectorActiveSessions(int top) {
         SelectorActiveSessions selector = new SelectorActiveSessions();
         selector.setTop(top);
-        return  selector;
+        return selector;
     }
 
-    private SelectorActiveQueries createSelectorActiveQueries (int top){
+    private SelectorActiveQueries createSelectorActiveQueries(int top) {
         SelectorActiveQueries selector = new SelectorActiveQueries();
         selector.setTop(top);
-        return  selector;
+        return selector;
     }
 
-    private SelectorQueriesResults createSelectorQueriesResults (int top){
+    private SelectorQueriesResults createSelectorQueriesResults(int top) {
         SelectorQueriesResults selector = new SelectorQueriesResults();
         selector.setTop(top);
-        return  selector;
+        return selector;
     }
 
-    private SelectorSqlQueryMonitor createSelectorSqlQueryMonitor (int top){
+    private SelectorSqlQueryMonitor createSelectorSqlQueryMonitor(int top) {
         SelectorSqlQueryMonitor selector = new SelectorSqlQueryMonitor();
         selector.setTop(top);
-        return  selector;
+        return selector;
     }
 
-    private SelectorDBLocks createSelectorDBLocks (){
+    private SelectorDBLocks createSelectorDBLocks() {
         SelectorDBLocks selector = new SelectorDBLocks();
-        return  selector;
+        return selector;
     }
 
-    private SelectorActiveJobs createSelectorActiveJobs (int hourCount){
+    private SelectorActiveJobs createSelectorActiveJobs(int hourCount) {
         SelectorActiveJobs selector = new SelectorActiveJobs();
         selector.setHourCount(hourCount);
-        return  selector;
+        return selector;
     }
 
-    private String INSERT_HM_PROJECT = "call insert_hm_project(?,?,?)";
+    private String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
@@ -200,8 +215,8 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?"+
-            " and OBJECTS.OBJECT_TYPE_ID="+ HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
+            " and author.OBJECT_ID=?" +
+            " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
             " ORDER BY creation_date.date_value";
     private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
             " description.value description" +
@@ -213,13 +228,16 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
             " and ref.ATTR_ID=" + PROJECT_SHARED_RELATION_ATTR_ID +
             " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
             " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?"+
-            " and OBJECTS.OBJECT_TYPE_ID="+ HEALTH_MONITOR_PROJECT_OBJTYPE_ID+
-            " ORDER BY creation_date.date_value";;
-    private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json" +
-            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, OBJREFERENCE reference" +
+            " and author.OBJECT_ID=?" +
+            " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
+            " ORDER BY creation_date.date_value";
+
+    private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.value json, hour_count.value hour_count" +
+            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES hour_count, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
             " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
+            " and graph.OBJECT_ID=hour_count.OBJECT_ID" +
+            " and hour_count.ATTR_ID=" + HOUR_COUNT_ATTR_ID +
             " and reference.ATTR_ID=" + PROJECT_GRAPHICS_RELATION_ATTR_ID +
             " and reference.REFERENCE=graph.OBJECT_ID" +
             " and reference.OBJECT_ID=project.OBJECT_ID" +
