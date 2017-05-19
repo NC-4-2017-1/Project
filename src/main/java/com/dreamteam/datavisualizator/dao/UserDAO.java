@@ -15,7 +15,7 @@ public interface UserDAO {
     boolean deleteUser(User user);
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);
     User updateUsersEmail(User user,String email);
-    User updateUsersName(User user, String name);
+    User updateUsersName(User user, String first_name, String last_name);
     User updateUsersPassword(User user, String password);
     boolean giveUserAccessToProject(User user, Project project);
     boolean removeAccessToProjectFromUser(User user, Project project);

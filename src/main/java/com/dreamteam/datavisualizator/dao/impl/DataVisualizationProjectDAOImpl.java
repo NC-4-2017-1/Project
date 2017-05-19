@@ -132,15 +132,15 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
             " and OBJECTS.OBJECT_TYPE_ID=" + DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
             " ORDER BY creation_date.date_value";
     private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json.value json," +
-            " average.value average, olimpic_average.value olimpic_average,math_expectation.value math_expectation, dispersion.value dispersion" +
-            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES average, ATTRIBUTES olimpic_average, " +
+            " average.value average, olympic_average.value olympic_average,math_expectation.value math_expectation, dispersion.value dispersion" +
+            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES average, ATTRIBUTES olympic_average, " +
             " ATTRIBUTES math_expectation, ATTRIBUTES dispersion, OBJREFERENCE reference" +
             " where graph.OBJECT_ID=json.OBJECT_ID" +
             " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
             " and graph.OBJECT_ID=average.OBJECT_ID" +
             " and average.ATTR_ID=" + AVERAGE_DVPROJECT_ATTR_ID +
-            " and graph.OBJECT_ID=olimpic_average.OBJECT_ID" +
-            " and olimpic_average.ATTR_ID=" + OLIMPIC_AVERAGE_DVPROJECT_ATTR_ID +
+            " and graph.OBJECT_ID=olympic_average.OBJECT_ID" +
+            " and olympic_average.ATTR_ID=" + OLIMPIC_AVERAGE_DVPROJECT_ATTR_ID +
             " and graph.OBJECT_ID=math_expectation.OBJECT_ID" +
             " and math_expectation.ATTR_ID=11" + MATH_EXPECTATION_DVPROJECT_ATTR_ID +
             " and graph.OBJECT_ID=dispersion.OBJECT_ID" +
