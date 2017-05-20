@@ -7,11 +7,10 @@ import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.google.gson.JsonObject;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,9 @@ import java.util.List;
 import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
-public class DataVisualizationProjectDAOImpl implements DataVisualizationProjectDAO {
+public class DataVisualizationProjectDAOImpl extends AbstractDAO implements DataVisualizationProjectDAO{
+    private static final Logger LOGGER = Logger.getLogger(DataVisualizationProjectDAOImpl.class);
+
 
     @Autowired
     private SimpleJdbcCall simpleCallTemplate;
@@ -58,21 +59,14 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
         Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).description(description).graphics(graphics).build();
-        BigInteger insertedObjectId = createProjectObject(name);
-        generalTemplate.update(INSERT_DV_PROJECT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
-        generalTemplate.update(INSERT_DV_PROJECT_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-        generalTemplate.update(INSERT_DV_PROJECT_AUTHOR_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
+        BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
+        generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
+        generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
+        generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
         //!TODO Graphics save mechanics
         return project;
     }
 
-    private BigInteger createProjectObject(String name) {
-        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
-        SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", DATA_VISUALIZATION_PROJECT_OBJTYPE_ID)
-                .addValue("obj_name", name);
-        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
-    }
 
     public List<Graphic> getProjectGraphics(Project project) {
         return null;
@@ -82,10 +76,6 @@ public class DataVisualizationProjectDAOImpl implements DataVisualizationProject
 
     }
 
-    private static final String INSERT_OBJECT = "insert_object";
-    private static final String INSERT_DV_PROJECT_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
-    private static final String INSERT_DV_PROJECT_DATE_VALUE = "insert into attributes(attr_id, object_id, date_value) values (?, ?, ?)";
-    private static final String INSERT_DV_PROJECT_AUTHOR_RELATION = "insert into objreference(attr_id, reference, object_id) values (?, ?, ?)";
     private static final String SELECT_DVPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
             " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +

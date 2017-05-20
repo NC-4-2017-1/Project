@@ -5,17 +5,15 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,25 +22,8 @@ import java.util.Collection;
 import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository("userDaoImpl")
-public class UserDAOImpl implements UserDAO {
-
-    private enum UserColumnName {
-        id("id"),
-        firstName("first_name"),
-        lastName("last_name"),
-        email("email");
-        private final String columnName;
-
-        private UserColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-
-        @Override
-        public String toString() {
-            return columnName;
-        }
-    }
-
+public class UserDAOImpl extends AbstractDAO implements UserDAO {
+    private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class);
 
     @Autowired
     private JdbcTemplate generalTemplate;
@@ -106,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = DataAccessException.class)
     public boolean giveUserAccessToProject(User user, Project project) {
         try {
-            generalTemplate.update(GIVE_USER_ACESS_TO_PROJECT, user.getId(), project.getId());
+            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, user.getId(), project.getId());
         } catch (DataAccessException e) {
             //TODO message to Logger
             return false;
@@ -126,19 +107,19 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public User authorizeUser(String email, String password) {
-        return generalTemplate.queryForObject(AUTORIZE_USER_BY_LOGIN_N_PASSWORD, new Object[]{email, password}, new UserRowMapper());
+        return generalTemplate.queryForObject(AUTORIZE_USER_BY_LOGIN_AND_PASSWORD, new Object[]{email, password}, new UserRowMapper());
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = DataAccessException.class)
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
         User user = new UserImpl.Builder(email, password).firstName(firstName).lastName(lastName).type(type).build();
         try {
-            BigInteger insertedObjectId = createUserObject(lastName + " " + firstName);
-            generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
-            generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
-            generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
-            generalTemplate.update(INSERT_USER_ATTR_VALUE, PASSWORD_ATTR_ID, insertedObjectId, password);
-            generalTemplate.update(INSERT_USER_ATTR_LIST_VALUE, USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
+            BigInteger insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
+            generalTemplate.update(INSERT_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
+            generalTemplate.update(INSERT_ATTR_VALUE, USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
+            generalTemplate.update(INSERT_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
+            generalTemplate.update(INSERT_ATTR_VALUE, PASSWORD_ATTR_ID, insertedObjectId, password);
+            generalTemplate.update(INSERT_ATTR_LIST_VALUE, USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
         } catch (DataAccessException e) {
             //TODO message to logger
             return null;
@@ -146,13 +127,7 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 
-    private BigInteger createUserObject(String name) {
-        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
-        SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", USER_OBJTYPE_ID)
-                .addValue("obj_name", name);
-        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
-    }
+
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
@@ -165,23 +140,37 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    private static final String INSERT_OBJECT = "insert_object";
+
+    private enum UserColumnName {
+        id("id"),
+        firstName("first_name"),
+        lastName("last_name"),
+        email("email");
+        private final String columnName;
+
+        private UserColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
+
     private static final String UPDATE_USER_NAME = "UPDATE objects" +
             " SET objects.name=?" +
             " WHERE objects.object_id=?";
-    private static final String INSERT_USER_ATTR_VALUE = "INSERT INTO attributes(attr_id, object_id, value) VALUES (?, ?, ?)";
-    private static final String INSERT_USER_ATTR_LIST_VALUE = "INSERT INTO attributes(attr_id, object_id, list_value_id) VALUES (?, ?, ?)";
-    private static final String GIVE_USER_ACESS_TO_PROJECT = "insert into OBJREFERENCE(ATTR_ID,REFERENCE,OBJECT_ID)" +
-            " VALUES (" + PROJECT_SHARED_RELATION_ATTR_ID + ",?,?)";//first userId, second projectId
     private static final String REMOVE_ACCESS_TO_PROJECT_FROM_USER = "delete from OBJREFERENCE" +
-            " where OBJECT_ID=?" + //FIRST PROJECTiD
-            " and REFERENCE=?" + //second userId
-            " and ATTR_ID=" + PROJECT_SHARED_RELATION_ATTR_ID;
+            " where OBJECT_ID = ?" + //FIRST PROJECTiD
+            " and REFERENCE = ?" + //second userId
+            " and ATTR_ID = " + PROJECT_SHARED_RELATION_ATTR_ID;
     private static final String UPDATE_ATTRIBUTE_BY_USER_ID = "UPDATE attributes" +
             " SET value = ?" +
             " WHERE object_id= ?" +
-            " AND attr_id= ?";
-    private static final String AUTORIZE_USER_BY_LOGIN_N_PASSWORD = "select users.object_id id, email.value email, first_name.value first_name, last_name.value last_name, password.value password" +
+            " AND attr_id = ?";
+    private static final String AUTORIZE_USER_BY_LOGIN_AND_PASSWORD = "select users.object_id id, email.value email, first_name.value first_name, last_name.value last_name, password.value password" +
             " from objects users,  ATTRIBUTES email,  ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES password" +
             " where users.object_id=email.object_id" +
             " and email.attr_id=" + USER_EMAIL_ATTR_ID +

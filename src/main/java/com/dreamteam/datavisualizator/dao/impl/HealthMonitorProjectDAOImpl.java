@@ -14,12 +14,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -30,7 +27,7 @@ import java.util.Map;
 import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
-public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
+public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMonitorProjectDAO {
     private static final Logger LOGGER = Logger.getLogger(HealthMonitorProjectDAOImpl.class);
 
     private JdbcTemplate templateHM;
@@ -92,18 +89,11 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
     public boolean saveProject(Project project) {
+        BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
 //        project.setId(createHMProjectObject(project.getName()));
 //        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
 //        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
         return true;
-    }
-
-    private BigInteger createHMProjectObject(String name) {
-        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
-        SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", USER_OBJTYPE_ID)
-                .addValue("obj_name", name);
-        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 
     private SelectorInstanceInfo createSelectorInstanceInfo() {
@@ -163,9 +153,6 @@ public class HealthMonitorProjectDAOImpl implements HealthMonitorProjectDAO {
     }
 
 
-    private static final String INSERT_OBJECT = "insert_object";
-    private static final String INSERT_HM_PROJECT = "CALL insert_hm_project(?,?,?)";
-    private static final String INSERT_HM_PROJECT_ATTR_VALUE = "";
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
             " description.value description" +
             " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
