@@ -128,7 +128,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
 
-
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.email.toString()), null);
@@ -159,68 +158,68 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
 
-    private static final String UPDATE_USER_NAME = "UPDATE objects" +
-            " SET objects.name=?" +
-            " WHERE objects.object_id=?";
-    private static final String REMOVE_ACCESS_TO_PROJECT_FROM_USER = "delete from OBJREFERENCE" +
-            " where OBJECT_ID = ?" + //FIRST PROJECTiD
-            " and REFERENCE = ?" + //second userId
-            " and ATTR_ID = " + PROJECT_SHARED_RELATION_ATTR_ID;
-    private static final String UPDATE_ATTRIBUTE_BY_USER_ID = "UPDATE attributes" +
-            " SET value = ?" +
-            " WHERE object_id= ?" +
-            " AND attr_id = ?";
+    private static final String UPDATE_USER_NAME = "update objects" +
+            " set objects.name=?" +
+            " where objects.object_id=?";
+    private static final String REMOVE_ACCESS_TO_PROJECT_FROM_USER = "delete from objreference" +
+            " where object_id = ?" +
+            " and reference = ?" +
+            " and attr_id = 18";
+    private static final String UPDATE_ATTRIBUTE_BY_USER_ID = "update attributes" +
+            " set value = ?" +
+            " where object_id= ?" +
+            " and attr_id = ?";
     private static final String AUTORIZE_USER_BY_LOGIN_AND_PASSWORD = "select users.object_id id, email.value email, first_name.value first_name, last_name.value last_name, password.value password" +
-            " from objects users,  ATTRIBUTES email,  ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES password" +
-            " where users.object_id=email.object_id" +
-            " and email.attr_id=" + USER_EMAIL_ATTR_ID +
-            " and  users.object_id=first_name.object_id" +
-            " and first_name.attr_id=" + USER_FIRST_NAME_ATTR_ID +
-            " and  users.object_id=last_name.object_id" +
-            " and last_name.attr_id=" + USER_LAST_NAME_ATTR_ID +
-            " and  users.object_id=password.object_id" +
-            " and password.attr_id=" + PASSWORD_ATTR_ID +
-            " and email.value=?" +
+            " from objects users,  attributes email,  attributes first_name,  attributes last_name,  attributes password" +
+            " where users.object_id = email.object_id" +
+            " and email.attr_id = 1" +
+            " and  users.object_id = first_name.object_id" +
+            " and first_name.attr_id = 2" +
+            " and  users.object_id = last_name.object_id" +
+            " and last_name.attr_id = 3" +
+            " and  users.object_id = password.object_id" +
+            " and password.attr_id = 4" +
+            " and email.value = ?" +
             " and password.value = ?";
-    private static final String SELECT_USER_BY_MAIL = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name" +
-            " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
-            " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
-            " and email.value=?";
-    private static final String GET_ALL_USERS = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
-            " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
-            " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID +
-            " and obj_user.OBJECT_ID!=1";
-    private static final String SELECT_USER_BY_FULLNAME = "select obj_user.OBJECT_ID id,  first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email " +
-            " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
-            " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
-            " and obj_user.name=?";
-    private static final String SELECT_USER_BY_ID = "select obj_user.OBJECT_ID id, first_name.VALUE first_name, last_name.VALUE last_name, email.VALUE email" +
-            " from objects obj_user, ATTRIBUTES first_name,  ATTRIBUTES last_name,  ATTRIBUTES email " +
-            " where obj_user.OBJECT_TYPE_ID = " + USER_OBJTYPE_ID.toString() + " " +
-            " and obj_user.OBJECT_ID = first_name.OBJECT_ID " +
-            " and first_name.ATTR_ID = " + USER_FIRST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = last_name.OBJECT_ID " +
-            " and last_name.ATTR_ID = " + USER_LAST_NAME_ATTR_ID + " " +
-            " and  obj_user.OBJECT_ID = email.OBJECT_ID " +
-            " and email.ATTR_ID = " + USER_EMAIL_ATTR_ID + " " +
-            " and obj_user.OBJECT_ID=?";
+    private static final String SELECT_USER_BY_MAIL = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name" +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
+            " where obj_user.object_type_id = 1" +
+            " and obj_user.object_id = first_name.object_id" +
+            " and first_name.attr_id = 2" +
+            " and  obj_user.object_id = last_name.object_id" +
+            " and last_name.attr_id = 3" +
+            " and  obj_user.object_id = email.object_id" +
+            " and email.attr_id = 1" +
+            " and email.value = ?";
+    private static final String GET_ALL_USERS = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email" +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
+            " where obj_user.object_type_id = 1" +
+            " and obj_user.object_id = first_name.object_id" +
+            " and first_name.attr_id = 2" +
+            " and  obj_user.object_id = last_name.object_id" +
+            " and last_name.attr_id = 3" +
+            " and  obj_user.object_id = email.object_id" +
+            " and email.attr_id = 1" +
+            " and obj_user.object_id! = 1";
+    private static final String SELECT_USER_BY_FULLNAME = "select obj_user.object_id id,  first_name.value first_name, last_name.value last_name, email.value email" +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
+            " where obj_user.object_type_id = 1" +
+            " and obj_user.object_id = first_name.object_id" +
+            " and first_name.attr_id = 2" +
+            " and  obj_user.object_id = last_name.object_id" +
+            " and last_name.attr_id = 3" +
+            " and  obj_user.object_id = email.object_id" +
+            " and email.attr_id = 1" +
+            " and obj_user.name = ?";
+    private static final String SELECT_USER_BY_ID = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email" +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
+            " where obj_user.object_type_id =1" +
+            " and obj_user.object_id = first_name.object_id" +
+            " and first_name.attr_id = 2" +
+            " and obj_user.object_id = last_name.object_id" +
+            " and last_name.attr_id = 3" +
+            " and  obj_user.object_id = email.object_id" +
+            " and email.attr_id = 1" +
+            " and obj_user.object_id = ?";
 
 }
