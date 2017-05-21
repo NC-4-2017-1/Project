@@ -101,7 +101,7 @@ public class BeforeTemplate {
 
     void codeGoesHere() {
         Project proj = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(77L));
-        Graphic graphic = healthMonitorProjectDAO.getProjectGraphic(proj);
+        Graphic graphic = healthMonitorProjectDAO.getProjectGraph(proj);
         LOGGER.info(proj.getName() + " " + proj.getType());
         LOGGER.info(graphic);
         LOGGER.info(graphic.getId());

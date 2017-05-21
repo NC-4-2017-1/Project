@@ -41,7 +41,7 @@ public class HealthMonitorProject extends AbstractProject {
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
-            this.description=description;
+            this.description= description;
             this.sid = sid;
             this.port = port;
             this.serverName = serverName;
