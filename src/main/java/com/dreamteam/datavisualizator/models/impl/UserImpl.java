@@ -18,51 +18,6 @@ public class UserImpl implements User{
     private List<Project> userHaveAccessToProjects;
     private UserTypes type;
 
-    public static class Builder{
-        private BigInteger id;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String password;
-        private List<Project> userProjects;
-        private List<Project> userHaveAccessToProjects;
-        private UserTypes type;
-
-        public Builder(String email, String password){
-            this.email = email;
-            this.password = password;
-        }
-
-        public Builder buildId(BigInteger val){
-            id = val;
-            return this;
-        }
-        public Builder firstName(String val){
-            firstName = val;
-            return this;
-        }
-        public Builder lastName(String val){
-            lastName = val;
-            return this;
-        }
-        public Builder userProjects(List<Project> val){
-            userProjects = val;
-            return this;
-        }
-        public Builder userHaveAccessToProjects(List<Project> val){
-            userHaveAccessToProjects = val;
-            return this;
-        }
-        public Builder type(UserTypes  val){
-            type = val;
-            return this;
-        }
-
-        public UserImpl build(){
-            return new UserImpl(this);
-        }
-    }
-
     private UserImpl(Builder builder){
         firstName = builder.firstName;
         lastName = builder.lastName;
@@ -141,17 +96,48 @@ public class UserImpl implements User{
         return firstName + " " + lastName;
     }
 
-    @Override
-    public String toString() {
-        return "UserImpl{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", userProjects=" + userProjects +
-                ", userHaveAccessToProjects=" + userHaveAccessToProjects +
-                ", type=" + type +
-                '}';
+    public static class Builder{
+        private BigInteger id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String password;
+        private List<Project> userProjects;
+        private List<Project> userHaveAccessToProjects;
+        private UserTypes type;
+
+        public Builder(String email, String password){
+            this.email = email;
+            this.password = password;
+        }
+
+        public Builder buildId(BigInteger val){
+            id = val;
+            return this;
+        }
+        public Builder buildFirstName(String val){
+            firstName = val;
+            return this;
+        }
+        public Builder buildLastName(String val){
+            lastName = val;
+            return this;
+        }
+        public Builder buildUserProjects(List<Project> val){
+            userProjects = val;
+            return this;
+        }
+        public Builder buildUserHaveAccessToProjects(List<Project> val){
+            userHaveAccessToProjects = val;
+            return this;
+        }
+        public Builder buildType(UserTypes  val){
+            type = val;
+            return this;
+        }
+
+        public UserImpl buildUser(){
+            return new UserImpl(this);
+        }
     }
 }

@@ -29,7 +29,6 @@ import static com.dreamteam.datavisualizator.common.IdList.*;
 public class DataVisualizationProjectDAOImpl extends AbstractDAO implements DataVisualizationProjectDAO{
     private static final Logger LOGGER = Logger.getLogger(DataVisualizationProjectDAOImpl.class);
 
-
     @Autowired
     private SimpleJdbcCall simpleCallTemplate;
 
@@ -89,7 +88,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
-        Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).description(description).graphics(graphics).build();
+        Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).buildDescription(description).buildGraphics(graphics).buildProject();
         try {
             BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
             generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
@@ -169,7 +168,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref_access.reference = have_access.object_id" +
             " and have_access.object_id = ?" +
             " order by creation_date.date_value";
-    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json_res.big_value json," +
+    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id buildId, graph.name name, json_res.big_value json," +
             " average.value average, olympic_average.value olympic_average, math_expectation.value math_expectation, dispersion.value dispersion" +
             " from objects graph, objects dvproject, attributes json_res, attributes average, attributes olympic_average," +
             " attributes math_expectation, attributes dispersion, objreference ref" +
@@ -189,7 +188,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and dvproject.object_id = ?";
 
     private enum DVProjectColumnName {
-        id("id"),
+        id("buildId"),
         name("name"),
         createDate("create_date"),
         author("author"),
@@ -213,30 +212,40 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     private class DataVisualizationProjectRowMapper implements RowMapper<DataVisualizationProject> {
         public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
-            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(
-                    rs.getString(DVProjectColumnName.name.toString()),
-                    rs.getDate(DVProjectColumnName.createDate.toString()),
-                    BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()))
-            );
-            builder.id(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
-            builder.description(rs.getString(DVProjectColumnName.description.toString()));
-//            builder.usersProjectAccessible();
-//            builder.graphics();
-            return builder.build();
+            String name = rs.getString(DVProjectColumnName.name.toString());
+            Date creationDate = rs.getDate(DVProjectColumnName.createDate.toString());
+            BigInteger author = BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()));
+            BigInteger id = BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString()));
+            String description = rs.getString(DVProjectColumnName.description.toString());
+
+            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(name, creationDate, author);
+            builder.buildId(id);
+            builder.buildDescription(description);
+//            builder.buildUsersProjectAccessible();
+//            builder.buildGraphics();
+            return builder.buildProject();
         }
     }
 
     private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl> {
         public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+            BigInteger id = BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString()));
+            String name = rs.getString(DVProjectColumnName.name.toString());
+            JsonObject jsonGraphic = new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString());
+            BigDecimal average = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString()));
+            BigDecimal olympicAverage = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString()));
+            BigDecimal dispersion = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString()));
+            BigDecimal mathExpectation = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString()));
+
             GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
-            builder.buildId(BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString())));
-            builder.buildName(rs.getString(DVProjectColumnName.name.toString()));
-            builder.buildGraphicJSON(new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString()));
-            builder.buildAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString())));
-            builder.buildOlympicAverage(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString())));
-            builder.buildDispersion(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString())));
-            builder.buildMathExpectation(BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString())));
-            return builder.build();
+            builder.buildId(id);
+            builder.buildName(name);
+            builder.buildGraphicJSON(jsonGraphic);
+            builder.buildAverage(average);
+            builder.buildOlympicAverage(olympicAverage);
+            builder.buildDispersion(dispersion);
+            builder.buildMathExpectation(mathExpectation);
+            return builder.buildProject();
         }
     }
 

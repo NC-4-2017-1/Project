@@ -163,7 +163,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
-        User user = new UserImpl.Builder(email, password).firstName(firstName).lastName(lastName).type(type).build();
+        User user = new UserImpl.Builder(email, password).buildFirstName(firstName).buildLastName(lastName).buildType(type).buildUser();
         try {
             BigInteger insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
             generalTemplate.update(INSERT_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
@@ -183,17 +183,21 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
-            UserImpl.Builder builder = new UserImpl.Builder(rs.getString(UserColumnName.email.toString()), null);
-            builder.buildId(BigInteger.valueOf(rs.getLong(UserColumnName.id.toString())));
-            builder.firstName(rs.getString(UserColumnName.firstName.toString()));
-            builder.lastName(rs.getString(UserColumnName.lastName.toString()));
-            builder.type(UserTypes.REGULAR_USER);
-            return builder.build();
+            String email = rs.getString(UserColumnName.email.toString());
+            BigInteger id = BigInteger.valueOf(rs.getLong(UserColumnName.id.toString()));
+            String firstName = rs.getString(UserColumnName.firstName.toString());
+            String lastName = rs.getString(UserColumnName.lastName.toString());
+            UserImpl.Builder builder = new UserImpl.Builder(email, null);
+            builder.buildId(id);
+            builder.buildFirstName(firstName);
+            builder.buildLastName(lastName);
+            builder.buildType(UserTypes.REGULAR_USER);
+            return builder.buildUser();
         }
     }
 
     private enum UserColumnName {
-        id("id"),
+        id("buildId"),
         firstName("first_name"),
         lastName("last_name"),
         email("email");

@@ -23,10 +23,11 @@ import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.dreamteam.datavisualizator.common.IdList.*;
+import static com.dreamteam.datavisualizator.common.IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID;
 
 @Repository
 public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMonitorProjectDAO {
@@ -57,6 +58,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> getProjectSelectors(Project project) {
         try {
+            //TODO method for fetching buildSelectors
             return null;
         } catch (DataAccessException e) {
             LOGGER.error("Selectors not fetched");
@@ -66,6 +68,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public Map<String, String> getProjectConnections(Project project) {
         try {
+            //TODO method for fetching connections of project
             return null;
         } catch (Exception e) {
             LOGGER.error("Connections not fetched");
@@ -76,6 +79,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Graphic createGraph(int hourCount) {
         try {
+            //TODO method for saving buildGraphic
             return null;
         } catch (Exception e) {
             LOGGER.error("Graph not created", e);
@@ -85,14 +89,15 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> createSelectorList(Map<String, String> map) {
         try {
+            //TODO method for saving buildSelectors
             return null;
         } catch (Exception e) {
-            LOGGER.error("List of selectors not created", e);
+            LOGGER.error("List of buildSelectors not created", e);
             return null;
         }
     }
 
-    //public boolean saveGraphic(int hourCount, Graphic graphic) { return false;  }
+    //public boolean saveGraphic(int hourCount, Graphic buildGraphic) { return false;  }
     //public boolean saveSelector(Map<String, String> map, Selector selector) {return false;}
 
     public Project getProjectById(BigInteger id) {
@@ -155,7 +160,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         } catch (DataAccessException e) {
             LOGGER.error("Project not saved", e);
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("Project not saved", e);
             return false;
         }
@@ -219,89 +224,89 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     }
 
 
-    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
-            " from objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +
-            " where hmproject.object_type_id = 3" +
-            " and hmproject.object_id = creation_date.object_id" +
-            " and creation_date.attr_id = 6" +
-            " and hmproject.object_id = description.object_id" +
-            " and description.attr_id = 7" +
-            " and ref.attr_id = 17" +
-            " and ref.object_id = hmproject.object_id" +
-            " and ref.reference = author.object_id" +
-            " and author.object_id=?" +
-            " order by creation_date.date_value";
-    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
-            " from objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
-            " where hmproject.object_type_id = 3" +
-            " and hmproject.object_id = creation_date.object_id" +
-            " and creation_date.attr_id = 6" +
-            " and hmproject.object_id = description.object_id" +
-            " and description.attr_id = 7" +
-            " and ref_author.attr_id = 17" +
-            " and ref_author.object_id = hmproject.object_id" +
-            " and ref_author.reference = author.object_id" +
-            " and ref_access.attr_id = 18" +
-            " and ref_access.object_id = hmproject.object_id" +
-            " and ref_access.reference = have_access.object_id" +
-            " and have_access.object_id = ?" +
-            " order by creation_date.date_value";
-    private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.big_value json, hour_count.value hour_count" +
-            " from objects graph, objects project, attributes json, attributes hour_count, objreference reference" +
-            " where graph.object_id = json.object_id" +
-            " and json.attr_id = 13" +
-            " and graph.object_id = hour_count.object_id" +
-            " and hour_count.attr_id = 16" +
-            " and reference.attr_id = 20" +
-            " and reference.reference = graph.object_id" +
-            " and reference.object_id = project.object_id" +
-            " and project.object_id = ?";
-    private static final String SELECT_HMPROJECT_BY_ID = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " FROM objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +
+            " WHERE hmproject.object_type_id = 3" +
+            " AND hmproject.object_id = creation_date.object_id" +
+            " AND creation_date.attr_id = 6" +
+            " AND hmproject.object_id = description.object_id" +
+            " AND description.attr_id = 7" +
+            " AND ref.attr_id = 17" +
+            " AND ref.object_id = hmproject.object_id" +
+            " AND ref.reference = author.object_id" +
+            " AND author.object_id=?" +
+            " ORDER BY creation_date.date_value";
+    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " FROM objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
+            " WHERE hmproject.object_type_id = 3" +
+            " AND hmproject.object_id = creation_date.object_id" +
+            " AND creation_date.attr_id = 6" +
+            " AND hmproject.object_id = description.object_id" +
+            " AND description.attr_id = 7" +
+            " AND ref_author.attr_id = 17" +
+            " AND ref_author.object_id = hmproject.object_id" +
+            " AND ref_author.reference = author.object_id" +
+            " AND ref_access.attr_id = 18" +
+            " AND ref_access.object_id = hmproject.object_id" +
+            " AND ref_access.reference = have_access.object_id" +
+            " AND have_access.object_id = ?" +
+            " ORDER BY creation_date.date_value";
+    private static final String SELECT_PROJECT_GRAPH = "SELECT graph.object_id id, graph.name name, json.big_value json, hour_count.value hour_count" +
+            " FROM objects graph, objects project, attributes json, attributes hour_count, objreference reference" +
+            " WHERE graph.object_id = json.object_id" +
+            " AND json.attr_id = 13" +
+            " AND graph.object_id = hour_count.object_id" +
+            " AND hour_count.attr_id = 16" +
+            " AND reference.attr_id = 20" +
+            " AND reference.reference = graph.object_id" +
+            " AND reference.object_id = project.object_id" +
+            " AND project.object_id = ?";
+    private static final String SELECT_HMPROJECT_BY_ID = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
-            " from objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
+            " FROM objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
             " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
-            " where hmproject.object_type_id = 3" +
-            " and hmproject.object_id = creation_date.object_id" +
-            " and creation_date.attr_id = 6" +
-            " and hmproject.object_id = description.object_id" +
-            " and description.attr_id = 7" +
-            " and hmproject.object_id = sid.object_id" +
-            " and sid.attr_id = 25" +
-            " and hmproject.object_id = port.object_id" +
-            " and port.attr_id = 24" +
-            " and hmproject.object_id =  server_name.object_id" +
-            " and server_name.attr_id = 23" +
-            " and hmproject.object_id = user_name.object_id" +
-            " and user_name.attr_id = 26" +
-            " and hmproject.object_id = password.object_id" +
-            " and password.attr_id = 4" +
-            " and ref.attr_id = 17" +
-            " and ref.object_id = hmproject.object_id" +
-            " and ref.reference = author.object_id" +
-            " and hmproject.object_id = ? ";
-    private static final String SELECT_HMPROJECT_BY_NAME = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+            " WHERE hmproject.object_type_id = 3" +
+            " AND hmproject.object_id = creation_date.object_id" +
+            " AND creation_date.attr_id = 6" +
+            " AND hmproject.object_id = description.object_id" +
+            " AND description.attr_id = 7" +
+            " AND hmproject.object_id = sid.object_id" +
+            " AND sid.attr_id = 25" +
+            " AND hmproject.object_id = port.object_id" +
+            " AND port.attr_id = 24" +
+            " AND hmproject.object_id =  server_name.object_id" +
+            " AND server_name.attr_id = 23" +
+            " AND hmproject.object_id = user_name.object_id" +
+            " AND user_name.attr_id = 26" +
+            " AND hmproject.object_id = password.object_id" +
+            " AND password.attr_id = 4" +
+            " AND ref.attr_id = 17" +
+            " AND ref.object_id = hmproject.object_id" +
+            " AND ref.reference = author.object_id" +
+            " AND hmproject.object_id = ? ";
+    private static final String SELECT_HMPROJECT_BY_NAME = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
-            " from objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
+            " FROM objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
             " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
-            " where hmproject.object_type_id = 3" +
-            " and hmproject.object_id = creation_date.object_id" +
-            " and creation_date.attr_id = 6" +
-            " and hmproject.object_id = description.object_id" +
-            " and description.attr_id = 7" +
-            " and hmproject.object_id = sid.object_id" +
-            " and sid.attr_id = 25" +
-            " and hmproject.object_id = port.object_id" +
-            " and port.attr_id = 24" +
-            " and hmproject.object_id =  server_name.object_id" +
-            " and server_name.attr_id = 23" +
-            " and hmproject.object_id = user_name.object_id" +
-            " and user_name.attr_id = 26" +
-            " and hmproject.object_id = password.object_id" +
-            " and password.attr_id = 4" +
-            " and ref.attr_id = 17" +
-            " and ref.object_id = hmproject.object_id" +
-            " and ref.reference = author.object_id" +
-            " and hmproject.name = ? ";
+            " WHERE hmproject.object_type_id = 3" +
+            " AND hmproject.object_id = creation_date.object_id" +
+            " AND creation_date.attr_id = 6" +
+            " AND hmproject.object_id = description.object_id" +
+            " AND description.attr_id = 7" +
+            " AND hmproject.object_id = sid.object_id" +
+            " AND sid.attr_id = 25" +
+            " AND hmproject.object_id = port.object_id" +
+            " AND port.attr_id = 24" +
+            " AND hmproject.object_id =  server_name.object_id" +
+            " AND server_name.attr_id = 23" +
+            " AND hmproject.object_id = user_name.object_id" +
+            " AND user_name.attr_id = 26" +
+            " AND hmproject.object_id = password.object_id" +
+            " AND password.attr_id = 4" +
+            " AND ref.attr_id = 17" +
+            " AND ref.object_id = hmproject.object_id" +
+            " AND ref.reference = author.object_id" +
+            " AND hmproject.name = ? ";
     private static final String SELECT_SELECTOR_INSTANCE_INFO = "select BANNER oracle_version," +
             " sys_context('userenv', 'DB_NAME') db_name," +
             " sys_context('userenv','CURRENT_SCHEMA') schem_name" +
@@ -309,7 +314,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
 
     private enum HWProjectColumnName {
-        id("id"),
+        id("buildId"),
         name("name"),
         createDate("creation_date"),
         author("author"),
@@ -336,40 +341,44 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
         public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
-            HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())),
-                    rs.getString(HWProjectColumnName.name.toString()),
-                    rs.getDate(HWProjectColumnName.createDate.toString()),
-                    rs.getString(HWProjectColumnName.description.toString()),
-                    BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString())),
-                    rs.getString(HWProjectColumnName.sid.toString()),
-                    rs.getString(HWProjectColumnName.port.toString()),
-                    rs.getString(HWProjectColumnName.serverName.toString()),
-                    rs.getString(HWProjectColumnName.userName.toString()),
-                    rs.getString(HWProjectColumnName.password.toString())
-            );
-            // builder.description(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
-            return builder.build();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            Date creationDate = rs.getDate(HWProjectColumnName.createDate.toString());
+            String description = rs.getString(HWProjectColumnName.description.toString());
+            BigInteger author = BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString()));
+            String sid = rs.getString(HWProjectColumnName.sid.toString());
+            String port = rs.getString(HWProjectColumnName.port.toString());
+            String serverName = rs.getString(HWProjectColumnName.serverName.toString());
+            String userName = rs.getString(HWProjectColumnName.userName.toString());
+            String password = rs.getString(HWProjectColumnName.password.toString());
+
+            HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(id, name, creationDate, description, author, sid, port, serverName, userName, password);
+            // builder.buildDescription(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
+            return builder.buildProject();
         }
     }
 
     private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl> {
         public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
+            BigInteger id = null;
+            Integer hourCount = null;
+            String name = null;
+
             GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
             builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
             builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
             builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
 
-            Clob clob = rs.getClob(HWProjectColumnName.json.toString());
-            LOGGER.info("clob = " + clob);
-            String clobString = ClobToStringService.clobToString(clob);
+            Clob graphicInClobType = rs.getClob(HWProjectColumnName.json.toString());
+            LOGGER.info("clob = " + graphicInClobType);
+            String clobString = ClobToStringService.clobToString(graphicInClobType);
             LOGGER.info("clobString = " + clobString);
             //JsonObject jsonObj = new JsonObject().getAsJsonObject(clobString);
-            JsonObject jsonObj = new JsonParser().parse(clobString).getAsJsonObject();
-            LOGGER.info("jsonObj = " + jsonObj);
+            JsonObject graphicInJsonType = new JsonParser().parse(clobString).getAsJsonObject();
+            LOGGER.info("jsonObj = " + graphicInJsonType);
 
-            builder.buildGraphicJson(jsonObj);
-            return builder.build();
+            builder.buildGraphicJson(graphicInJsonType);
+            return builder.buildGraphic();
         }
     }
 }

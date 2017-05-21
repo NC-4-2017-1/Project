@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import java.math.BigInteger;
 
-public class GraphicHMImpl implements Graphic{
+public class GraphicHMImpl implements Graphic {
 
     private BigInteger id;
     private JsonObject graphicJSON;
@@ -17,7 +17,7 @@ public class GraphicHMImpl implements Graphic{
         this.graphicJSON = graphicJSON;
     }
 
-    public JsonObject getGraphicJSON(){
+    public JsonObject getGraphicJSON() {
         return graphicJSON;
     }
 
@@ -25,7 +25,7 @@ public class GraphicHMImpl implements Graphic{
         this.hourCount = hourCount;
     }
 
-    public int getHourCount(){
+    public int getHourCount() {
         return hourCount;
     }
 
@@ -45,41 +45,43 @@ public class GraphicHMImpl implements Graphic{
         this.name = name;
     }
 
-    private GraphicHMImpl(HMGraphBuilder builder){
-        this.id=builder.id;
-        this.graphicJSON=builder.graphicJSON;
+    private GraphicHMImpl(HMGraphBuilder builder) {
+        this.id = builder.id;
+        this.graphicJSON = builder.graphicJSON;
         this.hourCount = builder.hourCount;
         this.name = builder.name;
     }
 
-    public static class HMGraphBuilder{
+    public static class HMGraphBuilder {
         private BigInteger id;
         private JsonObject graphicJSON;
         private int hourCount;
         private String name;
 
-        public HMGraphBuilder(){
+        public HMGraphBuilder() {
         }
 
-        public HMGraphBuilder buildId(BigInteger val){
+        public HMGraphBuilder buildId(BigInteger val) {
             id = val;
             return this;
         }
 
-        public HMGraphBuilder buildGraphicJson(JsonObject val){
+        public HMGraphBuilder buildGraphicJson(JsonObject val) {
             graphicJSON = val;
             return this;
         }
-        public HMGraphBuilder buildHourCount(Integer val){
+
+        public HMGraphBuilder buildHourCount(Integer val) {
             hourCount = val;
             return this;
         }
-        public HMGraphBuilder buildName(String val){
+
+        public HMGraphBuilder buildName(String val) {
             name = val;
             return this;
         }
 
-        public GraphicHMImpl build(){
+        public GraphicHMImpl buildGraphic() {
             return new GraphicHMImpl(this);
         }
     }

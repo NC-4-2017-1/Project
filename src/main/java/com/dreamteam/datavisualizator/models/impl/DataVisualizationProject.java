@@ -12,7 +12,6 @@ import java.util.List;
 public class DataVisualizationProject extends AbstractProject {
     private List<Graphic> graphics;
 
-
     private DataVisualizationProject(Builder builder) {
         this.setId(builder.id);
         this.setName(builder.name);
@@ -31,7 +30,6 @@ public class DataVisualizationProject extends AbstractProject {
         this.graphics = graphics;
     }
 
-
     public static class Builder {
         private BigInteger id;
         private String name;
@@ -47,27 +45,27 @@ public class DataVisualizationProject extends AbstractProject {
             this.author = author;
         }
 
-        public Builder id(BigInteger id) {
+        public Builder buildId(BigInteger id) {
             this.id = id;
             return this;
         }
 
-        public Builder description(String val) {
+        public Builder buildDescription(String val) {
             description = val;
             return this;
         }
 
-        public Builder usersProjectAccessible(Collection<User> val) {
+        public Builder buildUsersProjectAccessible(Collection<User> val) {
             usersProjectAccessible = val;
             return this;
         }
 
-        public Builder graphics(List<Graphic> val) {
+        public Builder buildGraphics(List<Graphic> val) {
             graphics = val;
             return this;
         }
 
-        public DataVisualizationProject build() {
+        public DataVisualizationProject buildProject() {
             return new DataVisualizationProject(this);
         }
     }

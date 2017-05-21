@@ -142,7 +142,7 @@ public class GraphicDVImpl implements Graphic, Calculable {
             return this;
         }
 
-        public GraphicDVImpl build() {
+        public GraphicDVImpl buildProject() {
             return new GraphicDVImpl(this);
         }
 

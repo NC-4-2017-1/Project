@@ -9,71 +9,15 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class HealthMonitorProject extends AbstractProject {
     private List<Selector> selectors;
     private Graphic graphic;
-    private  String sid;
-    private  String port;
-    private  String serverName;
-    private  String userName;
-    private  String password;
-
-    public static class Builder {
-        private BigInteger id;
-        private String name;
-        private Date creationDate;
-        private String description;
-        private BigInteger author;
-        private  String sid;
-        private  String port;
-        private  String serverName;
-        private  String userName;
-        private  String password;
-
-        private Collection<User> usersProjectAccessible;
-        private List<Selector> selectors;
-        private Graphic graphic;
-
-        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author,
-                       String sid, String port, String serverName, String userName, String password) {
-            this.id = id;
-            this.name = name;
-            this.creationDate = creationDate;
-            this.description= description;
-            this.sid = sid;
-            this.port = port;
-            this.serverName = serverName;
-            this.userName = userName;
-            this.password = password;
-            this.author = author;
-        }
-
-        public Builder description(String val) {
-            description = val;
-            return this;
-        }
-
-        public Builder usersProjectAccessible(Collection<User> val) {
-            usersProjectAccessible = val;
-            return this;
-        }
-
-        public Builder selectors(List<Selector> val) {
-            selectors = val;
-            return this;
-        }
-
-        public Builder graphic(Graphic val) {
-            graphic = val;
-            return this;
-        }
-
-        public HealthMonitorProject build() {
-            return new HealthMonitorProject(this);
-        }
-    }
+    private String sid;
+    private String port;
+    private String serverName;
+    private String userName;
+    private String password;
 
     private HealthMonitorProject(Builder builder) {
         this.setId(builder.id);
@@ -95,7 +39,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.sid = sid;
     }
 
-    public String getSid(){
+    public String getSid() {
         return this.sid;
     }
 
@@ -103,7 +47,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.port = port;
     }
 
-    public String getPort(){
+    public String getPort() {
         return this.port;
     }
 
@@ -111,7 +55,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.serverName = serverName;
     }
 
-    public String getServerName(){
+    public String getServerName() {
         return this.serverName;
     }
 
@@ -119,7 +63,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.userName = userName;
     }
 
-    public String getUserName(){
+    public String getUserName() {
         return this.userName;
     }
 
@@ -127,7 +71,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.password = password;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return this.password;
     }
 
@@ -145,5 +89,60 @@ public class HealthMonitorProject extends AbstractProject {
 
     public void setGraphic(Graphic graphic) {
         this.graphic = graphic;
+    }
+
+    public static class Builder {
+        private BigInteger id;
+        private String name;
+        private Date creationDate;
+        private String description;
+        private BigInteger author;
+        private String sid;
+        private String port;
+        private String serverName;
+        private String userName;
+        private String password;
+
+        private Collection<User> usersProjectAccessible;
+        private List<Selector> selectors;
+        private Graphic graphic;
+
+        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author,
+                       String sid, String port, String serverName, String userName, String password) {
+            this.id = id;
+            this.name = name;
+            this.creationDate = creationDate;
+            this.description = description;
+            this.sid = sid;
+            this.port = port;
+            this.serverName = serverName;
+            this.userName = userName;
+            this.password = password;
+            this.author = author;
+        }
+
+        public Builder buildDescription(String val) {
+            description = val;
+            return this;
+        }
+
+        public Builder buildUsersProjectAccessible(Collection<User> val) {
+            usersProjectAccessible = val;
+            return this;
+        }
+
+        public Builder buildSelectors(List<Selector> val) {
+            selectors = val;
+            return this;
+        }
+
+        public Builder buildGraphic(Graphic val) {
+            graphic = val;
+            return this;
+        }
+
+        public HealthMonitorProject buildProject() {
+            return new HealthMonitorProject(this);
+        }
     }
 }

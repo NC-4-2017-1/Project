@@ -27,7 +27,7 @@ public abstract class AbstractDAO {
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 
-    protected BigInteger deleteObject(BigInteger objectTypeId){
+    protected BigInteger deleteObject(BigInteger objectTypeId) {
         //TODO method for deleting an object
         return BigInteger.ZERO;
     }

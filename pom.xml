@@ -104,7 +104,7 @@
     </dependencies>
 
     <build>
-        <!-- artifact id for travis deployment -->
+        <!-- artifbuildIdt id for travis deployment -->
         <finalName>NC_4_2017_1</finalName>
         <plugins>
             <plugin>
