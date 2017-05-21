@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Repository
-public  abstract class AbstractDAO {
+public abstract class AbstractDAO {
     @Autowired
     private SimpleJdbcCall simpleCallTemplate;
 
@@ -25,6 +25,11 @@ public  abstract class AbstractDAO {
                 .addValue("obj_type_id", objectTypeId)
                 .addValue("obj_name", name);
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
+
+    protected BigInteger deleteObject(BigInteger objectTypeId){
+        //TODO method for deleting an object
+        return BigInteger.ZERO;
     }
 
     protected static final String INSERT_OBJECT = "insert_object";

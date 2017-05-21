@@ -12,10 +12,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.sql.Clob;
@@ -45,54 +47,118 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     }
 
     public Graphic getProjectGraph(Project project) {
-        return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
+        try {
+            return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Graph not selected");
+            return null;
+        }
     }
 
     public List<Selector> getProjectSelectors(Project project) {
-        return null;
+        try {
+            return null;
+        } catch (DataAccessException e) {
+            LOGGER.error("Selectors not fetched");
+            return null;
+        }
     }
 
     public Map<String, String> getProjectConnections(Project project) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Connections not fetched");
+            return null;
+        }
     }
 
+    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Graphic createGraph(int hourCount) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Graph not created", e);
+            return null;
+        }
     }
 
     public List<Selector> createSelectorList(Map<String, String> map) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("List of selectors not created", e);
+            return null;
+        }
     }
 
     //public boolean saveGraphic(int hourCount, Graphic graphic) { return false;  }
     //public boolean saveSelector(Map<String, String> map, Selector selector) {return false;}
 
-    public HealthMonitorProject getProjectById(BigInteger id) {
-        return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new HealthMonitorProjectRowMapper());
+    public Project getProjectById(BigInteger id) {
+        try {
+            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new HealthMonitorProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not fetched", e);
+            return null;
+        }
     }
 
     public Project getProjectByName(String projectName) {
-        return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new HealthMonitorProjectRowMapper());
+        try {
+            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new HealthMonitorProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not fetched", e);
+            return null;
+        }
     }
 
     public List<HealthMonitorProject> getProjectsByAuthor(User user) {
-        return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
-
+        try {
+            return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Projects not fetched");
+            return null;
+        }
     }
 
     public List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user) {
-        return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+        try {
+            return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Projects not fetched", e);
+            return null;
+        }
     }
 
+    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
-        return false;
+        try {
+            return false;
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not deleted", e);
+            return false;
+        } catch (Exception e) {
+            LOGGER.error("Project not deleted", e);
+            return false;
+        }
     }
 
+    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean saveProject(Project project) {
-        BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
+        try {
+            //TODO method for saving of a HM project
+            BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
 //        project.setId(createHMProjectObject(project.getName()));
 //        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
 //        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not saved", e);
+            return false;
+        } catch (Exception e){
+            LOGGER.error("Project not saved", e);
+            return false;
+        }
         return true;
     }
 

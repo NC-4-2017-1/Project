@@ -9,6 +9,7 @@ import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
@@ -36,44 +37,87 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     private JdbcTemplate generalTemplate;
 
     public Project getProjectById(BigInteger id) {
-        return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
+        try {
+            return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not fetched", e);
+            return null;
+        }
     }
 
     public Project getProjectByName(String projectName) {
-        return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
+        try {
+            return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not fetched", e);
+            return null;
+        }
     }
 
     public List<DataVisualizationProject> getProjectsByAuthor(User user) {
-        return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+        try {
+            return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Projects not fetched", e);
+            return null;
+        }
     }
 
     public List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user) {
-        return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+        try {
+            return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Projects not fetched", e);
+            return null;
+        }
     }
 
+    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
-        return false;
+        try {
+            //TODO method for deleting a project
+            return false;
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not removed", e);
+            return false;
+        } catch (Exception e){
+            LOGGER.error("Project not removed", e);
+            return false;
+        }
     }
 
-    @Transactional
+    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
         Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).description(description).graphics(graphics).build();
-        BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
-        generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
-        generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-        generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
-        //!TODO Graphs save mechanics
+        try {
+            BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
+            generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
+            generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
+            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
+            //TODO Graphs save mechanics
+        } catch (DataAccessException e) {
+            LOGGER.error("Project not saved", e);
+            return null;
+        } catch (Exception e){
+            LOGGER.error("Project not saved", e);
+            return null;
+        }
         return project;
     }
 
-
     public List<Graphic> getProjectGraphs(Project project) {
-        return null;
+        try {
+            //TODO method for fetching list of projects from db
+            return null;
+        } catch (DataAccessException e) {
+            LOGGER.error("Graphs not fetched", e);
+            return null;
+        }
     }
 
     public void getPreviewProjectDataForUser(User user) {
-
+        //TODO method for fetching data about projects from db for preview
     }
 
     private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
@@ -166,7 +210,6 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             return columnName;
         }
     }
-
 
     private class DataVisualizationProjectRowMapper implements RowMapper<DataVisualizationProject> {
         public DataVisualizationProject mapRow(ResultSet rs, int rownum) throws SQLException {
