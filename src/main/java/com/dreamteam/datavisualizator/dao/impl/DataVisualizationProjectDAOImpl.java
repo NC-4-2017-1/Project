@@ -188,7 +188,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and dvproject.object_id = ?";
 
     private enum DVProjectColumnName {
-        id("buildId"),
+        id("id"),
         name("name"),
         createDate("create_date"),
         author("author"),

@@ -197,7 +197,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     private enum UserColumnName {
-        id("buildId"),
+        id("id"),
         firstName("first_name"),
         lastName("last_name"),
         email("email");

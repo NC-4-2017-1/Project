@@ -314,7 +314,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
 
     private enum HWProjectColumnName {
-        id("buildId"),
+        id("id"),
         name("name"),
         createDate("creation_date"),
         author("author"),
