@@ -31,7 +31,7 @@ public interface IdList {
     BigInteger PROJECT_DESCRIPTION_ATTR_ID = BigInteger.valueOf(7L);
     BigInteger CALCULATE_VALUE_ATTR_ID =BigInteger.valueOf(8L);
     BigInteger AVERAGE_DVPROJECT_ATTR_ID = BigInteger.valueOf(9L);
-    BigInteger OLIMPIC_AVERAGE_DVPROJECT_ATTR_ID = BigInteger.valueOf(10L);
+    BigInteger OLYMPIC_AVERAGE_DVPROJECT_ATTR_ID = BigInteger.valueOf(10L);
     BigInteger MATH_EXPECTATION_DVPROJECT_ATTR_ID = BigInteger.valueOf(11L);
     BigInteger DISPERSION_DVPROJECT_ATTR_ID = BigInteger.valueOf(12L);
     BigInteger JSON_RESULT_ATTR_ID = BigInteger.valueOf(13L);

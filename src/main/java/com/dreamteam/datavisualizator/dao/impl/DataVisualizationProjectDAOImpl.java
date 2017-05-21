@@ -44,7 +44,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     }
 
     public List<DataVisualizationProject> getProjectsByAuthor(User user) {
-        return generalTemplate.query(SELECT_DV_PROJECT_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+        return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
     }
 
     public List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user) {
@@ -63,12 +63,12 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
         generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
         generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
-        //!TODO Graphics save mechanics
+        //!TODO Graphs save mechanics
         return project;
     }
 
 
-    public List<Graphic> getProjectGraphics(Project project) {
+    public List<Graphic> getProjectGraphs(Project project) {
         return null;
     }
 
@@ -76,69 +76,73 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     }
 
-    private static final String SELECT_DVPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and objects.object_id=?";
-    private static final String SELECT_DVPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and objects.name=?";
-    private static String SELECT_DV_PROJECT_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author, description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?" +
-            " and OBJECTS.OBJECT_TYPE_ID=" + DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
-            " ORDER BY creation_date.date_value";
-    private static final String SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
-            " description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_SHARED_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?" +
-            " and OBJECTS.OBJECT_TYPE_ID=" + DATA_VISUALIZATION_PROJECT_OBJTYPE_ID +
-            " ORDER BY creation_date.date_value";
-    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json.value json," +
-            " average.value average, olympic_average.value olympic_average,math_expectation.value math_expectation, dispersion.value dispersion" +
-            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES average, ATTRIBUTES olympic_average, " +
-            " ATTRIBUTES math_expectation, ATTRIBUTES dispersion, OBJREFERENCE reference" +
-            " where graph.OBJECT_ID=json.OBJECT_ID" +
-            " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
-            " and graph.OBJECT_ID=average.OBJECT_ID" +
-            " and average.ATTR_ID=" + AVERAGE_DVPROJECT_ATTR_ID +
-            " and graph.OBJECT_ID=olympic_average.OBJECT_ID" +
-            " and olympic_average.ATTR_ID=" + OLIMPIC_AVERAGE_DVPROJECT_ATTR_ID +
-            " and graph.OBJECT_ID=math_expectation.OBJECT_ID" +
-            " and math_expectation.ATTR_ID=11" + MATH_EXPECTATION_DVPROJECT_ATTR_ID +
-            " and graph.OBJECT_ID=dispersion.OBJECT_ID" +
-            " and dispersion.ATTR_ID=" + DISPERSION_DVPROJECT_ATTR_ID +
-            " and reference.ATTR_ID=" + PROJECT_GRAPHICS_RELATION_ATTR_ID +
-            " and reference.REFERENCE=graph.OBJECT_ID" +
-            " and reference.OBJECT_ID=project.OBJECT_ID" +
-            " and project.OBJECT_ID=?";
+    private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where dvpoject.object_type_id = 4" +
+            " and dvpoject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and dvpoject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = dvpoject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and dvpoject.object_id = ?";
+    private static final String SELECT_DVPROJECT_BY_NAME = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where dvpoject.object_type_id = 4" +
+            " and dvpoject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and dvpoject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = dvpoject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and dvpoject.name = ?";
+    private static String SELECT_DV_PROJECTS_BY_AUTHOR = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where dvpoject.object_type_id = 4" +
+            " and dvpoject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and dvpoject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = dvpoject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and author.object_id=?" +
+            " order by creation_date.date_value";
+    private static final String SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects dvpoject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
+            " where dvpoject.object_type_id = 4" +
+            " and dvpoject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and dvpoject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref_author.attr_id = 17" +
+            " and ref_author.object_id = dvpoject.object_id" +
+            " and ref_author.reference = author.object_id" +
+            " and ref_access.attr_id = 18" +
+            " and ref_access.object_id = dvpoject.object_id" +
+            " and ref_access.reference = have_access.object_id" +
+            " and have_access.object_id = ?" +
+            " order by creation_date.date_value";
+    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json_res.big_value json," +
+            " average.value average, olympic_average.value olympic_average, math_expectation.value math_expectation, dispersion.value dispersion" +
+            " from objects graph, objects dvproject, attributes json_res, attributes average, attributes olympic_average," +
+            " attributes math_expectation, attributes dispersion, objreference ref" +
+            " where graph.object_id = json_res.object_id" +
+            " and json_res.attr_id = 13" +
+            " and graph.object_id = average.object_id" +
+            " and average.attr_id = 9" +
+            " and graph.object_id = olympic_average.object_id" +
+            " and olympic_average.attr_id = 10" +
+            " and graph.object_id = math_expectation.object_id" +
+            " and math_expectation.attr_id = 11" +
+            " and graph.object_id = dispersion.object_id" +
+            " and dispersion.attr_id = 12" +
+            " and ref.attr_id = 20" +
+            " and ref.reference = graph.object_id" +
+            " and ref.object_id = dvproject.object_id" +
+            " and dvproject.object_id = ?";
 
     private enum DVProjectColumnName {
         id("id"),

@@ -15,6 +15,6 @@ public interface DataVisualizationProjectDAO {
     List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user);
     boolean deleteProject(Project project);
     Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics);
-    List<Graphic> getProjectGraphics(Project project);
+    List<Graphic> getProjectGraphs(Project project);
     void getPreviewProjectDataForUser(User user);
 }
