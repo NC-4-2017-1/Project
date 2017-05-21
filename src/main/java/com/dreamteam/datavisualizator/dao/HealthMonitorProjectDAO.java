@@ -12,10 +12,10 @@ import java.util.Map;
 
 public interface HealthMonitorProjectDAO {
 
-    Graphic getProjectGraphic(Project project);
+    Graphic getProjectGraph(Project project);
     List<Selector> getProjectSelectors(Project project);
     Map<String, String> getProjectConnections(Project project);
-    Graphic createGraphic(int hourCount);
+    Graphic createGraph(int hourCount);
     List<Selector> createSelectorList(Map<String, String> map);
     //boolean saveGraphic(int hourCount,Graphic graphic);
     //boolean saveSelector(Map<String,String> map, Selector selector);

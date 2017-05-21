@@ -36,11 +36,12 @@ public class HealthMonitorProject extends AbstractProject {
         private List<Selector> selectors;
         private Graphic graphic;
 
-        public Builder(BigInteger id, String name, Date creationDate, BigInteger author,
+        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author,
                        String sid, String port, String serverName, String userName, String password) {
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
+            this.description=description;
             this.sid = sid;
             this.port = port;
             this.serverName = serverName;

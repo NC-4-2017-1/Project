@@ -44,7 +44,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
     }
 
-    public Graphic getProjectGraphic(Project project) {
+    public Graphic getProjectGraph(Project project) {
         return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
     }
 
@@ -56,7 +56,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         return null;
     }
 
-    public Graphic createGraphic(int hourCount) {
+    public Graphic createGraph(int hourCount) {
         return null;
     }
 
@@ -153,86 +153,89 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     }
 
 
-    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select objects.object_id id, objects.name name, creation_date.date_value creation_date," +
-            " description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?" +
-            " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
-            " ORDER BY creation_date.date_value";
-    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author," +
-            " description.value description" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, OBJREFERENCE ref" +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_SHARED_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and author.OBJECT_ID=?" +
-            " and OBJECTS.OBJECT_TYPE_ID=" + HEALTH_MONITOR_PROJECT_OBJTYPE_ID +
-            " ORDER BY creation_date.date_value";
+    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where hmproject.object_type_id = 3" +
+            " and hmproject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and hmproject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = hmproject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and author.object_id=?" +
+            " order by creation_date.date_value";
+    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
+            " where hmproject.object_type_id = 3" +
+            " and hmproject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and hmproject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref_author.attr_id = 17" +
+            " and ref_author.object_id = hmproject.object_id" +
+            " and ref_author.reference = author.object_id" +
+            " and ref_access.attr_id = 18" +
+            " and ref_access.object_id = hmproject.object_id" +
+            " and ref_access.reference = have_access.object_id" +
+            " and have_access.object_id = ?" +
+            " order by creation_date.date_value";
     private static final String SELECT_PROJECT_GRAPH = "select graph.object_id id, graph.name name, json.big_value json, hour_count.value hour_count" +
-            " from OBJECTS graph,OBJECTS project, ATTRIBUTES json, ATTRIBUTES hour_count, OBJREFERENCE reference" +
-            " where graph.OBJECT_ID=json.OBJECT_ID" +
-            " and json.ATTR_ID=" + JSON_RESULT_ATTR_ID +
-            " and graph.OBJECT_ID=hour_count.OBJECT_ID" +
-            " and hour_count.ATTR_ID=" + HOUR_COUNT_ATTR_ID +
-            " and reference.ATTR_ID=" + PROJECT_GRAPHICS_RELATION_ATTR_ID +
-            " and reference.REFERENCE=graph.OBJECT_ID" +
-            " and reference.OBJECT_ID=project.OBJECT_ID" +
-            " and project.OBJECT_ID=?";
-    private static final String SELECT_HMPROJECT_BY_ID = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+            " from objects graph, objects project, attributes json, attributes hour_count, objreference reference" +
+            " where graph.object_id = json.object_id" +
+            " and json.attr_id = 13" +
+            " and graph.object_id = hour_count.object_id" +
+            " and hour_count.attr_id = 16" +
+            " and reference.attr_id = 20" +
+            " and reference.reference = graph.object_id" +
+            " and reference.object_id = project.object_id" +
+            " and project.object_id = ?";
+    private static final String SELECT_HMPROJECT_BY_ID = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
-            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password, OBJREFERENCE ref " +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=" + HM_SID_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
-            " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
-            " and server_name.ATTR_ID=" + HM_SERVER_NAME_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
-            " and user_name.ATTR_ID=" + HM_USER_NAME_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
-            " and password.ATTR_ID=" + PASSWORD_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and objects.object_id=?";
-    private static final String SELECT_HMPROJECT_BY_NAME = "select objects.object_id id, objects.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+            " from objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
+            " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
+            " where hmproject.object_type_id = 3" +
+            " and hmproject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and hmproject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and hmproject.object_id = sid.object_id" +
+            " and sid.attr_id = 25" +
+            " and hmproject.object_id = port.object_id" +
+            " and port.attr_id = 24" +
+            " and hmproject.object_id =  server_name.object_id" +
+            " and server_name.attr_id = 23" +
+            " and hmproject.object_id = user_name.object_id" +
+            " and user_name.attr_id = 26" +
+            " and hmproject.object_id = password.object_id" +
+            " and password.attr_id = 4" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = hmproject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and hmproject.object_id = ? ";
+    private static final String SELECT_HMPROJECT_BY_NAME = "select hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
-            " from OBJECTS, ATTRIBUTES creation_date,Objects author, ATTRIBUTES description, ATTRIBUTES sid," +
-            " ATTRIBUTES port, ATTRIBUTES server_name, ATTRIBUTES user_name, ATTRIBUTES password, OBJREFERENCE ref " +
-            " WHERE OBJECTS.OBJECT_ID=creation_date.object_id" +
-            " AND creation_date.ATTR_id=" + PROJECT_DATE_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=description.object_id" +
-            " and description.ATTR_ID=" + PROJECT_DESCRIPTION_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=sid.OBJECT_ID" +
-            " and sid.ATTR_ID=" + HM_SID_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=port.OBJECT_ID" +
-            " and port.ATTR_ID=" + HM_PORT_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=server_name.OBJECT_ID" +
-            " and server_name.ATTR_ID=" + HM_SERVER_NAME_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=user_name.OBJECT_ID" +
-            " and user_name.ATTR_ID=" + HM_USER_NAME_ATTR_ID +
-            " and OBJECTS.OBJECT_ID=password.OBJECT_ID" +
-            " and password.ATTR_ID=" + PASSWORD_ATTR_ID +
-            " and ref.ATTR_ID=" + PROJECT_AUTHOR_RELATION_ATTR_ID +
-            " and ref.OBJECT_ID=OBJECTS.OBJECT_ID" +
-            " and ref.REFERENCE=author.OBJECT_ID" +
-            " and objects.name=?";
+            " from objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
+            " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
+            " where hmproject.object_type_id = 3" +
+            " and hmproject.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and hmproject.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and hmproject.object_id = sid.object_id" +
+            " and sid.attr_id = 25" +
+            " and hmproject.object_id = port.object_id" +
+            " and port.attr_id = 24" +
+            " and hmproject.object_id =  server_name.object_id" +
+            " and server_name.attr_id = 23" +
+            " and hmproject.object_id = user_name.object_id" +
+            " and user_name.attr_id = 26" +
+            " and hmproject.object_id = password.object_id" +
+            " and password.attr_id = 4" +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = hmproject.object_id" +
+            " and ref.reference = author.object_id" +
+            " and hmproject.name = ? ";
     private static final String SELECT_SELECTOR_INSTANCE_INFO = "select BANNER oracle_version," +
             " sys_context('userenv', 'DB_NAME') db_name," +
             " sys_context('userenv','CURRENT_SCHEMA') schem_name" +
@@ -271,6 +274,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                     BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())),
                     rs.getString(HWProjectColumnName.name.toString()),
                     rs.getDate(HWProjectColumnName.createDate.toString()),
+                    rs.getString(HWProjectColumnName.description.toString()),
                     BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString())),
                     rs.getString(HWProjectColumnName.sid.toString()),
                     rs.getString(HWProjectColumnName.port.toString()),
