@@ -3,9 +3,6 @@ package com.dreamteam.datavisualizator;
 import com.dreamteam.datavisualizator.dao.impl.DataVisualizationProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.UserDAOImpl;
-import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.Project;
-import com.dreamteam.datavisualizator.models.impl.GraphicHMImpl;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -15,10 +12,9 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 
-public class BeforeTemplate {
-    private static final Logger LOGGER = Logger.getLogger(BeforeTemplate.class);
+public class DaoTestClass {
+    private static final Logger LOGGER = Logger.getLogger(DaoTestClass.class);
 
     //dao
     private DataVisualizationProjectDAOImpl dataVisualizationProjectDAO;
@@ -93,22 +89,25 @@ public class BeforeTemplate {
     }
 
     public static void main(String[] args) {
-        BeforeTemplate bt = new BeforeTemplate();
+        DaoTestClass bt = new DaoTestClass();
         bt.raiseContext();
         bt.raiseDAO();
         bt.codeGoesHere();
     }
 
     void codeGoesHere() {
-        Project proj = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(77L));
-        Graphic graphic = healthMonitorProjectDAO.getProjectGraph(proj);
+/*        Project proj = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(77L));
+        Graphic graphic = healthMonitorProjectDAO.getProjectGraphic(proj);
         LOGGER.info(proj.getName() + " " + proj.getType());
         LOGGER.info(graphic);
         LOGGER.info(graphic.getId());
         LOGGER.info(graphic.getName());
-        LOGGER.info(((GraphicHMImpl) graphic).getHourCount());
+        LOGGER.info(((GraphicHMImpl) graphic).getHourCount());*/
         //LOGGER.info(graphic.getGraphicJSON());
+      //  User user = new UserImpl.Builder("lul@gmauul.com", "passok").firstName("xd1").lastName("xd2").type(UserTypes.REGULAR_USER).build();
+      //  userDAO.createUser(user.getFirstName(),user.getLastName(),user.getEmail(),user.getPassword(),user.getUserType());
 
+       // dataVisualizationProjectDAO.saveProject("projbnanne", BigInteger.valueOf(452L), "adasdasfa", null);
     }
 
 }
