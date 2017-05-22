@@ -12,20 +12,16 @@ import java.io.IOException;
 public class XmlParser {
     public static final Logger LOGGER = Logger.getLogger(XmlParser.class);
 
-    public static void parseXmlFile(File file){
+    public static XmlTable parseXmlFile(File file) throws IOException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        Handler handler = new Handler();
+        XmlHandler handler = new XmlHandler();
         try {
             SAXParser parser = parserFactory.newSAXParser();
             parser.parse(file, handler);
-        } catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException | SAXException e) {
             LOGGER.error("File not parsed", e);
-        } catch (SAXException e) {
-            LOGGER.error("File not parsed", e);
-        } catch (IOException e){
-            LOGGER.error("File not parsed", e);
+            return null;
         }
-
+        return handler.getTable();
     }
-
 }
