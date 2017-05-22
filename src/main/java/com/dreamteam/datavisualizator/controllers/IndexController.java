@@ -8,8 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.math.BigInteger;
-
 @Controller
 public class IndexController {
     @Autowired
@@ -17,11 +15,10 @@ public class IndexController {
     @Autowired
     DataVisualizationProjectDAO projectdao;
 
-    @RequestMapping(path = "/index", method = RequestMethod.GET)
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public String getHello(Model model) {
-
-       model.addAttribute( "userEMAIL", userdao.getUserByFullName("uname usurname").toString());
-       model.addAttribute("userID", userdao.getUserById(new BigInteger("1")).toString());
+    /*   model.addAttribute( "userEMAIL", userdao.getUserByFullName("uname usurname").toString());
+       model.addAttribute("userID", userdao.getUserById(new BigInteger("1")).toString());*/
         return "index";
     }
 }

@@ -26,10 +26,8 @@ public class ClobToStringService {
                 br.close();
             } catch (SQLException e) {
                 LOGGER.error("SQL. Could not convert CLOB to string", e);
-                e.printStackTrace();
             } catch (IOException e) {
                 LOGGER.error("IO. Could not convert CLOB to string", e);
-                e.printStackTrace();
             }
 
             return sb.toString();

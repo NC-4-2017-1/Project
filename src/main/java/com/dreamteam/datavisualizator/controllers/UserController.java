@@ -36,4 +36,9 @@ public class UserController {
         return "userCreation";
     }
 
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String tryToLogIn(Model model) {
+        return "authorization";
+    }
+
 }
