@@ -14,8 +14,4 @@ public class SelectorActiveJobs extends AbstractSelector {
     public int getHourCount(){
         return this.hourCount;
     }
-
-    public JsonObject getValueJSON() {
-        return null;
-    }
 }

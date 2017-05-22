@@ -383,7 +383,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         userName("user_name"),
         password("password"),
         hourCount("hour_count"),
-        json("json");
+        json("json"),
+        value("value"),
+        segment("segment"),
+        top("top");
 
         private final String columnName;
 
@@ -437,6 +440,128 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
             builder.buildGraphicJson(graphicInJsonType);
             return builder.buildGraphic();
+        }
+    }
+
+    private class SelectorInstanceInfoRowMapper implements RowMapper<SelectorInstanceInfo> {
+        public SelectorInstanceInfo mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorInstanceInfo selector = new SelectorInstanceInfo();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            return selector;
+        }
+    }
+
+    private class SelectorSizeForTablespaceRowMapper implements RowMapper<SelectorSizeForTablespace> {
+        public SelectorSizeForTablespace mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            return selector;
+        }
+    }
+
+    private class SelectorSizeForIndexLobRowMapper implements RowMapper<SelectorSizeForIndexLob> {
+        public SelectorSizeForIndexLob mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            String segment = rs.getString(HWProjectColumnName.segment.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setSegment(segment);
+            return selector;
+        }
+    }
+
+    private class SelectorLastErrorsRowMapper implements RowMapper<SelectorLastErrors> {
+        public SelectorLastErrors mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorLastErrors selector = new SelectorLastErrors();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            return selector;
+        }
+    }
+
+    private class SelectorActiveSessionsRowMapper implements RowMapper<SelectorActiveSessions> {
+        public SelectorActiveSessions mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorActiveSessions selector = new SelectorActiveSessions();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setTop(top);
+            return selector;
+        }
+    }
+
+    private class SelectorActiveQueriesRowMapper implements RowMapper<SelectorActiveQueries> {
+        public SelectorActiveQueries mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorActiveQueries selector = new SelectorActiveQueries();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setTop(top);
+            return selector;
+        }
+    }
+
+    private class SelectorQueriesResultsRowMapper implements RowMapper<SelectorQueriesResults> {
+        public SelectorQueriesResults mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorQueriesResults selector = new SelectorQueriesResults();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setTop(top);
+            return selector;
+        }
+    }
+
+    private class SelectorSqlQueryMonitorRowMapper implements RowMapper<SelectorSqlQueryMonitor> {
+        public SelectorSqlQueryMonitor mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorSqlQueryMonitor selector = new SelectorSqlQueryMonitor();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setTop(top);
+            return selector;
+        }
+    }
+
+    private class SelectorDBLocksRowMapper implements RowMapper<SelectorDBLocks> {
+        public SelectorDBLocks mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorDBLocks selector = new SelectorDBLocks();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            return selector;
+        }
+    }
+
+    private class SelectorActiveJobsRowMapper implements RowMapper<SelectorActiveJobs> {
+        public SelectorActiveJobs mapRow(ResultSet rs, int rownum) throws SQLException {
+            SelectorActiveJobs selector = new SelectorActiveJobs();
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            int hourCount = rs.getInt(HWProjectColumnName.hourCount.toString());
+            selector.setName(name);
+            selector.setValue(value);
+            selector.setHourCount(hourCount);
+            return selector;
         }
     }
 }

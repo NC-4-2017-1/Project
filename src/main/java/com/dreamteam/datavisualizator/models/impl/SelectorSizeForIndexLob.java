@@ -14,8 +14,4 @@ public class SelectorSizeForIndexLob extends AbstractSelector {
     public String getSegment(){
         return this.segment;
     }
-
-    public JsonObject getValueJSON() {
-        return null;
-    }
 }

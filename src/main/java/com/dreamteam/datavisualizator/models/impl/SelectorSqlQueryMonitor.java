@@ -14,8 +14,4 @@ public class SelectorSqlQueryMonitor extends AbstractSelector {
     public int getTop(){
         return this.top;
     }
-
-    public JsonObject getValueJSON() {
-        return null;
-    }
 }

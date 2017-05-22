@@ -4,13 +4,22 @@ import com.dreamteam.datavisualizator.models.Selector;
 import com.google.gson.JsonObject;
 
 public abstract class AbstractSelector implements Selector {
-    private JsonObject selectorJSON;
+    protected String value;
+    protected String name;
 
-    public void setSelectorJSON(JsonObject selectorJSON) {
-        this.selectorJSON = selectorJSON;
+    public String getValue(){
+       return  this.value;
     }
 
-    public JsonObject getSelectorJSON(){
-        return selectorJSON;
+    public void setValue(String value){
+        this.value = value;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public void setName(String name){
+        this.name = name;
     }
 }
