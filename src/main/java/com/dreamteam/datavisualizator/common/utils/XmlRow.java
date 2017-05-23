@@ -28,4 +28,15 @@ public class XmlRow {
     public int hashCode() {
         return cells != null ? cells.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        String string = "XmlRow{ ";
+        for (int i=0; i<cells.size(); i++){
+            string+="'"+cells.get(i)+"'"+" ";
+        }
+        string+=" }";
+
+        return string;
+    }
 }

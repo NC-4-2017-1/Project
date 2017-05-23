@@ -28,4 +28,14 @@ public class XmlTable {
     public int hashCode() {
         return rows != null ? rows.hashCode() : 0;
     }
+
+    public String toString() {
+        String string = "XmlTable{ ";
+        for (int i=0; i<rows.size(); i++){
+            string+=rows.get(i).toString()+" ";
+        }
+        string+=" }";
+
+        return string;
+    }
 }
