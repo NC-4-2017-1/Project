@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class XmlParserTest {
 
@@ -47,7 +47,7 @@ public class XmlParserTest {
     @Test
     public void testParseXmlFile() throws IOException {
         XmlTable result = XmlParser.parseXmlFile(file);
-        assertEquals(testTable, result);
+        assertTrue(testTable.equals(result));
     }
 
 }
