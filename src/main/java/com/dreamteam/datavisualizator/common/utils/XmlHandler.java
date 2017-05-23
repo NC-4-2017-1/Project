@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class XmlHandler extends DefaultHandler {
+class XmlHandler extends DefaultHandler {
     public static final Logger LOGGER = Logger.getLogger(XmlHandler.class);
 
     private XmlTable table = new XmlTable();
