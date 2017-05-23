@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
+import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 
 @Controller
@@ -70,6 +73,15 @@ public class ProjectController {
         projectDAO.deleteProject(project);
     }
 
+    @RequestMapping(path = "/save", method = RequestMethod.GET)
+    public Project saveProject(Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/get-graphs", method = RequestMethod.GET)
+    public List<Graphic> getProjectGraphs(Model model) {
+        return null;
+    }
 
 
 }

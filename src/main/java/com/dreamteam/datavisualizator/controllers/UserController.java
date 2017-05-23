@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -26,26 +27,53 @@ public class UserController {
         return "userDashboard";
     }
 
-    @RequestMapping(path = "/creation", method = RequestMethod.GET)
-    public String userCreation(Model model) {
-        return "userCreation";
-    }
-
     @RequestMapping(path = "/get-by-id", method = RequestMethod.GET)
     public User getUserById(Model model) {
         return null;
     }
 
     @RequestMapping(path = "/get-by-name", method = RequestMethod.GET)
-    public User getUserByFullName(Model model) {
+    public User getUserByFullName(@RequestParam("fullName") String fullName,
+                                  Model model) {
         return null;
     }
 
     @RequestMapping(path = "/get-by-email", method = RequestMethod.GET)
-    public User getUserByEmail(Model model) {
+    public User getUserByEmail(@RequestParam("email") String email,
+                               Model model) {
         return null;
     }
 
+    @RequestMapping(path = "/update-email", method = RequestMethod.GET)
+    public User updateUsersEmail(@RequestParam("email") String email,
+                                 Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/update-name", method = RequestMethod.GET)
+    public User updateUsersName(@RequestParam("firstName") String firstName,
+                                @RequestParam("firstName") String lastName,
+                                Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/update-password", method = RequestMethod.GET)
+    public User updateUsersPassword(@RequestParam("password") String password,
+                                    Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/access-to-project", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean giveUserAccessToProject(User user, Project project,
+                                           Model model) {
+        return userDAO.giveUserAccessToProject(user, project);
+    }
+
+    @RequestMapping(path = "/creation", method = RequestMethod.GET)
+    public String userCreation(Model model) {
+        return "userCreation";
+    }
 
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
@@ -54,30 +82,6 @@ public class UserController {
         return userDAO.deleteUser(user);
     }
 
-    @RequestMapping(path = "/update-email", method = RequestMethod.GET)
-    public User updateUsersEmail(User user,
-                                 Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/update-name", method = RequestMethod.GET)
-    public User updateUsersName(User user,
-                                Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/update-password", method = RequestMethod.GET)
-    public User updateUsersPassword(User user,
-                                    Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/access-to-project", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean giveUserAccessToProject(User user, Project project,
-                              Model model) {
-        return userDAO.giveUserAccessToProject(user, project);
-    }
-
-
 }
+
+
