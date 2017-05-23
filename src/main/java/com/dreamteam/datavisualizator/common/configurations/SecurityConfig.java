@@ -46,8 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Указываем параметры логина и пароля с формы логина
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
+                // устанавливаем success handler для маппинга админа/юзера
+                .successHandler(new UrlAuthenticationSuccessHandler())
                 // даем доступ к форме логина всем
                 .permitAll();
+
+
 
         http.logout()
                 // разрешаем делать логаут всем

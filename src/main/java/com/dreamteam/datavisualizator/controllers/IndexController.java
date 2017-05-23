@@ -21,4 +21,10 @@ public class IndexController {
        model.addAttribute("userID", userdao.getUserById(new BigInteger("1")).toString());*/
         return "index";
     }
+
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String tryToLogIn(Model model) {
+        return "authorization";
+    }
+
 }

@@ -29,11 +29,6 @@ public class UserController {
         return "userCreation";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String tryToLogIn(Model model) {
-        return "authorization";
-    }
-
     @RequestMapping(path = "/updateEmail", method = RequestMethod.GET)
     public User updateUsersEmail(User user,
                                  Model model) {
