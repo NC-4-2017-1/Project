@@ -35,8 +35,8 @@ and email.attr_id = 1
 and email.value=?;
 
 --get user by email version for logging in through spring security
-select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, password.value password
-from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes password
+select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, password.value password, usertype.list_value_id usertype
+from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes password, attributes usertype
 where obj_user.object_type_id = 1
 and obj_user.object_id = first_name.object_id
 and first_name.attr_id = 2
@@ -45,6 +45,8 @@ and last_name.attr_id = 3
 and  obj_user.object_id = email.object_id
 and obj_user.object_id = password.object_id
 and password.attr_id = 4
+and usertype.attr_id = 5
+and obj_user.object_id = usertype.object_id
 and email.attr_id = 1
 and email.value=?;
 

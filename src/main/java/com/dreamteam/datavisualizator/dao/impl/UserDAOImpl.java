@@ -70,7 +70,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("User not removed", e);
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("User not removed", e);
             return false;
         }
@@ -85,7 +85,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("User not updated", e);
             return null;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("User not updated", e);
             return null;
         }
@@ -102,7 +102,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("User not updated", e);
             return null;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("User not updated", e);
             return null;
         }
@@ -117,7 +117,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("User not updated", e);
             return null;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("User not updated", e);
             return null;
         }
@@ -131,7 +131,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("Access not granted", e);
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("Access not granted", e);
             return false;
         }
@@ -145,7 +145,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("Access not removed", e);
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("Access not removed", e);
             return false;
         }
@@ -174,7 +174,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } catch (DataAccessException e) {
             LOGGER.error("User not created", e);
             return null;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("User not created", e);
             return null;
         }
@@ -188,11 +188,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             String firstName = rs.getString(UserColumnName.firstName.toString());
             String lastName = rs.getString(UserColumnName.lastName.toString());
             String password = rs.getString(UserColumnName.password.toString());
+            BigInteger role = rs.getBigDecimal(UserColumnName.usertype.toString()).toBigInteger();
+            UserTypes userType = UserTypes.getRoleById(role);
             UserImpl.Builder builder = new UserImpl.Builder(email, password);
             builder.buildId(id);
             builder.buildFirstName(firstName);
             builder.buildLastName(lastName);
-            builder.buildType(UserTypes.REGULAR_USER);
+            builder.buildType(userType);
             return builder.buildUser();
         }
     }
@@ -202,7 +204,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         firstName("first_name"),
         lastName("last_name"),
         email("email"),
-        password("password");
+        password("password"),
+        usertype("usertype");
 
         private final String columnName;
 
@@ -250,17 +253,19 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and email.attr_id = 1" +
             " and email.value = ?";
 
-    private static final String SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, password.value password\n" +
-            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes password\n" +
-            " where obj_user.object_type_id = 1" +
-            " and obj_user.object_id = first_name.object_id" +
-            " and first_name.attr_id = 2" +
-            " and  obj_user.object_id = last_name.object_id" +
-            " and last_name.attr_id = 3" +
-            " and  obj_user.object_id = email.object_id" +
-            " and obj_user.object_id = password.object_id" +
-            " and password.attr_id = 4" +
-            " and email.attr_id = 1" +
+    private static final String SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, password.value password, usertype.list_value_id usertype " +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes password, attributes usertype " +
+            " where obj_user.object_type_id = 1 " +
+            " and obj_user.object_id = first_name.object_id " +
+            " and first_name.attr_id = 2 " +
+            " and  obj_user.object_id = last_name.object_id " +
+            " and last_name.attr_id = 3 " +
+            " and  obj_user.object_id = email.object_id " +
+            " and obj_user.object_id = password.object_id " +
+            " and password.attr_id = 4 " +
+            " and usertype.attr_id = 5 " +
+            " and obj_user.object_id = usertype.object_id " +
+            " and email.attr_id = 1 " +
             " and email.value=?";
     private static final String GET_ALL_USERS = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email" +
             " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +

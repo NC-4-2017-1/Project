@@ -27,10 +27,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //setting up user role
         switch (user.getUserType()) {
             case ADMIN:
-                roles.add(new SimpleGrantedAuthority(UserTypes.ADMIN.name()));
+                roles.add(new SimpleGrantedAuthority(UserTypes.ADMIN.toString()));
                 break;
             case REGULAR_USER:
-                roles.add(new SimpleGrantedAuthority(UserTypes.REGULAR_USER.name()));
+                roles.add(new SimpleGrantedAuthority(UserTypes.REGULAR_USER.toString()));
                 break;
         }
 

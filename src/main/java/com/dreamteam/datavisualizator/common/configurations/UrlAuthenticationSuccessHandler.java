@@ -52,17 +52,17 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         Collection<? extends GrantedAuthority> authorities
                 = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
-            if (grantedAuthority.getAuthority().equals(UserTypes.REGULAR_USER.name())) {
+            if (grantedAuthority.getAuthority().equals(UserTypes.REGULAR_USER.toString())) {
                 isUser = true;
                 break;
-            } else if (grantedAuthority.getAuthority().equals(UserTypes.ADMIN.name())) {
+            } else if (grantedAuthority.getAuthority().equals(UserTypes.ADMIN.toString())) {
                 isAdmin = true;
                 break;
             }
         }
 
         if (isUser) {
-            return "/user";
+            return "/regularUser";
         } else if (isAdmin) {
             return "/admin";
         } else {
