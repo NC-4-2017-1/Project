@@ -65,8 +65,6 @@ public class XmlParserTest {
     @Test
     public void testParseXmlFile() throws IOException {
         XmlTable result = XmlParser.parseXmlFile(file);
-        System.out.println(testTable.toString());
-        System.out.println(result.toString());
         assertTrue(result.equals(testTable));
     }
 
