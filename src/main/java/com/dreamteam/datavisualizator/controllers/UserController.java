@@ -14,19 +14,12 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
-    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean deleteUser(User user,
-                              Model model) {
-        return userDAO.deleteUser(user);
-    }
-
     @RequestMapping(path = "/admin", method = RequestMethod.GET)
     public String adminDashboard(Model model) {
         return "adminDashboard";
     }
 
-    @RequestMapping(path = "/user", method = RequestMethod.GET)
+    @RequestMapping(path = "/regularUser", method = RequestMethod.GET)
     public String userDashboard(Model model) {
         return "userDashboard";
     }
@@ -40,5 +33,47 @@ public class UserController {
     public String tryToLogIn(Model model) {
         return "authorization";
     }
+
+    @RequestMapping(path = "/updateEmail", method = RequestMethod.GET)
+    public User updateUsersEmail(User user,
+                                 Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/updateName", method = RequestMethod.GET)
+    public User updateUsersName(User user,
+                                Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/updatePassword", method = RequestMethod.GET)
+    public User updateUsersPassword(User user,
+                                    Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/getById", method = RequestMethod.GET)
+    public User getUserById(Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/getByFullName", method = RequestMethod.GET)
+    public User getUserByFullName(Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/getByEmail", method = RequestMethod.GET)
+    public User getUserByEmail(Model model) {
+        return null;
+    }
+
+
+    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean deleteUser(User user,
+                              Model model) {
+        return userDAO.deleteUser(user);
+    }
+
 
 }
