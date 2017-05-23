@@ -18,52 +18,52 @@ public class ProjectController {
     @Autowired
     DataVisualizationProjectDAO healthMonitorProjectDAOImpl;
 
-    @RequestMapping(path = "/projectView", method = RequestMethod.GET)
+    @RequestMapping(path = "/project-view", method = RequestMethod.GET)
     public String projectView(Model model) {
         return "project";
     }
 
-    @RequestMapping(path = "/visualizationProjectSetup", method = RequestMethod.GET)
+    @RequestMapping(path = "/visualization-setup", method = RequestMethod.GET)
     public String visualizationProjectSetup(Model model) {
         return "dataVisualizationProjectInitialSetup";
     }
 
-    @RequestMapping(path = "/healthMonitorProjectSetup", method = RequestMethod.GET)
+    @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
     public String healthMonitorSetup(Model model) {
         return "healthMonitorProjectInitialSetup";
     }
 
-    @RequestMapping(path = "/visualizationProjectSettings", method = RequestMethod.GET)
+    @RequestMapping(path = "/visualization-settings", method = RequestMethod.GET)
     public String visualizationProjectSettings(Model model) {
         return "dataVisualizationAdvancedSettings";
     }
 
-    @RequestMapping(path = "/healthMonitorProjectSettings", method = RequestMethod.GET)
+    @RequestMapping(path = "/health-monitor-settings", method = RequestMethod.GET)
     public String healthMonitorSettings(Model model) {
         return "healthMonitorAdvancedSettings";
     }
 
-    @RequestMapping(path = "/getById", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-id", method = RequestMethod.GET)
     public Project getProjectById(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/getByName", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-name", method = RequestMethod.GET)
     public Project getProjectByName(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/getByAuthor", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-author", method = RequestMethod.GET)
     public Project getProjectsByAuthor(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/getUserHaveAccessTo", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-project-user-have-access", method = RequestMethod.GET)
     public Project getProjectsUserHaveAccessTo(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/deleteProject", method = RequestMethod.GET)
+    @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
     public void deleteProject(Project project,
                               Model model) {

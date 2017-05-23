@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.UserDAO;
+import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserDAO userDAO;
@@ -19,7 +21,7 @@ public class UserController {
         return "adminDashboard";
     }
 
-    @RequestMapping(path = "/regularUser", method = RequestMethod.GET)
+    @RequestMapping(path = "/regular-user", method = RequestMethod.GET)
     public String userDashboard(Model model) {
         return "userDashboard";
     }
@@ -29,45 +31,52 @@ public class UserController {
         return "userCreation";
     }
 
-    @RequestMapping(path = "/updateEmail", method = RequestMethod.GET)
-    public User updateUsersEmail(User user,
-                                 Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/updateName", method = RequestMethod.GET)
-    public User updateUsersName(User user,
-                                Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/updatePassword", method = RequestMethod.GET)
-    public User updateUsersPassword(User user,
-                                    Model model) {
-        return null;
-    }
-
-    @RequestMapping(path = "/getById", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-id", method = RequestMethod.GET)
     public User getUserById(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/getByFullName", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-name", method = RequestMethod.GET)
     public User getUserByFullName(Model model) {
         return null;
     }
 
-    @RequestMapping(path = "/getByEmail", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-by-email", method = RequestMethod.GET)
     public User getUserByEmail(Model model) {
         return null;
     }
 
 
-    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
+    @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
     public boolean deleteUser(User user,
                               Model model) {
         return userDAO.deleteUser(user);
+    }
+
+    @RequestMapping(path = "/update-email", method = RequestMethod.GET)
+    public User updateUsersEmail(User user,
+                                 Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/update-name", method = RequestMethod.GET)
+    public User updateUsersName(User user,
+                                Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/update-password", method = RequestMethod.GET)
+    public User updateUsersPassword(User user,
+                                    Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/access-to-project", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean giveUserAccessToProject(User user, Project project,
+                              Model model) {
+        return userDAO.giveUserAccessToProject(user, project);
     }
 
 
