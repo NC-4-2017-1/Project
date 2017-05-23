@@ -359,6 +359,30 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " AND ref.object_id = hmproject.object_id" +
             " AND ref.reference = author.object_id" +
             " AND hmproject.name = ? ";
+    private static final String SELECT_SIMPLE_SELECTOR_BY_PROJECTID = "select selector.object_id id, selector.name name, selector_value.BIG_VALUE value" +
+            " from objects selector, attributes selector_value, objreference selector_ref" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " and selector.object_type_id = ? and selector_ref.object_id = ?";
+    private static final String SELECT_SELECTOR_SEGMENT_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_segment.value segment" +
+            " from objects selector, attributes selector_value, attributes selector_segment, objreference selector_ref" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
+            " and selector_segment.object_id = selector.object_id and selector_segment.attr_id = 14" +
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " and selector.object_type_id = ? and selector_ref.object_id = ?";
+    private static final String SELECT_SELECTOR_TOP_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_top.value top" +
+            " from objects selector, attributes selector_value, attributes selector_top, objreference selector_ref" +
+            " where  selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
+            " and selector_top.object_id = selector.object_id and selector_top.attr_id = 15" +
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " and selector.object_type_id = ? and selector_ref.object_id = ?";
+    private static final String SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_hour_count.value hour_count" +
+            " from objects selector, attributes selector_value, attributes selector_hour_count, objreference selector_ref" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
+            " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " and selector.object_type_id = ? and selector_ref.object_id = ?";
+
     private static final String SELECTOR_QUERIES_PACKAGE = "pkg_selectors";
     private static final String QUERY_FOR_INSTANCE_INFO = "instance_info";
     private static final String QUERY_FOR_SIZE_TABLESPACE = "size_for_tablespace";
@@ -446,8 +470,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorInstanceInfoRowMapper implements RowMapper<SelectorInstanceInfo> {
         public SelectorInstanceInfo mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorInstanceInfo selector = new SelectorInstanceInfo();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             return selector;
@@ -456,21 +482,25 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     private class SelectorSizeForTablespaceRowMapper implements RowMapper<SelectorSizeForTablespace> {
         public SelectorSizeForTablespace mapRow(ResultSet rs, int rownum) throws SQLException {
-            SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
-            String value = rs.getString(HWProjectColumnName.value.toString());
-            String name = rs.getString(HWProjectColumnName.name.toString());
-            selector.setName(name);
-            selector.setValue(value);
-            return selector;
+                SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
+                BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
+                String value = rs.getString(HWProjectColumnName.value.toString());
+                String name = rs.getString(HWProjectColumnName.name.toString());
+                selector.setId(id);
+                selector.setName(name);
+                selector.setValue(value);
+                return selector;
         }
     }
 
     private class SelectorSizeForIndexLobRowMapper implements RowMapper<SelectorSizeForIndexLob> {
         public SelectorSizeForIndexLob mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             String segment = rs.getString(HWProjectColumnName.segment.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setSegment(segment);
@@ -481,8 +511,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorLastErrorsRowMapper implements RowMapper<SelectorLastErrors> {
         public SelectorLastErrors mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorLastErrors selector = new SelectorLastErrors();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             return selector;
@@ -492,9 +524,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorActiveSessionsRowMapper implements RowMapper<SelectorActiveSessions> {
         public SelectorActiveSessions mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorActiveSessions selector = new SelectorActiveSessions();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setTop(top);
@@ -505,9 +539,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorActiveQueriesRowMapper implements RowMapper<SelectorActiveQueries> {
         public SelectorActiveQueries mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorActiveQueries selector = new SelectorActiveQueries();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setTop(top);
@@ -518,9 +554,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorQueriesResultsRowMapper implements RowMapper<SelectorQueriesResults> {
         public SelectorQueriesResults mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorQueriesResults selector = new SelectorQueriesResults();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setTop(top);
@@ -531,9 +569,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorSqlQueryMonitorRowMapper implements RowMapper<SelectorSqlQueryMonitor> {
         public SelectorSqlQueryMonitor mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorSqlQueryMonitor selector = new SelectorSqlQueryMonitor();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             int top = rs.getInt(HWProjectColumnName.top.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setTop(top);
@@ -544,8 +584,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorDBLocksRowMapper implements RowMapper<SelectorDBLocks> {
         public SelectorDBLocks mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorDBLocks selector = new SelectorDBLocks();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             return selector;
@@ -555,9 +597,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private class SelectorActiveJobsRowMapper implements RowMapper<SelectorActiveJobs> {
         public SelectorActiveJobs mapRow(ResultSet rs, int rownum) throws SQLException {
             SelectorActiveJobs selector = new SelectorActiveJobs();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
             String value = rs.getString(HWProjectColumnName.value.toString());
             String name = rs.getString(HWProjectColumnName.name.toString());
             int hourCount = rs.getInt(HWProjectColumnName.hourCount.toString());
+            selector.setId(id);
             selector.setName(name);
             selector.setValue(value);
             selector.setHourCount(hourCount);
