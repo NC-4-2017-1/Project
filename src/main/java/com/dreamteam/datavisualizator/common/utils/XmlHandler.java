@@ -16,6 +16,16 @@ class XmlHandler extends DefaultHandler {
     private XmlRow row = null;
     private Object content = null;
     private String typeOfData = "";
+    private int countOfRows = 0;
+    private boolean stopFlag = false;
+
+    public XmlHandler(boolean stopper, int countOfRows){
+        this.stopFlag = stopper;
+        this.countOfRows = countOfRows;
+    }
+
+    public XmlHandler(){
+    }
 
     @Override
     public void startDocument() throws SAXException {
@@ -31,6 +41,9 @@ class XmlHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         switch (qName) {
             case "Row":
+                if (stopFlag&&countOfRows==0){
+                    throw new SaxTerminatorException();
+                }
                 row = new XmlRow();
                 break;
             case "Data":
@@ -43,6 +56,9 @@ class XmlHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName) {
             case "Row":
+                if (stopFlag){
+                    countOfRows--;
+                }
                 table.rows.add(row);
                 break;
             case "Data":

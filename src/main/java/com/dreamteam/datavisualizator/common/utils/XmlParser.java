@@ -24,4 +24,21 @@ public class XmlParser {
         }
         return handler.getTable();
     }
+
+    public static XmlTable parseXmlFile(File file, int countOfRows) throws IOException {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        XmlHandler handler = new XmlHandler(true, countOfRows);
+        try {
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(file, handler);
+        } catch (ParserConfigurationException e) {
+            LOGGER.error("File not parsed", e);
+            return null;
+        } catch (SaxTerminatorException e){
+            LOGGER.info("Parser stopped. Number of parsed rows: "+countOfRows);
+        } catch (SAXException e){
+            LOGGER.error("File not parsed, e");
+        }
+        return handler.getTable();
+    }
 }
