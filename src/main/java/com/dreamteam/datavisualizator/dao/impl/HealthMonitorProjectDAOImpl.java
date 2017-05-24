@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
@@ -20,6 +21,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,32 +64,30 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> getProjectSelectors(Project project) {
         try {
-            //TODO method for fetching buildSelectors
             Map<BigInteger, RowMapper<Selector>> mapSelectorsRowMapper = new HashMap<>();
-            mapSelectorsRowMapper.put(BigInteger.valueOf(8L),new SelectorInstanceInfoRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(9L),new SelectorSizeForTablespaceRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(10L),new SelectorSizeForIndexLobRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(11L),new SelectorLastErrorsRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(12L),new SelectorActiveSessionsRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(13L),new SelectorActiveQueriesRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(14L),new SelectorQueriesResultsRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(15L),new SelectorSqlQueryMonitorRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(16L),new SelectorDBLocksRowMapper());
-            mapSelectorsRowMapper.put(BigInteger.valueOf(17L),new SelectorActiveJobsRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,    new SelectorInstanceInfoRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,  new SelectorSizeForTablespaceRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID,   new SelectorSizeForIndexLobRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_LAST_ERRORS_OBJTYPE_ID,      new SelectorLastErrorsRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,  new SelectorActiveSessionsRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID,   new SelectorActiveQueriesRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID,  new SelectorQueriesResultsRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_SQL_MONITOR_OBJTYPE_ID,      new SelectorSqlQueryMonitorRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_DB_LOCKS_OBJTYPE_ID,         new SelectorDBLocksRowMapper());
+            mapSelectorsRowMapper.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID,      new SelectorActiveJobsRowMapper());
 
             Map<BigInteger, String> mapSelectorsSql = new HashMap<>();
-            mapSelectorsSql.put(BigInteger.valueOf(8L),SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(9L),SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(10L),SELECT_SELECTOR_SEGMENT_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(11L),SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(12L),SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(13L),SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(14L),SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(15L),SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(16L),SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(BigInteger.valueOf(17L),SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID);
-
-            //BigInteger projectId = BigInteger.valueOf(77L);
+            mapSelectorsSql.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, SELECT_SELECTOR_SEGMENT_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_LAST_ERRORS_OBJTYPE_ID,    SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, SELECT_SELECTOR_TOP_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_SQL_MONITOR_OBJTYPE_ID,    SELECT_SELECTOR_TOP_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_DB_LOCKS_OBJTYPE_ID,       SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            mapSelectorsSql.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID,    SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID);
+           //BigInteger projectId = BigInteger.valueOf(77L);
             BigInteger projectId = project.getId();
             List<BigInteger>  arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[] { projectId }, BigInteger.class);
             List<Selector>  arraySelectors = new ArrayList<>();
@@ -96,16 +97,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             return arraySelectors;
         } catch (DataAccessException e) {
             LOGGER.error("Selectors not fetched");
-            return null;
-        }
-    }
-
-    public Map<String, String> getProjectConnections(Project project) {
-        try {
-            //TODO method for fetching connections of project
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("Connections not fetched");
             return null;
         }
     }
@@ -121,39 +112,47 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
     }
 
-    public List<Selector> createSelectorList(Map<String, String> map) {
+    public List<Selector> createSelectorList(Map<BigInteger, String> map) {
         try {
-            //TODO method for saving buildSelectors
-            SimpleJdbcCall simpleCallTemplateInstanceInfo = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateSizeForTablespace = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateSizeForIndexLob = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateLastErrors = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateActiveSessions = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateActiveQueries = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateQueriesResults = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateSqlQueryMonitor = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateDBLocks = new SimpleJdbcCall(generalTemplate);
-            SimpleJdbcCall simpleCallTemplateActiveJobs = new SimpleJdbcCall(generalTemplate);
-
-            createSelectorInstanceInfo(simpleCallTemplateInstanceInfo);
-            createSelectorSizeForTablespace(simpleCallTemplateSizeForTablespace);
-            createSelectorSizeForIndexLob(simpleCallTemplateSizeForIndexLob, "dba_extents");
-            createSelectorLastErrors(simpleCallTemplateLastErrors);
-            createSelectorActiveSessions(simpleCallTemplateActiveSessions, 10);
-            createSelectorActiveQueries(simpleCallTemplateActiveQueries, 10);
-            createSelectorQueriesResults(simpleCallTemplateQueriesResults, 10);
-            createSelectorSqlQueryMonitor(simpleCallTemplateSqlQueryMonitor,10);
-            createSelectorDBLocks(simpleCallTemplateDBLocks);
-            createSelectorActiveJobs(simpleCallTemplateActiveJobs, 2);
-            return null;
+            List<Selector>  arraySelectors = new ArrayList<>();
+            if(map.containsKey(IdList.S_INSTANCE_INFO_OBJTYPE_ID)){
+                arraySelectors.add(createSelectorInstanceInfo(new SimpleJdbcCall(generalTemplate)));
+            }
+            if(map.containsKey(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorSizeForTablespace(new SimpleJdbcCall(generalTemplate)));
+            }
+            if(map.containsKey(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)) {
+               // arraySelectors.add(createSelectorSizeForIndexLob(new SimpleJdbcCall(generalTemplate), "dba"));
+                arraySelectors.add(createSelectorSizeForIndexLob(new SimpleJdbcCall(generalTemplate), map.get(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)));
+            }
+            if(map.containsKey(IdList.S_LAST_ERRORS_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorLastErrors(new SimpleJdbcCall(generalTemplate)));
+            }
+            if(map.containsKey(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID)) {
+                //arraySelectors.add(createSelectorActiveSessions(new SimpleJdbcCall(generalTemplate), 10));
+                arraySelectors.add(createSelectorActiveSessions(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID))));
+            }
+            if(map.containsKey(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorActiveQueries(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID))));
+            }
+            if(map.containsKey(IdList.S_QUERIES_RESULTS_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorQueriesResults(new SimpleJdbcCall(generalTemplate),  Integer.parseInt(map.get(IdList.S_QUERIES_RESULTS_OBJTYPE_ID))));
+            }
+            if(map.containsKey(IdList.S_SQL_MONITOR_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorSqlQueryMonitor(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_SQL_MONITOR_OBJTYPE_ID))));
+            }
+            if(map.containsKey(IdList.S_DB_LOCKS_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorDBLocks(new SimpleJdbcCall(generalTemplate)));
+            }
+            if(map.containsKey(IdList.S_ACTIVE_JOBS_OBJTYPE_ID)) {
+                arraySelectors.add(createSelectorActiveJobs(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_JOBS_OBJTYPE_ID))));
+            }
+            return arraySelectors;
         } catch (Exception e) {
             LOGGER.error("List of buildSelectors not created", e);
             return null;
         }
     }
-
-    //public boolean saveGraphic(int hourCount, Graphic buildGraphic) { return false;  }
-    //public boolean saveSelector(Map<String, String> map, Selector selector) {return false;}
 
     public Project getProjectById(BigInteger id) {
         try {
@@ -226,6 +225,9 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorInstanceInfo selector = new SelectorInstanceInfo();
         simpleCallTemplateInstanceInfo.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_INSTANCE_INFO);
         String sql_query = simpleCallTemplateInstanceInfo.executeFunction(String.class).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
+        selector.setName("SelectorInstanceInfo test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -233,6 +235,9 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
         simpleCallTemplateSizeForTablespace.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SIZE_TABLESPACE);
         String sql_query = simpleCallTemplateSizeForTablespace.executeFunction(String.class).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
+        selector.setName("SelectorSizeForTablespace test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -242,6 +247,9 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateSizeForIndexLob.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SIZE_INDEX_LOB);
         SqlParameterSource in = new MapSqlParameterSource().addValue("segment", segment);
         String sql_query = simpleCallTemplateSizeForIndexLob.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
+        selector.setName("SelectorSizeForIndexLob test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -249,6 +257,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorLastErrors selector = new SelectorLastErrors();
         simpleCallTemplateLastErrors.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_LAST_ERRORS);
         String sql_query = simpleCallTemplateLastErrors.executeFunction(String.class).toString();
+        selector.setName("SelectorLastErrors test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -258,6 +268,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveSessions.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_SESSIONS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateActiveSessions.executeFunction(String.class, in).toString();
+        selector.setName("SelectorActiveSessions test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -267,6 +279,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveQueries.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_QUERIES);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateActiveQueries.executeFunction(String.class, in).toString();
+        selector.setName("SelectorActiveQueries test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -276,6 +290,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateQueriesResults.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_QUERIES_RESULTS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateQueriesResults.executeFunction(String.class, in).toString();
+        selector.setName("SelectorQueriesResults test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -285,6 +301,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateSqlQueryMonitor.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_MONITOR);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateSqlQueryMonitor.executeFunction(String.class, in).toString();
+        selector.setName("SelectorSqlQueryMonitor test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -292,6 +310,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorDBLocks selector = new SelectorDBLocks();
         simpleCallTemplateDBLocks.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_DB_LOCKS);
         String sql_query = simpleCallTemplateDBLocks.executeFunction(String.class).toString();
+        selector.setName("SelectorDBLocks test");
+        //TODO sent results to serializer
         return selector;
     }
 
@@ -301,9 +321,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveJobs.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_JOBS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("hour_count", hourCount);
         String sql_query = simpleCallTemplateActiveJobs.executeFunction(String.class, in).toString();
+        selector.setName("SelectorActiveJobs test");
+        //TODO sent results to serializer
         return selector;
     }
-
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
             " FROM objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +
@@ -392,26 +413,26 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " where ref_selector.attr_id=19 and objects.object_id=ref_selector.reference and ref_selector.object_id = ?";
     private static final String SELECT_SIMPLE_SELECTOR_BY_PROJECTID = "select selector.object_id id, selector.name name, selector_value.BIG_VALUE value" +
             " from objects selector, attributes selector_value, objreference selector_ref" +
-            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
-            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +        /*selector value*/
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +              /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
     private static final String SELECT_SELECTOR_SEGMENT_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_segment.value segment" +
             " from objects selector, attributes selector_value, attributes selector_segment, objreference selector_ref" +
-            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
-            " and selector_segment.object_id = selector.object_id and selector_segment.attr_id = 14" +
-            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +         /*selector value*/
+            " and selector_segment.object_id = selector.object_id and selector_segment.attr_id = 14" +      /*selector segment*/
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +              /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
     private static final String SELECT_SELECTOR_TOP_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_top.value top" +
             " from objects selector, attributes selector_value, attributes selector_top, objreference selector_ref" +
-            " where  selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
-            " and selector_top.object_id = selector.object_id and selector_top.attr_id = 15" +
-            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " where  selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +          /*selector value*/
+            " and selector_top.object_id = selector.object_id and selector_top.attr_id = 15" +                  /*top for selector*/
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
     private static final String SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID = "select selector.object_id id,selector.name name, selector_value.BIG_VALUE value, selector_hour_count.value hour_count" +
             " from objects selector, attributes selector_value, attributes selector_hour_count, objreference selector_ref" +
-            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +
-            " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +
-            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +
+            " where selector_value.object_id = selector.object_id and selector_value.attr_id = 13" +            /*selector value*/
+            " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +    /*hour count for selector*/
+            " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
 
     private static final String SELECTOR_QUERIES_PACKAGE = "pkg_selectors";
@@ -467,7 +488,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             String serverName = rs.getString(HWProjectColumnName.serverName.toString());
             String userName = rs.getString(HWProjectColumnName.userName.toString());
             String password = rs.getString(HWProjectColumnName.password.toString());
-
             HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(id, name, creationDate, description, author, sid, port, serverName, userName, password);
             // builder.buildDescription(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
             return builder.buildProject();

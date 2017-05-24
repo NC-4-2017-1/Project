@@ -14,11 +14,8 @@ public interface HealthMonitorProjectDAO {
 
     Graphic getProjectGraph(Project project);
     List<Selector> getProjectSelectors(Project project);
-    Map<String, String> getProjectConnections(Project project);
     Graphic createGraph(int hourCount);
-    List<Selector> createSelectorList(Map<String, String> map);
-    //boolean saveGraphic(int hourCount,Graphic graphic);
-    //boolean saveSelector(Map<String,String> map, Selector selector);
+    List<Selector> createSelectorList(Map<BigInteger, String> map);
 
     Project getProjectById(BigInteger id);
     Project getProjectByName(String projectName);
