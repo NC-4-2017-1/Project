@@ -31,34 +31,48 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("User not fetched", e);
+            LOGGER.error("User not fetched by id " + id, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("User not fetched by id " + id, e);
             return null;
         }
+
     }
 
     public User getUserByFullName(String fullName) {
         try {
             return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("User not fetched", e);
+            LOGGER.error("User not fetched by full name " + fullName, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("User not fetched by full name " + fullName, e);
             return null;
         }
     }
 
     public User getUserByEmail(String email) {
         try {
-            return generalTemplate.queryForObject(/*SELECT_USER_BY_EMAIL*/SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
+            return generalTemplate.queryForObject(SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("User not fetched", e);
+            LOGGER.debug("User not fetched by email for authorization" + email, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.debug("User not fetched by email for authorization " + email, e);
             return null;
         }
+        //!TODO deliver error message to user when catch exception (not stack trace)
     }
 
     public Collection<User> getAllUsersList() {
         try {
             return generalTemplate.query(GET_ALL_USERS, new UserRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Users not fetched", e);
+            LOGGER.error("List of all users not fetched", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.debug("List of all users not fetched", e);
             return null;
         }
     }
@@ -68,10 +82,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             //TODO method for deleting user from database
         } catch (DataAccessException e) {
-            LOGGER.error("User not removed", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not removed", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("User not removed", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not removed", e);
             return false;
         }
         return false;
@@ -79,14 +93,14 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User updateUsersEmail(User user, String email) {
-        user.setEmail(email);
         try {
             generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, email, user.getId(), USER_EMAIL_ATTR_ID);
+            user.setEmail(email);
         } catch (DataAccessException e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated email to " + email, e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated email to " + email, e);
             return null;
         }
         return user;
@@ -95,15 +109,15 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User updateUsersName(User user, String firstName, String lastName) {
         try {
-            generalTemplate.update(UPDATE_USER_NAME, firstName + " " + lastName, user.getId());
+            generalTemplate.update(UPDATE_USER_NAME, lastName + " " + firstName, user.getId());
             generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, firstName, user.getId(), USER_FIRST_NAME_ATTR_ID);
             generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, lastName, user.getId(), USER_LAST_NAME_ATTR_ID);
             user = getUserById(user.getId());
         } catch (DataAccessException e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated full name to " + lastName + " " + firstName, e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated full name to " + lastName + " " + firstName, e);
             return null;
         }
         return user;
@@ -115,10 +129,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, password, user.getId(), PASSWORD_ATTR_ID);
             user.setPassword(password);
         } catch (DataAccessException e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated password to " + password, e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("User not updated", e);
+            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated password to " + password, e);
             return null;
         }
         return user;
@@ -127,12 +141,18 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean giveUserAccessToProject(User user, Project project) {
         try {
-            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, user.getId(), project.getId());
+            if (user != null && project != null) {
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, user.getId(), project.getId());
+            } else {
+                return false;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Access not granted", e);
+            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
+                    ") not granted to User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Access not granted", e);
+            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
+                    ") not granted to User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
             return false;
         }
         return true;
@@ -141,31 +161,28 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean removeAccessToProjectFromUser(User user, Project project) {
         try {
-            generalTemplate.update(REMOVE_ACCESS_TO_PROJECT_FROM_USER, project.getId(), user.getId());
+            if (user != null && project != null) {
+                generalTemplate.update(REMOVE_ACCESS_TO_PROJECT_FROM_USER, project.getId(), user.getId());
+            } else {
+                return false;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Access not removed", e);
+            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
+                    ") not removed from User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Access not removed", e);
-            return false;
+            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
+                    ") not removed from User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
         }
         return true;
     }
 
-    public User authorizeUser(String email, String password) {
-        try {
-            return generalTemplate.queryForObject(AUTORIZE_USER_BY_LOGIN_AND_PASSWORD, new Object[]{email, password}, new UserRowMapper());
-        } catch (DataAccessException e) {
-            LOGGER.error("User not authorized");
-            return null;
-        }
-    }
-
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
-        User user = new UserImpl.Builder(email, password).buildFirstName(firstName).buildLastName(lastName).buildType(type).buildUser();
+        User user = null;
+        BigInteger insertedObjectId = null;
         try {
-            BigInteger insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
+            insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
             generalTemplate.update(INSERT_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
             generalTemplate.update(INSERT_ATTR_VALUE, USER_FIRST_NAME_ATTR_ID, insertedObjectId, firstName);
             generalTemplate.update(INSERT_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
@@ -178,6 +195,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             LOGGER.error("User not created", e);
             return null;
         }
+        user = getUserById(insertedObjectId);
         return user;
     }
 
@@ -230,18 +248,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " set value = ?" +
             " where object_id= ?" +
             " and attr_id = ?";
-    private static final String AUTORIZE_USER_BY_LOGIN_AND_PASSWORD = "select users.object_id id, email.value email, first_name.value first_name, last_name.value last_name, password.value password" +
-            " from objects users,  attributes email,  attributes first_name,  attributes last_name,  attributes password" +
-            " where users.object_id = email.object_id" +
-            " and email.attr_id = 1" +
-            " and  users.object_id = first_name.object_id" +
-            " and first_name.attr_id = 2" +
-            " and  users.object_id = last_name.object_id" +
-            " and last_name.attr_id = 3" +
-            " and  users.object_id = password.object_id" +
-            " and password.attr_id = 4" +
-            " and email.value = ?" +
-            " and password.value = ?";
     private static final String SELECT_USER_BY_EMAIL = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name" +
             " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
             " where obj_user.object_type_id = 1" +

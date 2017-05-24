@@ -19,7 +19,6 @@ public interface UserDAO {
     User updateUsersPassword(User user, String password);
     boolean giveUserAccessToProject(User user, Project project);
     boolean removeAccessToProjectFromUser(User user, Project project);
-    User authorizeUser(String email, String password);
 
 
 }
