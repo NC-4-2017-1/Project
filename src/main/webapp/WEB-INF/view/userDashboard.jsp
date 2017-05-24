@@ -1,4 +1,3 @@
-<%@ page import="com.dreamteam.datavisualizator.models.UserTypes" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
@@ -10,16 +9,31 @@
 <body>
 
 <sec:authorize access="!isAuthenticated()">
-    <% response.sendRedirect("login"); %>
+    <% response.sendRedirect("/login"); %>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
-    You're good to go ahead
     <sec:authorize access="hasAuthority('REGULAR_USER')">
-        This content will only be visible to users who have
-        the "REGULAR_USER" authority in their list of GrantedAuthoritys.
+
+
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+       html and other code goes here (user dashboard)
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+
+
     </sec:authorize>
     <sec:authorize access="!hasAuthority('REGULAR_USER')">
-        NOPE
+        <% response.sendRedirect("/"); %>
     </sec:authorize>
 </sec:authorize>
 

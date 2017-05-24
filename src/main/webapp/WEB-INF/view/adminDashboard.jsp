@@ -1,4 +1,3 @@
-<%@ page import="com.dreamteam.datavisualizator.models.UserTypes" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
@@ -16,15 +15,31 @@
 
 
 <sec:authorize access="!isAuthenticated()">
-    <% response.sendRedirect("login"); %>
+    <% response.sendRedirect("/login"); %>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
     <sec:authorize access="hasAuthority('ADMIN')">
-        This content will only be visible to users who have
-        the "ADMIN" authority in their list of <tt>GrantedAuthority</tt>s.
+
+
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        html and other code goes here (admin dashboard)
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+        <%--html and other code goes here--%>
+
+
     </sec:authorize>
     <sec:authorize access="!hasAuthority('ADMIN')">
-        NOPE
+        <% response.sendRedirect("/"); %>
     </sec:authorize>
 </sec:authorize>
 
