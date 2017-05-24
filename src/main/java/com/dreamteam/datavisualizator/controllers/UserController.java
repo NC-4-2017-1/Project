@@ -28,17 +28,8 @@ public class UserController {
     }
 
     @RequestMapping(path = "/create-user", method = RequestMethod.GET)
-    public String userCreation(Model model) {
+    public String createUser(Model model) {
         return "userCreation";
-    }
-
-    @RequestMapping(path = "/update-user", method = RequestMethod.GET)
-    public User updateUsers(@RequestParam("email") String email,
-                            @RequestParam("firstName") String firstName,
-                            @RequestParam("lastName") String lastName,
-                            @RequestParam("password") String password,
-                            Model model) {
-        return null;
     }
 
     @RequestMapping(path = "/create", method = RequestMethod.GET)
@@ -51,13 +42,24 @@ public class UserController {
         return userDAO.createUser(firstName, lastName, email, password, UserTypes.REGULAR_USER);
     }
 
-    //low prior
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
     public boolean deleteUser(User user,
                               Model model) {
         return userDAO.deleteUser(user);
     }
+
+    @RequestMapping(path = "/update-user", method = RequestMethod.GET)
+    @ResponseBody
+    public User updateUsers(@RequestParam("firstName") String firstName,
+                            @RequestParam("lastName") String lastName,
+                            @RequestParam("email") String email,
+                            @RequestParam("password") String password,
+                            Model model) {
+        return null;
+    }
 }
+
+
 
 
