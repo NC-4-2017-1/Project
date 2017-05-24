@@ -21,7 +21,7 @@ public class ProjectController {
     @Autowired
     DataVisualizationProjectDAO healthMonitorProjectDAOImpl;
 
-    @RequestMapping(path = "/project-view", method = RequestMethod.GET)
+    @RequestMapping(path = "/view", method = RequestMethod.GET)
     public String projectView(Model model) {
         return "project";
     }
@@ -68,9 +68,9 @@ public class ProjectController {
 
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
-    public void deleteProject(Project project,
-                              Model model) {
-        projectDAO.deleteProject(project);
+    public boolean deleteProject(Project project,
+                                 Model model) {
+        return projectDAO.deleteProject(project);
     }
 
     @RequestMapping(path = "/save", method = RequestMethod.GET)

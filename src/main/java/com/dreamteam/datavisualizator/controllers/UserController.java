@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.UserTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,24 @@ public class UserController {
         return "userCreation";
     }
 
+    @RequestMapping(path = "/update-user", method = RequestMethod.GET)
+    public User updateUsers(@RequestParam("email") String email,
+                            @RequestParam("firstName") String firstName,
+                            @RequestParam("lastName") String lastName,
+                            @RequestParam("password") String password,
+                            Model model) {
+        return null;
+    }
+
+    @RequestMapping(path = "/create", method = RequestMethod.GET)
+    @ResponseBody
+    public User create(@RequestParam("firstName") String firstName,
+                       @RequestParam("lastName") String lastName,
+                       @RequestParam("email") String email,
+                       @RequestParam("password") String password,
+                       Model model) {
+        return userDAO.createUser(firstName, lastName, email, password, UserTypes.REGULAR_USER);
+    }
 
     //low prior
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
@@ -39,13 +58,6 @@ public class UserController {
                               Model model) {
         return userDAO.deleteUser(user);
     }
-
-    @RequestMapping(path = "/update-user", method = RequestMethod.GET)
-    public User updateUsersEmail(@RequestParam("email") String email,
-                                 Model model) {
-        return null;
-    }
-
 }
 
 
