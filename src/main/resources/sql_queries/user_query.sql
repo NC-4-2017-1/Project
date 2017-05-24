@@ -54,8 +54,8 @@ and email.value=?;
 
 
 --get all users
-select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email
-from objects obj_user, attributes first_name,  attributes last_name,  attributes email
+select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, usertype.list_value_id usertype
+from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes usertype
 where obj_user.object_type_id = 1
 and obj_user.object_id = first_name.object_id
 and first_name.attr_id = 2
@@ -63,7 +63,9 @@ and  obj_user.object_id = last_name.object_id
 and last_name.attr_id = 3
 and  obj_user.object_id = email.object_id
 and email.attr_id = 1
-and obj_user.object_id!=1;
+and obj_user.object_id!=1
+and obj_user.object_id = usertype.object_id
+and usertype.list_value_id = 1;
 
 
 --update user's email

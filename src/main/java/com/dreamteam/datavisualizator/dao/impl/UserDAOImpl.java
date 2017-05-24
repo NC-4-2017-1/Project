@@ -67,7 +67,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     public Collection<User> getAllUsersList() {
         try {
-            return generalTemplate.query(GET_ALL_USERS, new UserRowMapper());
+            return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapper());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;
@@ -258,7 +258,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and  obj_user.object_id = email.object_id" +
             " and email.attr_id = 1" +
             " and email.value = ?";
-
     private static final String SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, password.value password, usertype.list_value_id usertype " +
             " from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes password, attributes usertype " +
             " where obj_user.object_type_id = 1 " +
@@ -273,16 +272,18 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and obj_user.object_id = usertype.object_id " +
             " and email.attr_id = 1 " +
             " and email.value=?";
-    private static final String GET_ALL_USERS = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email" +
-            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
-            " where obj_user.object_type_id = 1" +
-            " and obj_user.object_id = first_name.object_id" +
-            " and first_name.attr_id = 2" +
-            " and  obj_user.object_id = last_name.object_id" +
-            " and last_name.attr_id = 3" +
-            " and  obj_user.object_id = email.object_id" +
-            " and email.attr_id = 1" +
-            " and obj_user.object_id! = 1";
+    private static final String SELECT_ALL_USERS = "select obj_user.object_id id, first_name.value first_name, last_name.value last_name, email.value email, usertype.list_value_id usertype " +
+            " from objects obj_user, attributes first_name,  attributes last_name,  attributes email, attributes usertype " +
+            " where obj_user.object_type_id = 1 " +
+            " and obj_user.object_id = first_name.object_id " +
+            " and first_name.attr_id = 2 " +
+            " and  obj_user.object_id = last_name.object_id " +
+            " and last_name.attr_id = 3 " +
+            " and  obj_user.object_id = email.object_id " +
+            " and email.attr_id = 1 " +
+            " and obj_user.object_id!=1 " +
+            " and obj_user.object_id = usertype.object_id " +
+            " and usertype.list_value_id = 1";
     private static final String SELECT_USER_BY_FULLNAME = "select obj_user.object_id id,  first_name.value first_name, last_name.value last_name, email.value email" +
             " from objects obj_user, attributes first_name,  attributes last_name,  attributes email" +
             " where obj_user.object_type_id = 1" +
