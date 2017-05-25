@@ -1,4 +1,4 @@
-package com.dreamteam.datavisualizator.common.utils;
+package com.dreamteam.datavisualizator.services.xmlparser;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;

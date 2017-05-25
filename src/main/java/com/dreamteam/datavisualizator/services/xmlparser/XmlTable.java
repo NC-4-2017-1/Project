@@ -1,4 +1,4 @@
-package com.dreamteam.datavisualizator.common.utils;
+package com.dreamteam.datavisualizator.services.xmlparser;
 
 import java.util.ArrayList;
 import java.util.List;
