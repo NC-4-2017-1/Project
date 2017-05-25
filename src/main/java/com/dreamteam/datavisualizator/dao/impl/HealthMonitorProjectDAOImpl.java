@@ -57,37 +57,17 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         try {
             return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Graph not selected");
+            LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
             return null;
         }
     }
 
     public List<Selector> getProjectSelectors(Project project) {
         try {
-            Map<BigInteger, RowMapper<Selector>> mapSelectorsRowMapper = new HashMap<>();
-            mapSelectorsRowMapper.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,    new SelectorInstanceInfoRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,  new SelectorSizeForTablespaceRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID,   new SelectorSizeForIndexLobRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_LAST_ERRORS_OBJTYPE_ID,      new SelectorLastErrorsRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,  new SelectorActiveSessionsRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID,   new SelectorActiveQueriesRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID,  new SelectorQueriesResultsRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_SQL_MONITOR_OBJTYPE_ID,      new SelectorSqlQueryMonitorRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_DB_LOCKS_OBJTYPE_ID,         new SelectorDBLocksRowMapper());
-            mapSelectorsRowMapper.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID,      new SelectorActiveJobsRowMapper());
-
-            Map<BigInteger, String> mapSelectorsSql = new HashMap<>();
-            mapSelectorsSql.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, SELECT_SELECTOR_SEGMENT_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_LAST_ERRORS_OBJTYPE_ID,    SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_SQL_MONITOR_OBJTYPE_ID,    SELECT_SELECTOR_TOP_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_DB_LOCKS_OBJTYPE_ID,       SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
-            mapSelectorsSql.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID,    SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID);
-           //BigInteger projectId = BigInteger.valueOf(77L);
+            //BigInteger projectId = BigInteger.valueOf(77L);
             BigInteger projectId = project.getId();
             List<BigInteger>  arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[] { projectId }, BigInteger.class);
             List<Selector>  arraySelectors = new ArrayList<>();
@@ -96,7 +76,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             }
             return arraySelectors;
         } catch (DataAccessException e) {
-            LOGGER.error("Selectors not fetched");
+            LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
             return null;
         }
     }
@@ -122,14 +105,12 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 arraySelectors.add(createSelectorSizeForTablespace(new SimpleJdbcCall(generalTemplate)));
             }
             if(map.containsKey(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)) {
-               // arraySelectors.add(createSelectorSizeForIndexLob(new SimpleJdbcCall(generalTemplate), "dba"));
                 arraySelectors.add(createSelectorSizeForIndexLob(new SimpleJdbcCall(generalTemplate), map.get(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)));
             }
             if(map.containsKey(IdList.S_LAST_ERRORS_OBJTYPE_ID)) {
                 arraySelectors.add(createSelectorLastErrors(new SimpleJdbcCall(generalTemplate)));
             }
             if(map.containsKey(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID)) {
-                //arraySelectors.add(createSelectorActiveSessions(new SimpleJdbcCall(generalTemplate), 10));
                 arraySelectors.add(createSelectorActiveSessions(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID))));
             }
             if(map.containsKey(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID)) {
@@ -156,36 +137,48 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public Project getProjectById(BigInteger id) {
         try {
-            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new HealthMonitorProjectRowMapper());
+            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new CompleteHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Project not fetched", e);
+            LOGGER.error("Project not fetched by id " + id, e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Project not fetched by id " + id, e);
             return null;
         }
     }
 
     public Project getProjectByName(String projectName) {
         try {
-            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new HealthMonitorProjectRowMapper());
+            return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_NAME, new Object[]{projectName}, new CuttedHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Project not fetched", e);
+            LOGGER.error("Project not fetched by name " + projectName, e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Project not fetched by name " + projectName, e);
             return null;
         }
     }
 
     public List<HealthMonitorProject> getProjectsByAuthor(User user) {
         try {
-            return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+            return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Projects not fetched");
+            LOGGER.error("Project not fetched by author with id - " + user.getId(), e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Project not fetched by author with id - " + user.getId(), e);
             return null;
         }
     }
 
     public List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user) {
         try {
-            return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new HealthMonitorProjectRowMapper());
+            return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Projects not fetched", e);
+            LOGGER.error("Project not fetched for user with id - " + user.getId(), e);
+            return null;
+        }catch (Exception e) {
+            LOGGER.error("Project not fetched for user with id - " + user.getId(), e);
             return null;
         }
     }
@@ -195,10 +188,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         try {
             return false;
         } catch (DataAccessException e) {
-            LOGGER.error("Project not deleted", e);
+            LOGGER.error("Project with id " +project.getId() + " not deleted", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Project not deleted", e);
+            LOGGER.error("Project with id " +project.getId() + " not deleted", e);
             return false;
         }
     }
@@ -212,10 +205,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 //        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
 //        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
         } catch (DataAccessException e) {
-            LOGGER.error("Project not saved", e);
+            LOGGER.error("Project with name " +project.getName() + " not saved", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Project not saved", e);
+            LOGGER.error("Project with name " +project.getName() + " not saved", e);
             return false;
         }
         return true;
@@ -257,6 +250,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorLastErrors selector = new SelectorLastErrors();
         simpleCallTemplateLastErrors.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_LAST_ERRORS);
         String sql_query = simpleCallTemplateLastErrors.executeFunction(String.class).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorLastErrors test");
         //TODO sent results to serializer
         return selector;
@@ -268,6 +262,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveSessions.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_SESSIONS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateActiveSessions.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorActiveSessions test");
         //TODO sent results to serializer
         return selector;
@@ -279,6 +274,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveQueries.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_QUERIES);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateActiveQueries.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorActiveQueries test");
         //TODO sent results to serializer
         return selector;
@@ -290,6 +286,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateQueriesResults.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_QUERIES_RESULTS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateQueriesResults.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorQueriesResults test");
         //TODO sent results to serializer
         return selector;
@@ -301,6 +298,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateSqlQueryMonitor.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_MONITOR);
         SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
         String sql_query = simpleCallTemplateSqlQueryMonitor.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorSqlQueryMonitor test");
         //TODO sent results to serializer
         return selector;
@@ -310,6 +308,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         SelectorDBLocks selector = new SelectorDBLocks();
         simpleCallTemplateDBLocks.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_DB_LOCKS);
         String sql_query = simpleCallTemplateDBLocks.executeFunction(String.class).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorDBLocks test");
         //TODO sent results to serializer
         return selector;
@@ -321,6 +320,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         simpleCallTemplateActiveJobs.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_JOBS);
         SqlParameterSource in = new MapSqlParameterSource().addValue("hour_count", hourCount);
         String sql_query = simpleCallTemplateActiveJobs.executeFunction(String.class, in).toString();
+        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
         selector.setName("SelectorActiveJobs test");
         //TODO sent results to serializer
         return selector;
@@ -446,7 +446,30 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     private static final String QUERY_FOR_SQL_MONITOR = "sql_query_monitor";
     private static final String QUERY_FOR_DB_LOCKS = "db_locks";
     private static final String QUERY_FOR_ACTIVE_JOBS = "active_jobs";
-
+    private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
+            put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, SELECT_SELECTOR_SEGMENT_BY_PROJECTID);
+            put(IdList.S_LAST_ERRORS_OBJTYPE_ID,    SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
+            put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, SELECT_SELECTOR_TOP_BY_PROJECTID);
+            put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID,SELECT_SELECTOR_TOP_BY_PROJECTID);
+            put(IdList.S_SQL_MONITOR_OBJTYPE_ID,    SELECT_SELECTOR_TOP_BY_PROJECTID);
+            put(IdList.S_DB_LOCKS_OBJTYPE_ID,       SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
+            put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID,    SELECT_SELECTOR_HOUR_COUNT_BY_PROJECTID);
+    }};
+    private final Map<BigInteger, RowMapper<Selector>> mapSelectorsRowMapper = new HashMap<BigInteger, RowMapper<Selector>>(){{
+            put(IdList.S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoRowMapper());
+            put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceRowMapper());
+            put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobRowMapper());
+            put(IdList.S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsRowMapper());
+            put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsRowMapper());
+            put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesRowMapper());
+            put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsRowMapper());
+            put(IdList.S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorRowMapper());
+            put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksRowMapper());
+            put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsRowMapper());
+    }};
     private enum HWProjectColumnName {
         id("id"),
         name("name"),
@@ -476,22 +499,37 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
     }
 
-    private class HealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
+    private class CuttedHealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
         public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
-            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
-            String name = rs.getString(HWProjectColumnName.name.toString());
-            Date creationDate = rs.getDate(HWProjectColumnName.createDate.toString());
-            String description = rs.getString(HWProjectColumnName.description.toString());
-            BigInteger author = BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString()));
-            String sid = rs.getString(HWProjectColumnName.sid.toString());
-            String port = rs.getString(HWProjectColumnName.port.toString());
-            String serverName = rs.getString(HWProjectColumnName.serverName.toString());
-            String userName = rs.getString(HWProjectColumnName.userName.toString());
-            String password = rs.getString(HWProjectColumnName.password.toString());
-            HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(id, name, creationDate, description, author, sid, port, serverName, userName, password);
-            // builder.buildDescription(rs.getString(HWProjectColumnName.DESCRIPTION.toString()));
+            HealthMonitorProject.Builder builder =  mapCuttedProject(rs, rownum);
             return builder.buildProject();
         }
+    }
+
+    private class CompleteHealthMonitorProjectRowMapper implements RowMapper<HealthMonitorProject> {
+        public HealthMonitorProject mapRow(ResultSet rs, int rownum) throws SQLException {
+            HealthMonitorProject.Builder builder =  mapCuttedProject(rs, rownum);
+            HealthMonitorProject project = builder.buildProject();
+            builder.buildGraphic(getProjectGraph(project));
+            builder.buildSelectors(getProjectSelectors(project));
+            return builder.buildProject();
+        }
+    }
+
+    private  HealthMonitorProject.Builder mapCuttedProject(ResultSet rs, int rownum) throws SQLException {
+        BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
+        String name = rs.getString(HWProjectColumnName.name.toString());
+        Date creationDate = rs.getDate(HWProjectColumnName.createDate.toString());
+        String description = rs.getString(HWProjectColumnName.description.toString());
+        BigInteger author = BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString()));
+        String sid = rs.getString(HWProjectColumnName.sid.toString());
+        String port = rs.getString(HWProjectColumnName.port.toString());
+        String serverName = rs.getString(HWProjectColumnName.serverName.toString());
+        String userName = rs.getString(HWProjectColumnName.userName.toString());
+        String password = rs.getString(HWProjectColumnName.password.toString());
+        HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(id, name, creationDate,
+                description, author, sid, port, serverName, userName, password);
+        return builder;
     }
 
     private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl> {
