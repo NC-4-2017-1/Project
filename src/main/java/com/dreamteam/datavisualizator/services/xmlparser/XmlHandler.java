@@ -29,12 +29,12 @@ class XmlHandler extends DefaultHandler {
 
     @Override
     public void startDocument() throws SAXException {
-        LOGGER.info("Start parsing of file...");
+        LOGGER.debug("Start parsing of file...");
     }
 
     @Override
     public void endDocument() throws SAXException {
-        LOGGER.info("End parsing of file...");
+        LOGGER.debug("End parsing of file...");
     }
 
     @Override

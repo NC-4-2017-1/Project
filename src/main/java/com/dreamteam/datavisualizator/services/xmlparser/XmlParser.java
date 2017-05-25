@@ -35,7 +35,7 @@ public class XmlParser {
             LOGGER.error("File not parsed", e);
             return null;
         } catch (SaxTerminatorException e){
-            LOGGER.info("Parser stopped. Number of parsed rows: "+countOfRows);
+            LOGGER.debug("Parser stopped. Number of parsed rows: "+countOfRows);
         } catch (SAXException e){
             LOGGER.error("File not parsed, e");
         }
