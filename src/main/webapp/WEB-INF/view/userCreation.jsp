@@ -12,34 +12,6 @@
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
         crossorigin="anonymous">
 </script>
-<sec:authorize access="!isAuthenticated()">
-    <% response.sendRedirect("/login"); %>
-</sec:authorize>
-<sec:authorize access="isAuthenticated()">
-    <sec:authorize access="hasAuthority('ADMIN')">
-
-
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        html and other code goes here (user creation)
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-
-
-    </sec:authorize>
-    <sec:authorize access="!hasAuthority('ADMIN')">
-        <% response.sendRedirect("/"); %>
-    </sec:authorize>
-</sec:authorize>
 
 </body>
 </html>

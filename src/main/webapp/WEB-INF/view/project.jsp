@@ -12,34 +12,6 @@
         crossorigin="anonymous">
 </script>
 
-<sec:authorize access="!isAuthenticated()">
-    <% response.sendRedirect("/login"); %>
-</sec:authorize>
-<sec:authorize access="isAuthenticated()">
-    <sec:authorize access="hasAuthority('REGULAR_USER')">
-
-
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        html and other code goes here (project view)
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-
-
-    </sec:authorize>
-    <sec:authorize access="!hasAuthority('REGULAR_USER')">
-        <% response.sendRedirect("/"); %>
-    </sec:authorize>
-</sec:authorize>
 
 
 

@@ -4,8 +4,8 @@ package com.dreamteam.datavisualizator.models;
 import java.math.BigInteger;
 
 public enum UserTypes {
-    REGULAR_USER(BigInteger.valueOf(1L), "REGULAR_USER"),
-    ADMIN(BigInteger.valueOf(2L), "ADMIN");
+    REGULAR_USER(BigInteger.valueOf(1L), "ROLE_REGULAR_USER"),
+    ADMIN(BigInteger.valueOf(2L), "ROLE_ADMIN");
 
     private final BigInteger id;
     private final String userRole;

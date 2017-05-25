@@ -33,6 +33,19 @@
             <p>Ваш логин: <sec:authentication property="principal.username" /></p>
             <p><a class="btn btn-lg btn-danger" href="<c:url value="/logout" />" role="button">Выйти</a></p>
 
+            <p><a class="btn btn-default" href="<c:url value="/user/dashboard" />" role="button">User: dashboard</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/user/admin-panel" />" role="button">Admin: admin panel</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/user/create-user" />" role="button">Admin: create user</a></p>
+
+            <p><a class="btn btn-default" href="<c:url value="/project/layout" />" role="button">Proj: project view</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/share" />" role="button">Proj: share project</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/create-layout" />" role="button">Proj: create project</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/visualization-setup" />" role="button">Proj: dv setup</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/visualization-settings" />" role="button">Proj: dv settings</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/health-monitor-setup" />" role="button">Proj: hm setup</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/health-monitor-settings" />" role="button">Proj: hm settings</a></p>
+
+
         </sec:authorize>
     </div>
 

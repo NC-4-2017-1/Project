@@ -8,36 +8,7 @@
 </head>
 <body>
 
-<sec:authorize access="!isAuthenticated()">
-    <% response.sendRedirect("/login"); %>
-</sec:authorize>
-<sec:authorize access="isAuthenticated()">
-    <sec:authorize access="hasAuthority('REGULAR_USER')">
 
-
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-       html and other code goes here (user dashboard)
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-        <%--html and other code goes here--%>
-
-
-    </sec:authorize>
-    <sec:authorize access="!hasAuthority('REGULAR_USER')">
-        <% response.sendRedirect("/"); %>
-    </sec:authorize>
-</sec:authorize>
-
-﻿
 <script
         src="https://code.jquery.com/jquery-3.2.1.js"
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="

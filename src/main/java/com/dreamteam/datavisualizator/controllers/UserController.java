@@ -4,6 +4,7 @@ import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,21 +18,25 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/admin-panel", method = RequestMethod.GET)
     public String adminDashboard(Model model) {
         return "adminDashboard";
     }
 
+    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
     public String userDashboard(Model model) {
         return "userDashboard";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create-user", method = RequestMethod.GET)
     public String createUser(Model model) {
         return "userCreation";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create", method = RequestMethod.GET)
     @ResponseBody
     public User create(@RequestParam("firstName") String firstName,
@@ -42,6 +47,7 @@ public class UserController {
         return userDAO.createUser(firstName, lastName, email, password, UserTypes.REGULAR_USER);
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
     @ResponseBody
     public boolean deleteUser(User user,
@@ -49,6 +55,7 @@ public class UserController {
         return userDAO.deleteUser(user);
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/update-user", method = RequestMethod.GET)
     @ResponseBody
     public User updateUsers(@RequestParam("firstName") String firstName,
