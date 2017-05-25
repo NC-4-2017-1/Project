@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.controllers;
 
+import com.dreamteam.datavisualizator.controllers.request.CreateUserRequest;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
@@ -7,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user")
@@ -37,14 +35,11 @@ public class UserController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(path = "/create", method = RequestMethod.GET)
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public User create(@RequestParam("firstName") String firstName,
-                       @RequestParam("lastName") String lastName,
-                       @RequestParam("email") String email,
-                       @RequestParam("password") String password,
-                       Model model) {
-        return userDAO.createUser(firstName, lastName, email, password, UserTypes.REGULAR_USER);
+    public User create(@RequestBody CreateUserRequest createUserRequest, Model model) {
+        return userDAO.createUser(createUserRequest.getFirstName(), createUserRequest.getLastName(),
+                createUserRequest.getEmail(), createUserRequest.getPassword(), UserTypes.REGULAR_USER);
     }
 
     @Secured("ROLE_ADMIN")
@@ -65,6 +60,7 @@ public class UserController {
                             Model model) {
         return null;
     }
+
 }
 
 
