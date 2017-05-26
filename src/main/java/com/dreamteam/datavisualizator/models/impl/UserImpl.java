@@ -8,7 +8,7 @@ import com.dreamteam.datavisualizator.models.UserTypes;
 import java.math.BigInteger;
 import java.util.List;
 
-public class UserImpl implements User{
+public class UserImpl implements User {
     private BigInteger id;
     private String firstName;
     private String lastName;
@@ -18,7 +18,8 @@ public class UserImpl implements User{
     private List<Project> userHaveAccessToProjects;
     private UserTypes type;
 
-    private UserImpl(Builder builder){
+    private UserImpl(Builder builder) {
+        id = builder.id;
         firstName = builder.firstName;
         lastName = builder.lastName;
         email = builder.email;
@@ -32,7 +33,7 @@ public class UserImpl implements User{
         this.id = id;
     }
 
-    public BigInteger getId(){
+    public BigInteger getId() {
         return id;
     }
 
@@ -40,7 +41,7 @@ public class UserImpl implements User{
         this.firstName = firstName;
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return firstName;
     }
 
@@ -48,7 +49,7 @@ public class UserImpl implements User{
         this.lastName = lastName;
     }
 
-    public String getLastName(){
+    public String getLastName() {
         return lastName;
     }
 
@@ -56,7 +57,7 @@ public class UserImpl implements User{
         this.email = email;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
@@ -64,7 +65,7 @@ public class UserImpl implements User{
         this.password = password;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
@@ -72,7 +73,7 @@ public class UserImpl implements User{
         this.userProjects = userProjects;
     }
 
-    public List<Project> getUserAuthorProjects(){
+    public List<Project> getUserAuthorProjects() {
         return userProjects;
     }
 
@@ -80,7 +81,7 @@ public class UserImpl implements User{
         this.userHaveAccessToProjects = userHaveAccessToProjects;
     }
 
-    public List<Project> getUserHaveAccessProjects(){
+    public List<Project> getUserHaveAccessProjects() {
         return userHaveAccessToProjects;
     }
 
@@ -88,15 +89,15 @@ public class UserImpl implements User{
         this.type = type;
     }
 
-    public UserTypes getUserType(){
+    public UserTypes getUserType() {
         return type;
     }
 
-    public String getFullName(){
+    public String getFullName() {
         return firstName + " " + lastName;
     }
 
-    public static class Builder{
+    public static class Builder {
         private BigInteger id;
         private String firstName;
         private String lastName;
@@ -106,37 +107,42 @@ public class UserImpl implements User{
         private List<Project> userHaveAccessToProjects;
         private UserTypes type;
 
-        public Builder(String email, String password){
+        public Builder(String email, String password) {
             this.email = email;
             this.password = password;
         }
 
-        public Builder buildId(BigInteger val){
+        public Builder buildId(BigInteger val) {
             id = val;
             return this;
         }
-        public Builder buildFirstName(String val){
+
+        public Builder buildFirstName(String val) {
             firstName = val;
             return this;
         }
-        public Builder buildLastName(String val){
+
+        public Builder buildLastName(String val) {
             lastName = val;
             return this;
         }
-        public Builder buildUserProjects(List<Project> val){
+
+        public Builder buildUserProjects(List<Project> val) {
             userProjects = val;
             return this;
         }
-        public Builder buildUserHaveAccessToProjects(List<Project> val){
+
+        public Builder buildUserHaveAccessToProjects(List<Project> val) {
             userHaveAccessToProjects = val;
             return this;
         }
-        public Builder buildType(UserTypes  val){
+
+        public Builder buildType(UserTypes val) {
             type = val;
             return this;
         }
 
-        public UserImpl buildUser(){
+        public UserImpl buildUser() {
             return new UserImpl(this);
         }
     }

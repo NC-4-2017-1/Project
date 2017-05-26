@@ -202,7 +202,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             String email = rs.getString(UserColumnName.email.toString());
-            BigInteger id = BigInteger.valueOf(rs.getLong(UserColumnName.id.toString()));
+            BigInteger id = rs.getBigDecimal(UserColumnName.id.toString()).toBigInteger();
             String firstName = rs.getString(UserColumnName.firstName.toString());
             String lastName = rs.getString(UserColumnName.lastName.toString());
             String password = rs.getString(UserColumnName.password.toString());
