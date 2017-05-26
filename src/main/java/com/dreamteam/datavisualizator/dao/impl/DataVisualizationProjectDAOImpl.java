@@ -6,7 +6,9 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
+import com.dreamteam.datavisualizator.services.ClobToStringService;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -26,7 +29,7 @@ import java.util.List;
 import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
-public class DataVisualizationProjectDAOImpl extends AbstractDAO implements DataVisualizationProjectDAO{
+public class DataVisualizationProjectDAOImpl extends AbstractDAO implements DataVisualizationProjectDAO {
     private static final Logger LOGGER = Logger.getLogger(DataVisualizationProjectDAOImpl.class);
 
     @Autowired
@@ -39,7 +42,10 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         try {
             return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Project not fetched", e);
+            LOGGER.error("Project not fetched by id " + id, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Project not fetched by id " + id, e);
             return null;
         }
     }
@@ -48,25 +54,42 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         try {
             return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
         } catch (DataAccessException e) {
-            LOGGER.error("Project not fetched", e);
+            LOGGER.error("Project not fetched by name " + projectName, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Project not fetched by name " + projectName, e);
             return null;
         }
     }
 
     public List<DataVisualizationProject> getProjectsByAuthor(User user) {
         try {
-            return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+            if (user != null) {
+                return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+            } else {
+                return null;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Projects not fetched", e);
+            LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
             return null;
         }
     }
 
     public List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user) {
         try {
-            return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+            if (user != null) {
+                return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
+            } else {
+                return null;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Projects not fetched", e);
+            LOGGER.error("Accessible to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Accessible to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
             return null;
         }
     }
@@ -74,13 +97,17 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
         try {
-            //TODO method for deleting a project
-            return false;
+            if (project != null) {
+                //TODO method for deleting a project
+                return true;
+            } else {
+                return false;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Project not removed", e);
+            LOGGER.error("Project was not removed id:" + project.getId() + ", name:" + project.getName(), e);
             return false;
-        } catch (Exception e){
-            LOGGER.error("Project not removed", e);
+        } catch (Exception e) {
+            LOGGER.error("Project was not removed id:" + project.getId() + ", name:" + project.getName(), e);
             return false;
         }
     }
@@ -94,23 +121,31 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
             generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
             generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
-            //TODO Graphs save mechanics
+            for (Graphic graphic : graphics) {
+                //!TODO SAVE GRAPHICS
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Project not saved", e);
+            LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
             return null;
-        } catch (Exception e){
-            LOGGER.error("Project not saved", e);
+        } catch (Exception e) {
+            LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
             return null;
         }
         return project;
     }
 
-    public List<Graphic> getProjectGraphs(Project project) {
+    public List<GraphicDVImpl> getProjectGraphs(Project project) {
         try {
-            //TODO method for fetching list of projects from db
-            return null;
+            if (project != null) {
+                return generalTemplate.query(SELECT_PROJECT_GRAPHS, new Object[]{project.getId()}, new GraphicDVRowMapper());
+            } else {
+                return null;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Graphs not fetched", e);
+            LOGGER.error("Graphs not fetched for project id:" + project.getId() + " name:" + project.getName(), e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Graphs not fetched for project id:" + project.getId() + " name:" + project.getName(), e);
             return null;
         }
     }
@@ -119,16 +154,16 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         //TODO method for fetching data about projects from db for preview
     }
 
-    private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
-            " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
-            " where dvpoject.object_type_id = 4" +
-            " and dvpoject.object_id = creation_date.object_id" +
-            " and creation_date.attr_id = 6" +
-            " and dvpoject.object_id = description.object_id" +
-            " and description.attr_id = 7" +
-            " and ref.attr_id = 17" +
-            " and ref.object_id = dvpoject.object_id" +
-            " and ref.reference = author.object_id" +
+    private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description " +
+            " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref " +
+            " where dvpoject.object_type_id = 4 " +
+            " and dvpoject.object_id = creation_date.object_id " +
+            " and creation_date.attr_id = 6 " +
+            " and dvpoject.object_id = description.object_id " +
+            " and description.attr_id = 7 " +
+            " and ref.attr_id = 17 " +
+            " and ref.object_id = dvpoject.object_id " +
+            " and ref.reference = author.object_id " +
             " and dvpoject.object_id = ?";
     private static final String SELECT_DVPROJECT_BY_NAME = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
@@ -190,7 +225,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     private enum DVProjectColumnName {
         id("id"),
         name("name"),
-        createDate("create_date"),
+        createDate("creation_date"),
         author("author"),
         description("description"),
         json("json"),
@@ -231,7 +266,11 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
             BigInteger id = BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString()));
             String name = rs.getString(DVProjectColumnName.name.toString());
-            JsonObject jsonGraphic = new JsonObject().getAsJsonObject(rs.getClob(DVProjectColumnName.json.toString()).toString());
+
+            Clob graphicClob = rs.getClob(DVProjectColumnName.json.toString());
+            String clobString = ClobToStringService.clobToString(graphicClob);
+            JsonObject graphicInJsonType = new JsonParser().parse(clobString).getAsJsonObject();
+
             BigDecimal average = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString()));
             BigDecimal olympicAverage = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString()));
             BigDecimal dispersion = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString()));
@@ -240,7 +279,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
             builder.buildId(id);
             builder.buildName(name);
-            builder.buildGraphicJSON(jsonGraphic);
+            builder.buildGraphicJSON(graphicInJsonType);
             builder.buildAverage(average);
             builder.buildOlympicAverage(olympicAverage);
             builder.buildDispersion(dispersion);
