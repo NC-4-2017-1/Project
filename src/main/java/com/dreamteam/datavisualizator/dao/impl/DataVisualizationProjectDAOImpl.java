@@ -203,7 +203,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref_access.reference = have_access.object_id" +
             " and have_access.object_id = ?" +
             " order by creation_date.date_value";
-    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id buildId, graph.name name, json_res.big_value json," +
+    private static final String SELECT_PROJECT_GRAPHS = "select graph.object_id id, graph.name name, json_res.big_value json," +
             " average.value average, olympic_average.value olympic_average, math_expectation.value math_expectation, dispersion.value dispersion" +
             " from objects graph, objects dvproject, attributes json_res, attributes average, attributes olympic_average," +
             " attributes math_expectation, attributes dispersion, objreference ref" +
@@ -264,17 +264,24 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl> {
         public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
-            BigInteger id = BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString()));
+            BigInteger id = rs.getBigDecimal(DVProjectColumnName.id.toString()).toBigInteger();
             String name = rs.getString(DVProjectColumnName.name.toString());
 
             Clob graphicClob = rs.getClob(DVProjectColumnName.json.toString());
             String clobString = ClobToStringService.clobToString(graphicClob);
             JsonObject graphicInJsonType = new JsonParser().parse(clobString).getAsJsonObject();
 
-            BigDecimal average = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.average.toString()));
-            BigDecimal olympicAverage = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.olympicAverage.toString()));
-            BigDecimal dispersion = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.dispersion.toString()));
-            BigDecimal mathExpectation = BigDecimal.valueOf(rs.getLong(DVProjectColumnName.mathExpectation.toString()));
+            String averageStr = rs.getString(DVProjectColumnName.average.toString());
+            BigDecimal average = new BigDecimal(averageStr.replaceAll(",", "."));
+
+            String olympicAverageStr = rs.getString(DVProjectColumnName.olympicAverage.toString());
+            BigDecimal olympicAverage = new BigDecimal(olympicAverageStr.replaceAll(",", "."));
+
+            String dispersionStr = rs.getString(DVProjectColumnName.dispersion.toString());
+            BigDecimal dispersion = new BigDecimal(dispersionStr.replaceAll(",", "."));
+
+            String mathExpectationStr = rs.getString(DVProjectColumnName.mathExpectation.toString());
+            BigDecimal mathExpectation = new BigDecimal(mathExpectationStr.replaceAll(",", "."));
 
             GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
             builder.buildId(id);
@@ -284,7 +291,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             builder.buildOlympicAverage(olympicAverage);
             builder.buildDispersion(dispersion);
             builder.buildMathExpectation(mathExpectation);
-            return builder.buildProject();
+            return builder.buildGraphic();
         }
     }
 
