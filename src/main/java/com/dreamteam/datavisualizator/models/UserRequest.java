@@ -1,13 +1,13 @@
-package com.dreamteam.datavisualizator.controllers.request;
+package com.dreamteam.datavisualizator.models;
 
-public class CreateUserRequest {
+public class UserRequest {
     private String firstName;
     private String lastName;
     private String email;
     private String password;
 
 
-    public CreateUserRequest() {
+    public UserRequest() {
     }
 
     public String getFirstName() {

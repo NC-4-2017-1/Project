@@ -1,6 +1,6 @@
 package com.dreamteam.datavisualizator.controllers;
 
-import com.dreamteam.datavisualizator.controllers.request.CreateUserRequest;
+import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
@@ -37,9 +37,9 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public User create(@RequestBody CreateUserRequest createUserRequest, Model model) {
-        return userDAO.createUser(createUserRequest.getFirstName(), createUserRequest.getLastName(),
-                createUserRequest.getEmail(), createUserRequest.getPassword(), UserTypes.REGULAR_USER);
+    public User create(@RequestBody UserRequest userRequest, Model model) {
+        return userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),
+                userRequest.getEmail(), userRequest.getPassword(), UserTypes.REGULAR_USER);
     }
 
     @Secured("ROLE_ADMIN")
@@ -53,10 +53,9 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/update-user", method = RequestMethod.GET)
     @ResponseBody
-    public User updateUsers(@RequestParam("firstName") String firstName,
+    public User updateUser(@RequestParam("firstName") String firstName,
                             @RequestParam("lastName") String lastName,
                             @RequestParam("email") String email,
-                            @RequestParam("password") String password,
                             Model model) {
         return null;
     }
