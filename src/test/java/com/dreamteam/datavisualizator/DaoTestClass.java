@@ -65,7 +65,8 @@ public class DaoTestClass {
 
         Field simpleCallU = null;
         Field jdbcTemplateU = null;
-
+        Field hmU = null;
+        Field dvU = null;
 
         try {
             simpleCallDV = classDV.getDeclaredField("simpleCallTemplate");
@@ -76,6 +77,8 @@ public class DaoTestClass {
             jdbcTemplateU = classU.getDeclaredField("generalTemplate");
             userDaoDV = classDV.getDeclaredField("userDAO");
             userDaoHM = classHM.getDeclaredField("userDAO");
+            hmU = classU.getDeclaredField("healthMonitorProjectDAO");
+            dvU = classU.getDeclaredField("dataVisualizationProjectDAO");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -88,6 +91,8 @@ public class DaoTestClass {
         jdbcTemplateU.setAccessible(true);
         userDaoDV.setAccessible(true);
         userDaoHM.setAccessible(true);
+        hmU.setAccessible(true);
+        dvU.setAccessible(true);
 
 
         try {
@@ -99,6 +104,8 @@ public class DaoTestClass {
             jdbcTemplateU.set(userDAO, generalTemplate);
             userDaoDV.set(dataVisualizationProjectDAO, userDAO);
             userDaoHM.set(healthMonitorProjectDAO, userDAO);
+            dvU.set(userDAO, dataVisualizationProjectDAO);
+            hmU.set(userDAO, healthMonitorProjectDAO);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -113,14 +120,13 @@ public class DaoTestClass {
     }
 
     void codeGoesHere() {
-        test8();
-    }
 
+    }
 
 
     void test8() { // passed
         // public List<User> getUsersThatHaveAccessToProject(Project project)
-        List<User>  users = userDAO.getUsersThatHaveAccessToProject(dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(57l)));
+        List<User> users = userDAO.getUsersThatHaveAccessToProject(dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(57l)));
         for (User user : users) {
             LOGGER.info(user);
         }

@@ -1,9 +1,13 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
+import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
+import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
+import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Autowired
     private JdbcTemplate generalTemplate;
+    @Autowired
+    private HealthMonitorProjectDAO healthMonitorProjectDAO;
+    @Autowired
+    private DataVisualizationProjectDAO dataVisualizationProjectDAO;
 
     public User getUserById(BigInteger id) {
         try {
@@ -62,7 +70,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             LOGGER.debug("User not fetched by email for authorization " + email, e);
             return null;
         }
-        //!TODO deliver error message to user when catch exception (not stack trace)
+        //!TODO deliver error message to user when catch exception (not stack trace) (front end)
     }
 
     public List<User> getAllUsersList() {
@@ -80,7 +88,16 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteUser(User user) {
         try {
-            //TODO method for deleting user from database
+            List<HealthMonitorProject> hmProjects = healthMonitorProjectDAO.getProjectsByAuthor(user);
+            List<DataVisualizationProject> dvProjects = dataVisualizationProjectDAO.getProjectsByAuthor(user);
+            for (HealthMonitorProject hmProject : hmProjects) {
+                healthMonitorProjectDAO.deleteProject(hmProject);
+            }
+            for (DataVisualizationProject dvProject : dvProjects) {
+                dataVisualizationProjectDAO.deleteProject(dvProject);
+            }
+            generalTemplate.update(DELETE_OBJECT, user.getId());
+            return true;
         } catch (DataAccessException e) {
             LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not removed", e);
             return false;
@@ -88,7 +105,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not removed", e);
             return false;
         }
-        return false;
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
@@ -339,7 +355,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and usertype.attr_id = 5" +
             " and usertype.list_value_id = 1" +
             " and obj_user.object_id = ?";
-
 
 
 }
