@@ -2,10 +2,7 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
-import com.dreamteam.datavisualizator.models.Correlation;
-import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.Project;
-import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.services.ClobToStringService;
@@ -120,11 +117,15 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             if (project != null) {
 
                 List<Graphic> graphs = getProjectGraphs(project); // selecting all graphs
-                generalTemplate.update(DELETE_OBJECT, project.getId()); //deleting project object cascade
+
                 for (Graphic graph : graphs) {
+                    graph=(GraphicDVImpl)graph;
+                    for (Correlation correlation :((GraphicDVImpl) graph).getCorrelation().keySet()) {
+                        generalTemplate.update(DELETE_OBJECT,correlation.getId());
+                    }
                     generalTemplate.update(DELETE_OBJECT, graph.getId());  // deleting all graphs
                 }
-                //TODO delete all correlations by left graphs ids or project id
+                generalTemplate.update(DELETE_OBJECT, project.getId()); //deleting project object cascade
                 return true;
             } else {
                 LOGGER.error("Project was not removed because it's null");
