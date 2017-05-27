@@ -117,8 +117,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     public boolean deleteProject(Project project) {
         try {
             if (project != null) {
-                // selecting all graphs
-                List<Graphic> graphs = getProjectGraphs(project);
+
+                List<Graphic> graphs = getProjectGraphs(project); // selecting all graphs
                 generalTemplate.update(DELETE_OBJECT, project.getId()); //deleting project object cascade
                 for (Graphic graph : graphs) {
                     generalTemplate.update(DELETE_OBJECT, graph.getId());  // deleting all graphs
@@ -142,7 +142,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
-        Project project = new DataVisualizationProject.Builder(name, projectCreationDate, authorId).buildDescription(description).buildGraphics(graphics).buildProject();
+        Project project;
         try {
             BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
             generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
@@ -152,6 +152,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
                 GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
                 saveGraphic(graphicDV, insertedObjectId);
             }
+            project = getProjectById(insertedObjectId);
         } catch (DataAccessException e) {
             LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
             return null;
@@ -194,7 +195,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     private GraphicDVImpl getGraphById(BigInteger graphicId) {
         try {
-            return (GraphicDVImpl) generalTemplate.query(SELECT_GRAPH_BY_ID, new Object[]{graphicId}, new GraphicDVRowMapper());
+            return (GraphicDVImpl) generalTemplate.queryForObject(SELECT_GRAPH_BY_ID, new Object[]{graphicId}, new GraphicDVRowMapper());
         } catch (DataAccessException e) {
             LOGGER.error("Graph not fetched by id:" + graphicId, e);
             return null;
@@ -290,7 +291,20 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.object_id = dvproject.object_id" +
             " and dvproject.object_id = ?";
 
-    private static final String SELECT_GRAPH_BY_ID = "";
+    private static final String SELECT_GRAPH_BY_ID = "select graph.object_id id, graph.name name, json_res.big_value json, " +
+            " average.value average, olympic_average.value olympic_average, math_expectation.value math_expectation, dispersion.value dispersion " +
+            " from objects graph, attributes json_res, attributes average, attributes olympic_average, attributes math_expectation, attributes dispersion " +
+            " where graph.object_id = json_res.object_id " +
+            " and json_res.attr_id = 13 " +
+            " and graph.object_id = average.object_id " +
+            " and average.attr_id = 9  " +
+            " and graph.object_id = olympic_average.object_id " +
+            " and olympic_average.attr_id = 10 " +
+            " and graph.object_id = math_expectation.object_id " +
+            " and math_expectation.attr_id = 11 " +
+            " and graph.object_id = dispersion.object_id " +
+            " and dispersion.attr_id = 12 " +
+            " and graph.object_id = ?";
 
     private enum DVProjectColumnName {
         id("id"),
