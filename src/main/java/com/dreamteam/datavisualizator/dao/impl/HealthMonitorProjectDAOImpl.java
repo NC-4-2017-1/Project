@@ -2,6 +2,8 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
+import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
+import com.dreamteam.datavisualizator.common.selectors.impl.*;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -60,7 +62,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
             return null;
         }catch (Exception e) {
-            LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
+            LOGGER.error("Graph not selected", e);
             return null;
         }
     }
@@ -79,7 +81,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
             return null;
         }catch (Exception e) {
-            LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
+            LOGGER.error("Selectors not fetched", e);
             return null;
         }
     }
@@ -97,36 +99,23 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> createSelectorList(Map<BigInteger, String> map) {
         try {
+            Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
+            mapSelectorCreators.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
+            mapSelectorCreators.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
+            mapSelectorCreators.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
+            mapSelectorCreators.put(IdList.S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
+            mapSelectorCreators.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
+            mapSelectorCreators.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
+            mapSelectorCreators.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
+            mapSelectorCreators.put(IdList.S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
+            mapSelectorCreators.put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
+            mapSelectorCreators.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
             List<Selector>  arraySelectors = new ArrayList<>();
-            if(map.containsKey(IdList.S_INSTANCE_INFO_OBJTYPE_ID)){
-                arraySelectors.add(createSelectorInstanceInfo(new SimpleJdbcCall(generalTemplate)));
-            }
-            if(map.containsKey(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorSizeForTablespace(new SimpleJdbcCall(generalTemplate)));
-            }
-            if(map.containsKey(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorSizeForIndexLob(new SimpleJdbcCall(generalTemplate), map.get(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID)));
-            }
-            if(map.containsKey(IdList.S_LAST_ERRORS_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorLastErrors(new SimpleJdbcCall(generalTemplate)));
-            }
-            if(map.containsKey(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorActiveSessions(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID))));
-            }
-            if(map.containsKey(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorActiveQueries(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID))));
-            }
-            if(map.containsKey(IdList.S_QUERIES_RESULTS_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorQueriesResults(new SimpleJdbcCall(generalTemplate),  Integer.parseInt(map.get(IdList.S_QUERIES_RESULTS_OBJTYPE_ID))));
-            }
-            if(map.containsKey(IdList.S_SQL_MONITOR_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorSqlQueryMonitor(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_SQL_MONITOR_OBJTYPE_ID))));
-            }
-            if(map.containsKey(IdList.S_DB_LOCKS_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorDBLocks(new SimpleJdbcCall(generalTemplate)));
-            }
-            if(map.containsKey(IdList.S_ACTIVE_JOBS_OBJTYPE_ID)) {
-                arraySelectors.add(createSelectorActiveJobs(new SimpleJdbcCall(generalTemplate), Integer.parseInt(map.get(IdList.S_ACTIVE_JOBS_OBJTYPE_ID))));
+            for (Map.Entry<BigInteger, String> entry: map.entrySet()) {
+                BigInteger key = entry.getKey();
+                String value = entry.getValue();
+                SelectorCreator selector = mapSelectorCreators.get(key);
+                selector.addSelector(arraySelectors, generalTemplate, templateHM, value);
             }
             return arraySelectors;
         } catch (Exception e) {
@@ -166,7 +155,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Project not fetched by author with id - " + user.getId(), e);
             return null;
         }catch (Exception e) {
-            LOGGER.error("Project not fetched by author with id - " + user.getId(), e);
+            LOGGER.error("Project not fetched by author", e);
             return null;
         }
     }
@@ -178,7 +167,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Project not fetched for user with id - " + user.getId(), e);
             return null;
         }catch (Exception e) {
-            LOGGER.error("Project not fetched for user with id - " + user.getId(), e);
+            LOGGER.error("Project not fetched", e);
             return null;
         }
     }
@@ -208,7 +197,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Project with name " +project.getName() + " not saved", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Project with name " +project.getName() + " not saved", e);
+            LOGGER.error("Project with name not saved", e);
             return false;
         }
         return true;
@@ -217,118 +206,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     @Override
     public List<User> getUsersThatHaveAccessToProject(Project project) {
         return null;
-    }
-
-    private SelectorInstanceInfo createSelectorInstanceInfo(SimpleJdbcCall simpleCallTemplateInstanceInfo) {
-        SelectorInstanceInfo selector = new SelectorInstanceInfo();
-        simpleCallTemplateInstanceInfo.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_INSTANCE_INFO);
-        String sql_query = simpleCallTemplateInstanceInfo.executeFunction(String.class).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorInstanceInfo test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorSizeForTablespace createSelectorSizeForTablespace(SimpleJdbcCall simpleCallTemplateSizeForTablespace) {
-        SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
-        simpleCallTemplateSizeForTablespace.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SIZE_TABLESPACE);
-        String sql_query = simpleCallTemplateSizeForTablespace.executeFunction(String.class).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorSizeForTablespace test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorSizeForIndexLob createSelectorSizeForIndexLob(SimpleJdbcCall simpleCallTemplateSizeForIndexLob, String segment) {
-        SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
-        selector.setSegment(segment);
-        simpleCallTemplateSizeForIndexLob.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SIZE_INDEX_LOB);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("segment", segment);
-        String sql_query = simpleCallTemplateSizeForIndexLob.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorSizeForIndexLob test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorLastErrors createSelectorLastErrors(SimpleJdbcCall simpleCallTemplateLastErrors) {
-        SelectorLastErrors selector = new SelectorLastErrors();
-        simpleCallTemplateLastErrors.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_LAST_ERRORS);
-        String sql_query = simpleCallTemplateLastErrors.executeFunction(String.class).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorLastErrors test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorActiveSessions createSelectorActiveSessions(SimpleJdbcCall simpleCallTemplateActiveSessions, int top) {
-        SelectorActiveSessions selector = new SelectorActiveSessions();
-        selector.setTop(top);
-        simpleCallTemplateActiveSessions.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_SESSIONS);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
-        String sql_query = simpleCallTemplateActiveSessions.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorActiveSessions test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorActiveQueries createSelectorActiveQueries(SimpleJdbcCall simpleCallTemplateActiveQueries, int top) {
-        SelectorActiveQueries selector = new SelectorActiveQueries();
-        selector.setTop(top);
-        simpleCallTemplateActiveQueries.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_QUERIES);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
-        String sql_query = simpleCallTemplateActiveQueries.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorActiveQueries test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorQueriesResults createSelectorQueriesResults(SimpleJdbcCall simpleCallTemplateQueriesResults, int top) {
-        SelectorQueriesResults selector = new SelectorQueriesResults();
-        selector.setTop(top);
-        simpleCallTemplateQueriesResults.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_QUERIES_RESULTS);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
-        String sql_query = simpleCallTemplateQueriesResults.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorQueriesResults test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorSqlQueryMonitor createSelectorSqlQueryMonitor(SimpleJdbcCall simpleCallTemplateSqlQueryMonitor, int top) {
-        SelectorSqlQueryMonitor selector = new SelectorSqlQueryMonitor();
-        selector.setTop(top);
-        simpleCallTemplateSqlQueryMonitor.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_MONITOR);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
-        String sql_query = simpleCallTemplateSqlQueryMonitor.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorSqlQueryMonitor test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorDBLocks createSelectorDBLocks(SimpleJdbcCall simpleCallTemplateDBLocks) {
-        SelectorDBLocks selector = new SelectorDBLocks();
-        simpleCallTemplateDBLocks.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_DB_LOCKS);
-        String sql_query = simpleCallTemplateDBLocks.executeFunction(String.class).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorDBLocks test");
-        //TODO sent results to serializer
-        return selector;
-    }
-
-    private SelectorActiveJobs createSelectorActiveJobs(SimpleJdbcCall simpleCallTemplateActiveJobs, int hourCount) {
-        SelectorActiveJobs selector = new SelectorActiveJobs();
-        selector.setHourCount(hourCount);
-        simpleCallTemplateActiveJobs.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_ACTIVE_JOBS);
-        SqlParameterSource in = new MapSqlParameterSource().addValue("hour_count", hourCount);
-        String sql_query = simpleCallTemplateActiveJobs.executeFunction(String.class, in).toString();
-        ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-        selector.setName("SelectorActiveJobs test");
-        //TODO sent results to serializer
-        return selector;
     }
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
@@ -440,17 +317,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
 
-    private static final String SELECTOR_QUERIES_PACKAGE = "pkg_selectors";
-    private static final String QUERY_FOR_INSTANCE_INFO = "instance_info";
-    private static final String QUERY_FOR_SIZE_TABLESPACE = "size_for_tablespace";
-    private static final String QUERY_FOR_SIZE_INDEX_LOB = "size_for_index_lob";
-    private static final String QUERY_FOR_LAST_ERRORS = "last_errors";
-    private static final String QUERY_FOR_ACTIVE_SESSIONS = "active_sessions";
-    private static final String QUERY_FOR_ACTIVE_QUERIES = "active_queries";
-    private static final String QUERY_FOR_QUERIES_RESULTS = "queries_results";
-    private static final String QUERY_FOR_SQL_MONITOR = "sql_query_monitor";
-    private static final String QUERY_FOR_DB_LOCKS = "db_locks";
-    private static final String QUERY_FOR_ACTIVE_JOBS = "active_jobs";
     private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
             put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
             put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
@@ -576,14 +442,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     private class SelectorSizeForTablespaceRowMapper implements RowMapper<Selector> {
         public SelectorSizeForTablespace mapRow(ResultSet rs, int rownum) throws SQLException {
-                SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
-                BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
-                String value = rs.getString(HWProjectColumnName.value.toString());
-                String name = rs.getString(HWProjectColumnName.name.toString());
-                selector.setId(id);
-                selector.setName(name);
-                selector.setValue(value);
-                return selector;
+            SelectorSizeForTablespace selector = new SelectorSizeForTablespace();
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
+            String value = rs.getString(HWProjectColumnName.value.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
+            selector.setId(id);
+            selector.setName(name);
+            selector.setValue(value);
+            return selector;
         }
     }
 
