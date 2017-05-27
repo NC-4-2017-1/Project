@@ -3,7 +3,10 @@ package com.dreamteam.datavisualizator.dao.impl;
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
-import com.dreamteam.datavisualizator.models.*;
+import com.dreamteam.datavisualizator.models.Correlation;
+import com.dreamteam.datavisualizator.models.Graphic;
+import com.dreamteam.datavisualizator.models.Project;
+import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.services.ClobToStringService;
@@ -14,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +44,17 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     private JdbcTemplate generalTemplate;
 
     @Autowired
-    UserDAO userDAO;
+    private UserDAO userDAO;
+
+    @Override
+    protected BigInteger createObject(String name, BigInteger objectTypeId) {
+        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("obj_type_id", objectTypeId)
+                .addValue("obj_name", name);
+        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
+
 
     @Override
     public Project getProjectById(BigInteger id) {
@@ -118,8 +133,10 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
                 List<Graphic> graphs = getProjectGraphs(project); // selecting all graphs
                 for (Graphic graph : graphs) {
                     GraphicDVImpl graphicDV = (GraphicDVImpl) graph;
-                    for (Correlation correlation : graphicDV.getCorrelation().keySet()) {
-                        generalTemplate.update(DELETE_OBJECT, correlation.getId());
+                    if (graphicDV.getCorrelation() != null) {
+                        for (Correlation correlation : graphicDV.getCorrelation().keySet()) {
+                            generalTemplate.update(DELETE_OBJECT, correlation.getId());
+                        }
                     }
                     generalTemplate.update(DELETE_OBJECT, graph.getId());  // deleting all graphs
                 }
@@ -179,14 +196,15 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.DISPERSION_DVPROJECT_ATTR_ID, graphicId, dispersion);
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation);
             generalTemplate.update(INSERT_OBJREFERENCE_RELATION, IdList.PROJECT_GRAPHICS_RELATION_ATTR_ID, graphicId, projectId);
-            generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON);
-            for (Correlation correlation : graphic.getCorrelation().keySet()) {
-                BigInteger correlationId = createObject(correlation.getName(), CORRELATION_OBJTYPE_ID);
-                generalTemplate.update(INSERT_ATTR_VALUE, CALCULATE_VALUE_ATTR_ID, correlationId, correlation.getCorrelation());
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_FIRST_GRAPHICS_RELATION_ATTR_ID, graphic.getId(), correlationId);
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_SECOND_GRAPHICS_RELATION_ATTR_ID, graphic.getCorrelation().get(correlation).getId(), correlationId);
+            generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON.toString());
+            if (graphic.getCorrelation() != null) {
+                for (Correlation correlation : graphic.getCorrelation().keySet()) {
+                    BigInteger correlationId = createObject(correlation.getName(), CORRELATION_OBJTYPE_ID);
+                    generalTemplate.update(INSERT_ATTR_VALUE, CALCULATE_VALUE_ATTR_ID, correlationId, correlation.getCorrelation());
+                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_FIRST_GRAPHICS_RELATION_ATTR_ID, graphic.getId(), correlationId);
+                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_SECOND_GRAPHICS_RELATION_ATTR_ID, graphic.getCorrelation().get(correlation).getId(), correlationId);
+                }
             }
-
             return getGraphById(graphicId);
         } catch (DataAccessException e) {
             LOGGER.error("Error in inserting graphic + " + graphic.getName() + " to project with id:" + projectId, e);
@@ -227,6 +245,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             return null;
         }
     }
+
 
     private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description " +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref " +

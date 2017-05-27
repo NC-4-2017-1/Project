@@ -5,6 +5,7 @@ import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.common.selectors.impl.*;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
+import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
@@ -41,6 +42,9 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     @Autowired
     private SimpleJdbcCall simpleCallTemplate;
+
+    @Autowired
+    private UserDAO userDAO;
 
     public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
@@ -268,6 +272,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             return null;
         }
     }
+
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
             " FROM objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +

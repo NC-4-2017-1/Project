@@ -16,8 +16,6 @@ public interface UserDAO {
 
     List<User> getAllUsersList();
 
-    List<User> getUsersThatHaveAccessToProject(Project project);
-
     boolean deleteUser(User user);
 
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);
@@ -32,5 +30,5 @@ public interface UserDAO {
 
     boolean removeAccessToProjectFromUser(User user, Project project);
 
-
+    List<User> getUsersThatHaveAccessToProject(Project project);
 }

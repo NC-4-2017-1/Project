@@ -29,7 +29,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     public User getUserById(BigInteger id) {
         try {
-            return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapper());
+            return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("User not fetched by id " + id, e);
             return null;
@@ -42,7 +42,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     public User getUserByFullName(String fullName) {
         try {
-            return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapper());
+            return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("User not fetched by full name " + fullName, e);
             return null;
@@ -67,7 +67,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     public List<User> getAllUsersList() {
         try {
-            return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapper());
+            return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;
@@ -179,23 +179,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return true;
     }
 
-    @Override
-    public List<User> getUsersThatHaveAccessToProject(Project project) {
-        try {
-            if (project != null) {
-                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT, new Object[]{project.getId()}, new UserRowMapper());
-            } else {
-                LOGGER.error("Users that have access to project wasn't fetched because project is " + project);
-                return null;
-            }
-        } catch (DataAccessException e) {
-            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
-            return null;
-        }
-    }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
@@ -220,6 +203,25 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return user;
     }
 
+
+    @Override
+    public List<User> getUsersThatHaveAccessToProject(Project project) {
+        try {
+            if (project != null) {
+                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT, new Object[]{project.getId()}, new UserRowMapperWithoutPassword());
+            } else {
+                LOGGER.error("Users that have access to project wasn't fetched because project is " + project);
+                return null;
+            }
+        } catch (DataAccessException e) {
+            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
+            return null;
+        }
+    }
+
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             String email = rs.getString(UserColumnName.email.toString());
@@ -230,6 +232,23 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             BigInteger role = rs.getBigDecimal(UserColumnName.usertype.toString()).toBigInteger();
             UserTypes userType = UserTypes.getRoleById(role);
             UserImpl.Builder builder = new UserImpl.Builder(email, password);
+            builder.buildId(id);
+            builder.buildFirstName(firstName);
+            builder.buildLastName(lastName);
+            builder.buildType(userType);
+            return builder.buildUser();
+        }
+    }
+
+    private class UserRowMapperWithoutPassword implements RowMapper<User> {
+        public User mapRow(ResultSet rs, int rownum) throws SQLException {
+            String email = rs.getString(UserColumnName.email.toString());
+            BigInteger id = rs.getBigDecimal(UserColumnName.id.toString()).toBigInteger();
+            String firstName = rs.getString(UserColumnName.firstName.toString());
+            String lastName = rs.getString(UserColumnName.lastName.toString());
+            BigInteger role = rs.getBigDecimal(UserColumnName.usertype.toString()).toBigInteger();
+            UserTypes userType = UserTypes.getRoleById(role);
+            UserImpl.Builder builder = new UserImpl.Builder(email, null);
             builder.buildId(id);
             builder.buildFirstName(firstName);
             builder.buildLastName(lastName);
@@ -321,23 +340,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and usertype.list_value_id = 1" +
             " and obj_user.object_id = ?";
 
-    private static final String SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT = "select obj_user.object_id id, first_name.value first_name, \n" +
-            " last_name.value last_name, email.value email, usertype.list_value_id usertype " +
-            " from objects obj_user, attributes first_name, attributes last_name, attributes email, " +
-            " attributes usertype, objreference ref, objects project " +
-            " where obj_user.object_type_id = 1 " +
-            " and obj_user.object_id = first_name.object_id " +
-            " and first_name.attr_id = 2 " +
-            " and obj_user.object_id = last_name.object_id " +
-            " and last_name.attr_id = 3 " +
-            " and obj_user.object_id = email.object_id " +
-            " and email.attr_id = 1 " +
-            " and obj_user.object_id = usertype.object_id " +
-            " and usertype.attr_id = 5 " +
-            " and usertype.list_value_id = 1 " +
-            " and ref.attr_id = 18 " +
-            " and ref.object_id = project.object_id " +
-            " and ref.reference = obj_user.object_id " +
-            " and project.object_id=?";
+
 
 }
