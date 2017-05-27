@@ -10,13 +10,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_LAST_ERRORS_OBJTYPE_ID;
 
 public class SelectorLastErrorsCreator extends AbstactSelectorCreator implements SelectorCreator {
     private static final Logger LOGGER = Logger.getLogger(SelectorLastErrorsCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try {
             SelectorLastErrors selector = new SelectorLastErrors();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -25,12 +29,17 @@ public class SelectorLastErrorsCreator extends AbstactSelectorCreator implements
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Last DB errors");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorLastErrors"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_LAST_ERRORS_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Last DB errors' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Last DB errors' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector) {
+        return null;
     }
 
     private static final String QUERY_FOR_LAST_ERRORS = "last_errors";

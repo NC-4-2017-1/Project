@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.common.selectors.impl;
 
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.models.Selector;
+import com.dreamteam.datavisualizator.models.impl.SelectorActiveSessions;
 import com.dreamteam.datavisualizator.models.impl.SelectorQueriesResults;
 import com.dreamteam.datavisualizator.services.HtmlSerializer;
 import org.apache.log4j.Logger;
@@ -12,13 +13,17 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_QUERIES_RESULTS_OBJTYPE_ID;
 
 public class SelectorQueriesResultsCreator extends AbstactSelectorCreator implements SelectorCreator {
     private static final Logger LOGGER = Logger.getLogger(SelectorQueriesResultsCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try {
             SelectorQueriesResults selector = new SelectorQueriesResults();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -30,12 +35,18 @@ public class SelectorQueriesResultsCreator extends AbstactSelectorCreator implem
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Queries results");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorQueriesResults"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_QUERIES_RESULTS_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Queries results' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Queries results' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector) {
+        int top = ((SelectorActiveSessions)selector).getTop();
+        return Integer.toString(top);
     }
 
     private static final String QUERY_FOR_QUERIES_RESULTS = "queries_results";

@@ -8,9 +8,10 @@ import com.dreamteam.datavisualizator.models.User;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class HealthMonitorProject extends AbstractProject {
-    private List<Selector> selectors;
+    private Map<BigInteger, Selector> selectors;
     private Graphic graphic;
     private String sid;
     private String port;
@@ -74,11 +75,11 @@ public class HealthMonitorProject extends AbstractProject {
         return this.password;
     }
 
-    public List<Selector> getSelectors() {
+    public Map<BigInteger, Selector> getSelectors() {
         return selectors;
     }
 
-    public void setSelectors(List<Selector> selectors) {
+    public void setSelectors(Map<BigInteger, Selector> selectors) {
         this.selectors = selectors;
     }
 
@@ -103,7 +104,7 @@ public class HealthMonitorProject extends AbstractProject {
         private String password;
 
         private List<User> usersProjectAccessible;
-        private List<Selector> selectors;
+        private Map<BigInteger, Selector> selectors;
         private Graphic graphic;
 
         public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author,
@@ -130,7 +131,7 @@ public class HealthMonitorProject extends AbstractProject {
             return this;
         }
 
-        public Builder buildSelectors(List<Selector> val) {
+        public Builder buildSelectors(Map<BigInteger, Selector> val) {
             selectors = val;
             return this;
         }

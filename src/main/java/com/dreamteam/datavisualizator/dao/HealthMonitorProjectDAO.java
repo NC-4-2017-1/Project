@@ -14,11 +14,11 @@ public interface HealthMonitorProjectDAO {
 
     Graphic getProjectGraph(Project project);
 
-    List<Selector> getProjectSelectors(Project project);
+    Map<BigInteger, Selector> getProjectSelectors(Project project);
 
     Graphic createGraph(int hourCount);
 
-    List<Selector> createSelectorList(Map<BigInteger, String> map);
+    Map<BigInteger, Selector> createSelectorList(Map<BigInteger, String> map);
 
     Project getProjectById(BigInteger id);
 
@@ -30,7 +30,7 @@ public interface HealthMonitorProjectDAO {
 
     boolean deleteProject(Project project);
 
-    boolean saveProject(Project project);
+    Project saveProject(Project project);
 
 
 }

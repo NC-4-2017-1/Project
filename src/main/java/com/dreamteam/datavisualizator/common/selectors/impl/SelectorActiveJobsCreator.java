@@ -13,13 +13,17 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_ACTIVE_JOBS_OBJTYPE_ID;
 
 public class SelectorActiveJobsCreator extends AbstactSelectorCreator implements SelectorCreator {
     private static final Logger LOGGER = Logger.getLogger(SelectorActiveJobsCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try {
             SelectorActiveJobs selector = new SelectorActiveJobs();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -31,12 +35,18 @@ public class SelectorActiveJobsCreator extends AbstactSelectorCreator implements
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Active jobs");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveJobs"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_ACTIVE_JOBS_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Active jobs' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Active jobs' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector){
+        int hourCount = ((SelectorActiveJobs)selector).getHourCount();
+        return Integer.toString(hourCount);
     }
 
     private static final String QUERY_FOR_ACTIVE_JOBS = "active_jobs";

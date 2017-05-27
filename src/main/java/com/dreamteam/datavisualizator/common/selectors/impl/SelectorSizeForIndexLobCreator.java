@@ -12,13 +12,17 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID;
 
 public class SelectorSizeForIndexLobCreator extends AbstactSelectorCreator implements SelectorCreator {
     private static final Logger LOGGER = Logger.getLogger(SelectorSizeForIndexLobCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try {
             SelectorSizeForIndexLob selector = new SelectorSizeForIndexLob();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -29,12 +33,17 @@ public class SelectorSizeForIndexLobCreator extends AbstactSelectorCreator imple
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Size for table-index-lob");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSizeForIndexLob"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Size for table-index-lob' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Size for table-index-lob' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector) {
+        return ((SelectorSizeForIndexLob)selector).getSegment();
     }
 
     private static final String QUERY_FOR_SIZE_INDEX_LOB = "size_for_index_lob";

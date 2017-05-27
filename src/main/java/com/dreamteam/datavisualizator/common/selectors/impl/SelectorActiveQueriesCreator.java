@@ -12,13 +12,17 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_ACTIVE_QUERIES_OBJTYPE_ID;
 
 public class SelectorActiveQueriesCreator extends AbstactSelectorCreator implements SelectorCreator {
     private static final Logger LOGGER = Logger.getLogger(SelectorActiveQueriesCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try{
             SelectorActiveQueries selector = new SelectorActiveQueries();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -30,12 +34,18 @@ public class SelectorActiveQueriesCreator extends AbstactSelectorCreator impleme
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Active queries");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveQueries"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_ACTIVE_QUERIES_OBJTYPE_ID,selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Active queries' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Active queries' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector) {
+        int top = ((SelectorActiveQueries)selector).getTop();
+        return Integer.toString(top);
     }
 
     private static final String QUERY_FOR_ACTIVE_QUERIES = "active_queries";

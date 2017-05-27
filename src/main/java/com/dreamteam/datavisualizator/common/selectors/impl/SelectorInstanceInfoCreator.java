@@ -10,13 +10,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+
+import static com.dreamteam.datavisualizator.common.IdList.S_INSTANCE_INFO_OBJTYPE_ID;
 
 public class SelectorInstanceInfoCreator extends AbstactSelectorCreator implements SelectorCreator{
     private static final Logger LOGGER = Logger.getLogger(SelectorInstanceInfoCreator.class);
 
     @Override
-    public void addSelector(List<Selector> arraySelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
+    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql) {
         try {
             SelectorInstanceInfo selector = new SelectorInstanceInfo();
             SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
@@ -25,12 +29,17 @@ public class SelectorInstanceInfoCreator extends AbstactSelectorCreator implemen
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Instance information");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorInstanceInfo"));
-            arraySelectors.add(selector);
+            mapSelectors.put(S_INSTANCE_INFO_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Instance information' can not be selected from HM DataBase", e);
         }catch (Exception e) {
             LOGGER.error("Selector 'Instance information' can not be created", e);
         }
+    }
+
+    @Override
+    public String getAttrValue(Selector selector) {
+        return null;
     }
 
     private static final String QUERY_FOR_INSTANCE_INFO = "instance_info";

@@ -28,7 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.dreamteam.datavisualizator.common.IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID;
+import static com.dreamteam.datavisualizator.common.IdList.*;
 
 @Repository
 public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMonitorProjectDAO {
@@ -65,17 +65,17 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
     }
 
-    public List<Selector> getProjectSelectors(Project project) {
+    public Map<BigInteger, Selector> getProjectSelectors(Project project) {
         try {
             if (project != null) {
                 BigInteger projectId = project.getId();
                 //BigInteger projectId = BigInteger.valueOf(77L);
                 List<BigInteger> arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[]{projectId}, BigInteger.class);
-                List<Selector> arraySelectors = new ArrayList<>();
+                Map<BigInteger, Selector> mapSelectors = new HashMap<>();
                 for (BigInteger type : arraySelectorTypes) {
-                    arraySelectors.add(generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
+                    mapSelectors.put(type, generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
                 }
-                return arraySelectors;
+                return mapSelectors;
             }else {
                 LOGGER.error("List of selectors not selected because project is null");
                 return null;
@@ -100,28 +100,17 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
     }
 
-    public List<Selector> createSelectorList(Map<BigInteger, String> map) {
+    public Map<BigInteger, Selector> createSelectorList(Map<BigInteger, String> map) {
         try {
             if (map != null) {
-                Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
-                mapSelectorCreators.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
-                mapSelectorCreators.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
-                mapSelectorCreators.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
-                mapSelectorCreators.put(IdList.S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
-                mapSelectorCreators.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
-                mapSelectorCreators.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
-                mapSelectorCreators.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
-                mapSelectorCreators.put(IdList.S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
-                mapSelectorCreators.put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
-                mapSelectorCreators.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
-                List<Selector> arraySelectors = new ArrayList<>();
+                Map<BigInteger, Selector> mapSelectors = new HashMap<>();
                 for (Map.Entry<BigInteger, String> entry : map.entrySet()) {
                     BigInteger key = entry.getKey();
                     String value = entry.getValue();
                     SelectorCreator selector = mapSelectorCreators.get(key);
-                    selector.addSelector(arraySelectors, generalTemplate, templateHM, value);
+                    selector.addSelector(mapSelectors, generalTemplate, templateHM, value);
                 }
-                return arraySelectors;
+                return mapSelectors;
             }else {
                 LOGGER.error("List of selectors not created because selector settings is wrong");
                 return null;
@@ -196,9 +185,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             if (project != null) {
                 Graphic hmGraph = getProjectGraph(project);                   //select project graphic
                 generalTemplate.update(DELETE_OBJECT, hmGraph.getId());       //delete project graphic
-                List<Selector> selectors = getProjectSelectors(project);      //select all project selectors
-                for (Selector selector : selectors) {
-                    generalTemplate.update(DELETE_OBJECT, selector.getId());  // deleting all project selectors
+                Map<BigInteger, Selector> selectors = getProjectSelectors(project);      //select all project selectors
+                for (Map.Entry<BigInteger, Selector> entry : selectors.entrySet()) {
+                    Selector value = entry.getValue();
+                    generalTemplate.update(DELETE_OBJECT, value.getId());  // deleting all project selectors
                 }
                 generalTemplate.update(DELETE_OBJECT, project.getId());         //deleting project
                 return true;
@@ -216,21 +206,67 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public boolean saveProject(Project project) {
+    public Project saveProject(Project project) {
+        Date projectCreationDate = new Date();
+        Project savingProject;
         try {
-            //TODO method for saving of a HM project
-            BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
-//        project.setId(createHMProjectObject(project.getName()));
-//        generalTemplate.update(INSERT_USER_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
-//        generalTemplate.update(INSERT_HM_PROJECT, project.getName(), project.getDescription(), project.getAuthor().toString());
+            if (project != null) {
+                //project
+                String sid = ((HealthMonitorProject) project).getSid();
+                String port = ((HealthMonitorProject) project).getPort();
+                String serverName = ((HealthMonitorProject) project).getServerName();
+                String userName = ((HealthMonitorProject) project).getUserName();
+                String password = ((HealthMonitorProject) project).getPassword();
+                String description = project.getDescription();
+                BigInteger authorId = project.getAuthor();
+                BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
+
+                generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, projectId, description);
+                generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, projectId, projectCreationDate);
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, projectId);
+                generalTemplate.update(INSERT_ATTR_VALUE, HM_SID_ATTR_ID, projectId, sid);
+                generalTemplate.update(INSERT_ATTR_VALUE, HM_PORT_ATTR_ID, projectId, port);
+                generalTemplate.update(INSERT_ATTR_VALUE, HM_SERVER_NAME_ATTR_ID, projectId, serverName);
+                generalTemplate.update(INSERT_ATTR_VALUE, HM_USER_NAME_ATTR_ID, projectId, userName);
+                generalTemplate.update(INSERT_ATTR_VALUE, PASSWORD_ATTR_ID, projectId, password);
+
+                //graph
+                Graphic graph = ((HealthMonitorProject) project).getGraphic();
+                String graphName = graph.getName();
+                int graphicHourCount = ((GraphicHMImpl) graph).getHourCount();
+                JsonObject graphJSON = graph.getGraphicJSON();
+
+                BigInteger graphId = createObject(graphName, GRAPHIC_OBJTYPE_ID);
+                generalTemplate.update(INSERT_ATTR_VALUE, HOUR_COUNT_ATTR_ID, graphId, graphicHourCount);
+                generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, graphId, graphJSON);
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_GRAPHICS_RELATION_ATTR_ID, graphId, projectId);
+
+                //selectors
+                Map<BigInteger, Selector> projectSelectors = ((HealthMonitorProject) project).getSelectors();
+                for (Map.Entry<BigInteger, Selector> entry : projectSelectors.entrySet()) {
+                    BigInteger key = entry.getKey();
+                    Selector selector = entry.getValue();
+                    BigInteger selectorId = createObject(selector.getName(), key);
+                    String selectorValue = selector.getValue();
+                    generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, selectorId, selectorValue);
+                    if (mapSelectorsAttr.get(key) != null){
+                        String value = mapSelectorCreators.get(key).getAttrValue(selector);
+                        generalTemplate.update(INSERT_ATTR_VALUE, mapSelectorsAttr.get(key), selectorId, value);
+                    }
+                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SELECTORS_RELATION_ATTR_ID, selectorId, projectId);
+                }
+                return getProjectById(projectId);
+            } else {
+                LOGGER.error("Project was not save because it's null");
+                return null;
+            }
         } catch (DataAccessException e) {
             LOGGER.error("Project with name " +project.getName() + " not saved", e);
-            return false;
+            return null;
         } catch (Exception e) {
             LOGGER.error("Project with name not saved", e);
-            return false;
+            return null;
         }
-        return true;
     }
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
@@ -365,6 +401,30 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksRowMapper());
             put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsRowMapper());
     }};
+    private static final Map<BigInteger, BigInteger> mapSelectorsAttr = new HashMap<BigInteger, BigInteger>(){{
+        put(S_INSTANCE_INFO_OBJTYPE_ID,  null);
+        put(S_SIZE_TABLESPACE_OBJTYPE_ID,null);
+        put(S_SIZE_INDEX_LOB_OBJTYPE_ID, SEGMENT_ATTR_ID);
+        put(S_LAST_ERRORS_OBJTYPE_ID,    null);
+        put(S_ACTIVE_SESSIONS_OBJTYPE_ID,TOP_ATTR_ID);
+        put(S_ACTIVE_QUERIES_OBJTYPE_ID, TOP_ATTR_ID);
+        put(S_QUERIES_RESULTS_OBJTYPE_ID,TOP_ATTR_ID);
+        put(S_SQL_MONITOR_OBJTYPE_ID,    TOP_ATTR_ID);
+        put(S_DB_LOCKS_OBJTYPE_ID,       null);
+        put(S_ACTIVE_JOBS_OBJTYPE_ID,    HOUR_COUNT_ATTR_ID);
+    }};
+    private static final Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>(){{
+            put(S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
+            put(S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
+            put(S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
+            put(S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
+            put(S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
+            put(S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
+            put(S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
+            put(S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
+            put(S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
+            put(S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
+        }};
     private enum HWProjectColumnName {
         id("id"),
         name("name"),
