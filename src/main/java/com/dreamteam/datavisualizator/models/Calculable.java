@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface Calculable {
-    Map<Graphic, Correlation> getCorrelation();
+    Map<Correlation, Graphic> getCorrelation();
     BigDecimal getAverage();
     BigDecimal getOlympicAverage();
     BigDecimal getDispersion();

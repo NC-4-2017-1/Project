@@ -15,7 +15,7 @@ public class GraphicDVImpl implements Graphic, Calculable {
     private BigInteger id;
     private String name;
     private JsonObject graphicJSON;
-    private Map<Graphic, Correlation> correlation;
+    private Map<Correlation, Graphic> correlation;
     private BigDecimal average;
     private BigDecimal olympicAverage;
     private BigDecimal dispersion;
@@ -49,11 +49,11 @@ public class GraphicDVImpl implements Graphic, Calculable {
         this.graphicJSON = graphicJSON;
     }
 
-    public Map<Graphic, Correlation> getCorrelation() {
+    public Map<Correlation,Graphic> getCorrelation() {
         return correlation;
     }
 
-    public void setCorrelation(Map<Graphic, Correlation> correlation) {
+    public void setCorrelation(Map<Correlation, Graphic> correlation) {
         this.correlation = correlation;
     }
 
@@ -93,7 +93,7 @@ public class GraphicDVImpl implements Graphic, Calculable {
         private BigInteger id;
         private String name;
         private JsonObject graphicJSON;
-        private Map<Graphic, Correlation> correlation;
+        private Map<Correlation, Graphic> correlation;
         private BigDecimal average;
         private BigDecimal olympicAverage;
         private BigDecimal dispersion;
@@ -117,7 +117,7 @@ public class GraphicDVImpl implements Graphic, Calculable {
             return this;
         }
 
-        public DVGraphBuilder buildCorrelation(Map<Graphic, Correlation> val) {
+        public DVGraphBuilder buildCorrelation(Map<Correlation, Graphic> val) {
             correlation = val;
             return this;
         }

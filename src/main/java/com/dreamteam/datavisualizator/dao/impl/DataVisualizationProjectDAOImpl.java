@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
+import com.dreamteam.datavisualizator.models.Correlation;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
@@ -180,7 +181,12 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation);
 
             generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON);
-            //!TODO understand how to save Correlations
+            for(Correlation correlation:graphic.getCorrelation().keySet()) {
+                BigInteger correlationId = createObject(correlation.getName(), CORRELATION_OBJTYPE_ID);
+                generalTemplate.update(INSERT_ATTR_VALUE, CALCULATE_VALUE_ATTR_ID,correlationId,correlation.getCorrelation());
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION,CORR_FIRST_GRAPHICS_RELATION_ATTR_ID,graphic.getId(),correlationId);
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION,CORR_SECOND_GRAPHICS_RELATION_ATTR_ID,graphic.getCorrelation().get(correlation).getId(),correlationId);
+            }
 
             return getGraphById(graphicId);
         } catch (DataAccessException e) {
