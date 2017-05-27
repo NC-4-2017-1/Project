@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
+import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
@@ -37,12 +38,15 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     @Autowired
     private JdbcTemplate generalTemplate;
 
+    @Autowired
+    UserDAO userDAO;
+
     @Override
     public Project getProjectById(BigInteger id) {
         try {
             Project project = generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
             List<Graphic> graphics = getProjectGraphs(project);
-            List<User> usersHaveAccessToProject = getUsersThatHaveAccessToProject(project);
+            List<User> usersHaveAccessToProject = userDAO.getUsersThatHaveAccessToProject(project);
             ((DataVisualizationProject) project).setGraphics(graphics);
             ((DataVisualizationProject) project).setUsersProjectAccessible(usersHaveAccessToProject);
 
@@ -105,23 +109,17 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
-    @Override
-    public List<User> getUsersThatHaveAccessToProject(Project project) {
-        return null;
-    }
 
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
         try {
             if (project != null) {
-
                 List<Graphic> graphs = getProjectGraphs(project); // selecting all graphs
-
                 for (Graphic graph : graphs) {
-                    graph=(GraphicDVImpl)graph;
-                    for (Correlation correlation :((GraphicDVImpl) graph).getCorrelation().keySet()) {
-                        generalTemplate.update(DELETE_OBJECT,correlation.getId());
+                    GraphicDVImpl graphicDV = (GraphicDVImpl) graph;
+                    for (Correlation correlation : graphicDV.getCorrelation().keySet()) {
+                        generalTemplate.update(DELETE_OBJECT, correlation.getId());
                     }
                     generalTemplate.update(DELETE_OBJECT, graph.getId());  // deleting all graphs
                 }
@@ -180,13 +178,13 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.OLYMPIC_AVERAGE_DVPROJECT_ATTR_ID, graphicId, olympicAvg);
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.DISPERSION_DVPROJECT_ATTR_ID, graphicId, dispersion);
             generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation);
-
+            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, IdList.PROJECT_GRAPHICS_RELATION_ATTR_ID, graphicId, projectId);
             generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON);
-            for(Correlation correlation:graphic.getCorrelation().keySet()) {
+            for (Correlation correlation : graphic.getCorrelation().keySet()) {
                 BigInteger correlationId = createObject(correlation.getName(), CORRELATION_OBJTYPE_ID);
-                generalTemplate.update(INSERT_ATTR_VALUE, CALCULATE_VALUE_ATTR_ID,correlationId,correlation.getCorrelation());
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION,CORR_FIRST_GRAPHICS_RELATION_ATTR_ID,graphic.getId(),correlationId);
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION,CORR_SECOND_GRAPHICS_RELATION_ATTR_ID,graphic.getCorrelation().get(correlation).getId(),correlationId);
+                generalTemplate.update(INSERT_ATTR_VALUE, CALCULATE_VALUE_ATTR_ID, correlationId, correlation.getCorrelation());
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_FIRST_GRAPHICS_RELATION_ATTR_ID, graphic.getId(), correlationId);
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, CORR_SECOND_GRAPHICS_RELATION_ATTR_ID, graphic.getCorrelation().get(correlation).getId(), correlationId);
             }
 
             return getGraphById(graphicId);

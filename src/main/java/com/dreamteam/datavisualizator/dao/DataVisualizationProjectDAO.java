@@ -22,6 +22,4 @@ public interface DataVisualizationProjectDAO {
     Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics);
 
     List<Graphic> getProjectGraphs(Project project);
-
-    List<User> getUsersThatHaveAccessToProject(Project project);
 }

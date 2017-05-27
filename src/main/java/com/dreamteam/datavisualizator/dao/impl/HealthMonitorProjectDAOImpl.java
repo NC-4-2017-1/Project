@@ -15,20 +15,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -238,11 +231,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             return false;
         }
         return true;
-    }
-
-    @Override
-    public List<User> getUsersThatHaveAccessToProject(Project project) {
-        return null;
     }
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +

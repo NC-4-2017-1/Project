@@ -16,6 +16,8 @@ public interface UserDAO {
 
     List<User> getAllUsersList();
 
+    List<User> getUsersThatHaveAccessToProject(Project project);
+
     boolean deleteUser(User user);
 
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);

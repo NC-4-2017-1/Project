@@ -32,6 +32,5 @@ public interface HealthMonitorProjectDAO {
 
     boolean saveProject(Project project);
 
-    List<User> getUsersThatHaveAccessToProject(Project project);
 
 }

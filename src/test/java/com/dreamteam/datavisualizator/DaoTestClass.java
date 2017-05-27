@@ -3,9 +3,6 @@ package com.dreamteam.datavisualizator;
 import com.dreamteam.datavisualizator.dao.impl.DataVisualizationProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.UserDAOImpl;
-import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.Project;
-import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -15,9 +12,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.List;
 
 public class DaoTestClass {
     private static final Logger LOGGER = Logger.getLogger(DaoTestClass.class);
@@ -102,16 +96,26 @@ public class DaoTestClass {
     }
 
     void codeGoesHere() {
+        //    LOGGER.info(proj);
 
-        Project proj = dataVisualizationProjectDAO.getProjectByName("dv_project_1");
-        LOGGER.info(proj);
-        LOGGER.info("started selecting graphs");
-        List<Graphic> projectGraphs = dataVisualizationProjectDAO.getProjectGraphs(new DataVisualizationProject.Builder
-                ("lul", new Date(), BigInteger.valueOf(52L)).buildId(BigInteger.valueOf(52L)).buildProject());
-        LOGGER.info(projectGraphs);
-        for (Graphic graph : projectGraphs) {
-            LOGGER.info(graph);
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 }
