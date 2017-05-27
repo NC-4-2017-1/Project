@@ -57,7 +57,12 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public Graphic getProjectGraph(Project project) {
         try {
-            return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
+            if (project != null) {
+                return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
+            }else {
+                LOGGER.error("Graph not selected because project is broken");
+                return null;
+            }
         } catch (DataAccessException e) {
             LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
             return null;
@@ -69,14 +74,19 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> getProjectSelectors(Project project) {
         try {
-            //BigInteger projectId = BigInteger.valueOf(77L);
-            BigInteger projectId = project.getId();
-            List<BigInteger>  arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[] { projectId }, BigInteger.class);
-            List<Selector>  arraySelectors = new ArrayList<>();
-            for (BigInteger type:arraySelectorTypes){
-                arraySelectors.add(generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
+            if (project != null) {
+                BigInteger projectId = project.getId();
+                //BigInteger projectId = BigInteger.valueOf(77L);
+                List<BigInteger> arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[]{projectId}, BigInteger.class);
+                List<Selector> arraySelectors = new ArrayList<>();
+                for (BigInteger type : arraySelectorTypes) {
+                    arraySelectors.add(generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
+                }
+                return arraySelectors;
+            }else {
+                LOGGER.error("List of selectors not selected because project is broken");
+                return null;
             }
-            return arraySelectors;
         } catch (DataAccessException e) {
             LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
             return null;
@@ -99,25 +109,30 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<Selector> createSelectorList(Map<BigInteger, String> map) {
         try {
-            Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
-            mapSelectorCreators.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
-            mapSelectorCreators.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
-            mapSelectorCreators.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
-            mapSelectorCreators.put(IdList.S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
-            mapSelectorCreators.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
-            mapSelectorCreators.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
-            mapSelectorCreators.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
-            mapSelectorCreators.put(IdList.S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
-            mapSelectorCreators.put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
-            mapSelectorCreators.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
-            List<Selector>  arraySelectors = new ArrayList<>();
-            for (Map.Entry<BigInteger, String> entry: map.entrySet()) {
-                BigInteger key = entry.getKey();
-                String value = entry.getValue();
-                SelectorCreator selector = mapSelectorCreators.get(key);
-                selector.addSelector(arraySelectors, generalTemplate, templateHM, value);
+            if (map != null) {
+                Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
+                mapSelectorCreators.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
+                mapSelectorCreators.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
+                mapSelectorCreators.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
+                mapSelectorCreators.put(IdList.S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
+                mapSelectorCreators.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
+                mapSelectorCreators.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
+                mapSelectorCreators.put(IdList.S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
+                mapSelectorCreators.put(IdList.S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
+                mapSelectorCreators.put(IdList.S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
+                mapSelectorCreators.put(IdList.S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
+                List<Selector> arraySelectors = new ArrayList<>();
+                for (Map.Entry<BigInteger, String> entry : map.entrySet()) {
+                    BigInteger key = entry.getKey();
+                    String value = entry.getValue();
+                    SelectorCreator selector = mapSelectorCreators.get(key);
+                    selector.addSelector(arraySelectors, generalTemplate, templateHM, value);
+                }
+                return arraySelectors;
+            }else {
+                LOGGER.error("List of selectors not created because selector settings is wrong");
+                return null;
             }
-            return arraySelectors;
         } catch (Exception e) {
             LOGGER.error("List of buildSelectors not created", e);
             return null;
@@ -150,9 +165,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<HealthMonitorProject> getProjectsByAuthor(User user) {
         try {
-            return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
+            if (user != null) {
+                return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
+            } else {
+                LOGGER.error("Projects for author wasn't selected");
+                return null;
+            }
         } catch (DataAccessException e) {
-            LOGGER.error("Project not fetched by author with id - " + user.getId(), e);
+            LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
             return null;
         }catch (Exception e) {
             LOGGER.error("Project not fetched by author", e);
@@ -162,7 +182,12 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     public List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user) {
         try {
-            return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
+            if (user != null) {
+                return generalTemplate.query(SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
+            } else {
+                LOGGER.error("Projects for user wasn't selected");
+                return null;
+            }
         } catch (DataAccessException e) {
             LOGGER.error("Project not fetched for user with id - " + user.getId(), e);
             return null;
@@ -175,12 +200,17 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
         try {
-            return false;
+            if (project != null) {
+                //TODO delete project with graphic and selectors
+                return true;
+            } else {
+                return false;
+            }
         } catch (DataAccessException e) {
             LOGGER.error("Project with id " +project.getId() + " not deleted", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Project with id " +project.getId() + " not deleted", e);
+            LOGGER.error("Project with not deleted", e);
             return false;
         }
     }
@@ -316,7 +346,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +    /*hour count for selector*/
             " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
-
     private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
             put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
             put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
