@@ -38,12 +38,14 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     @Autowired
     private JdbcTemplate generalTemplate;
 
+    @Override
     public Project getProjectById(BigInteger id) {
         try {
             Project project = generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
             List<Graphic> graphics = getProjectGraphs(project);
+            List<User> usersHaveAccessToProject = getUsersThatHaveAccessToProject(project);
             ((DataVisualizationProject) project).setGraphics(graphics);
-           // List<User> usersHaveAccessToProject = get
+            ((DataVisualizationProject) project).setUsersProjectAccessible(usersHaveAccessToProject);
 
             return project;
         } catch (DataAccessException e) {
@@ -55,6 +57,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
+    @Override
     public Project getProjectByName(String projectName) {
         try {
             return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
@@ -67,6 +70,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
+    @Override
     public List<DataVisualizationProject> getProjectsByAuthor(User user) {
         try {
             if (user != null) {
@@ -102,20 +106,23 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
-
+    @Override
     public List<User> getUsersThatHaveAccessToProject(Project project) {
         return null;
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
         try {
             if (project != null) {
-                //TODO select all project graphs
-                //TODO select all graphs correlaations
-                //TODO delete project object cascade
-                //TODO delete all graphs
-                //TODO delete all correlations by left graphs ids
+                // selecting all graphs
+                List<Graphic> graphs = getProjectGraphs(project);
+                generalTemplate.update(DELETE_OBJECT, project.getId()); //deleting project object cascade
+                for (Graphic graph : graphs) {
+                    generalTemplate.update(DELETE_OBJECT, graph.getId());  // deleting all graphs
+                }
+                //TODO delete all correlations by left graphs ids or project id
                 return true;
             } else {
                 return false;
@@ -129,6 +136,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
         Date projectCreationDate = new Date();
@@ -153,6 +161,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         return project;
     }
 
+    @Override
     public List<Graphic> getProjectGraphs(Project project) {
         try {
             if (project != null) {
@@ -167,10 +176,6 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             LOGGER.error("Graphs not fetched for project id:" + project.getId() + " name:" + project.getName(), e);
             return null;
         }
-    }
-
-    public void getPreviewProjectDataForUser(User user) {
-        //TODO method for fetching data about projects from db for preview
     }
 
     private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description " +
@@ -195,7 +200,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.object_id = dvpoject.object_id" +
             " and ref.reference = author.object_id" +
             " and dvpoject.name = ?";
-    private static String SELECT_DV_PROJECTS_BY_AUTHOR = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+    private static final String SELECT_DV_PROJECTS_BY_AUTHOR = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
             " where dvpoject.object_type_id = 4" +
             " and dvpoject.object_id = creation_date.object_id" +

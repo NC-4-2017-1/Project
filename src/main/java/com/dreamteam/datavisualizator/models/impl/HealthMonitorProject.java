@@ -6,7 +6,6 @@ import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -103,7 +102,7 @@ public class HealthMonitorProject extends AbstractProject {
         private String userName;
         private String password;
 
-        private Collection<User> usersProjectAccessible;
+        private List<User> usersProjectAccessible;
         private List<Selector> selectors;
         private Graphic graphic;
 
@@ -126,7 +125,7 @@ public class HealthMonitorProject extends AbstractProject {
             return this;
         }
 
-        public Builder buildUsersProjectAccessible(Collection<User> val) {
+        public Builder buildUsersProjectAccessible(List<User> val) {
             usersProjectAccessible = val;
             return this;
         }

@@ -274,7 +274,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and last_name.attr_id = 3 " +
             " and  obj_user.object_id = email.object_id " +
             " and email.attr_id = 1 " +
-            " and obj_user.object_id!=1 " +
             " and obj_user.object_id = usertype.object_id " +
             " and usertype.list_value_id = 1";
     private static final String SELECT_USER_BY_FULLNAME = "select obj_user.object_id id,  first_name.value first_name, last_name.value last_name, email.value email, usertype.list_value_id usertype" +

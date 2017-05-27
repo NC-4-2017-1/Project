@@ -5,26 +5,25 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
-public abstract class AbstractProject implements Project{
+public abstract class AbstractProject implements Project {
     private BigInteger id;
     private String name;
     private Date creationDate;
     private BigInteger author;
     private String description;
     private ProjectTypes type;
-    private Collection<User> usersProjectAccessible;
+    private List<User> usersProjectAccessible;
 
 
     public void setId(BigInteger id) {
         this.id = id;
     }
 
-    public BigInteger getId(){
+    public BigInteger getId() {
         return id;
     }
 
@@ -32,7 +31,7 @@ public abstract class AbstractProject implements Project{
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -40,7 +39,7 @@ public abstract class AbstractProject implements Project{
         this.creationDate = creationDate;
     }
 
-    public Date getCreationDate(){
+    public Date getCreationDate() {
         return creationDate;
     }
 
@@ -48,7 +47,7 @@ public abstract class AbstractProject implements Project{
         this.author = author;
     }
 
-    public BigInteger getAuthor(){
+    public BigInteger getAuthor() {
         return author;
     }
 
@@ -56,7 +55,7 @@ public abstract class AbstractProject implements Project{
         this.description = description;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
@@ -64,15 +63,15 @@ public abstract class AbstractProject implements Project{
         this.type = type;
     }
 
-    public ProjectTypes getType(){
+    public ProjectTypes getType() {
         return type;
     }
 
-    public void setUsersProjectAccessible(Collection<User> usersProjectAccessible) {
+    public void setUsersProjectAccessible(List<User> usersProjectAccessible) {
         this.usersProjectAccessible = usersProjectAccessible;
     }
 
-    public Collection<User> getUsersProjectAccessibleTo(){
+    public List<User> getUsersProjectAccessibleTo() {
         return usersProjectAccessible;
     }
 }

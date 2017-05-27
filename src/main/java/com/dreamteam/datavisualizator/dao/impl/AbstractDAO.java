@@ -27,11 +27,6 @@ public abstract class AbstractDAO {
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
     }
 
-    protected BigInteger deleteObject(BigInteger objectTypeId) {
-        //TODO method for deleting an object
-        return BigInteger.ZERO;
-    }
-
     protected static final String INSERT_OBJECT = "insert_object";
     protected static final String INSERT_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
     protected static final String INSERT_ATTR_DATE_VALUE = "insert into attributes(attr_id, object_id, date_value) values (?, ?, ?)";
@@ -39,4 +34,5 @@ public abstract class AbstractDAO {
     protected static final String INSERT_OBJREFERENCE_RELATION = "insert into objreference(attr_id, reference, object_id) values (?, ?, ?)";
 
 
+    protected static final String DELETE_OBJECT = "delete from objects where object_id = ?";
 }

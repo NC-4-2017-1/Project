@@ -6,7 +6,6 @@ import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class DataVisualizationProject extends AbstractProject {
         private Date creationDate;
         private BigInteger author;
         private String description;
-        private Collection<User> usersProjectAccessible;
+        private List<User> usersProjectAccessible;
         private List<Graphic> graphics;
 
         public Builder(String name, Date creationDate, BigInteger author) {
@@ -57,7 +56,7 @@ public class DataVisualizationProject extends AbstractProject {
             return this;
         }
 
-        public Builder buildUsersProjectAccessible(Collection<User> val) {
+        public Builder buildUsersProjectAccessible(List<User> val) {
             usersProjectAccessible = val;
             return this;
         }
