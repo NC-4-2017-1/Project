@@ -144,6 +144,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             if (user != null && project != null) {
                 generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, user.getId(), project.getId());
             } else {
+                LOGGER.error("Access to project was not given because of nulls in method");
                 return false;
             }
         } catch (DataAccessException e) {
@@ -164,6 +165,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             if (user != null && project != null) {
                 generalTemplate.update(REMOVE_ACCESS_TO_PROJECT_FROM_USER, project.getId(), user.getId());
             } else {
+                LOGGER.error("Access to project was not removed because of nulls in method");
                 return false;
             }
         } catch (DataAccessException e) {
@@ -179,8 +181,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
-        User user = null;
-        BigInteger insertedObjectId = null;
+        User user;
+        BigInteger insertedObjectId;
         try {
             insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
             generalTemplate.update(INSERT_ATTR_VALUE, USER_EMAIL_ATTR_ID, insertedObjectId, email);
@@ -188,6 +190,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             generalTemplate.update(INSERT_ATTR_VALUE, USER_LAST_NAME_ATTR_ID, insertedObjectId, lastName);
             generalTemplate.update(INSERT_ATTR_VALUE, PASSWORD_ATTR_ID, insertedObjectId, password);
             generalTemplate.update(INSERT_ATTR_LIST_VALUE, USER_TYPE_ATTR_ID, insertedObjectId, UserTypes.REGULAR_USER.getId());
+
+            user = getUserById(insertedObjectId);
         } catch (DataAccessException e) {
             LOGGER.error("User not created", e);
             return null;
@@ -195,7 +199,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             LOGGER.error("User not created", e);
             return null;
         }
-        user = getUserById(insertedObjectId);
         return user;
     }
 
@@ -227,7 +230,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
         private final String columnName;
 
-        private UserColumnName(String columnName) {
+        UserColumnName(String columnName) {
             this.columnName = columnName;
         }
 
