@@ -214,6 +214,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         return true;
     }
 
+    @Override
+    public List<User> getUsersThatHaveAccessToProject(Project project) {
+        return null;
+    }
+
     private SelectorInstanceInfo createSelectorInstanceInfo(SimpleJdbcCall simpleCallTemplateInstanceInfo) {
         SelectorInstanceInfo selector = new SelectorInstanceInfo();
         simpleCallTemplateInstanceInfo.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_INSTANCE_INFO);

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 
 import static com.dreamteam.datavisualizator.common.IdList.*;
 
@@ -65,7 +65,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         //!TODO deliver error message to user when catch exception (not stack trace)
     }
 
-    public Collection<User> getAllUsersList() {
+    public List<User> getAllUsersList() {
         try {
             return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapper());
         } catch (DataAccessException e) {

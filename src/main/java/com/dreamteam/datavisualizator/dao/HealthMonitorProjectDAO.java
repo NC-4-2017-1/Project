@@ -23,5 +23,6 @@ public interface HealthMonitorProjectDAO {
     List<HealthMonitorProject> getProjectsUserHaveAccessTo(User user);
     boolean deleteProject(Project project);
     boolean saveProject(Project project);
+    List<User> getUsersThatHaveAccessToProject(Project project);
 
 }

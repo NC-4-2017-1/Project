@@ -3,9 +3,9 @@ package com.dreamteam.datavisualizator;
 import com.dreamteam.datavisualizator.dao.impl.DataVisualizationProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
 import com.dreamteam.datavisualizator.dao.impl.UserDAOImpl;
+import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
-import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -106,10 +106,10 @@ public class DaoTestClass {
         Project proj = dataVisualizationProjectDAO.getProjectByName("dv_project_1");
         LOGGER.info(proj);
         LOGGER.info("started selecting graphs");
-        List<GraphicDVImpl> projectGraphs = dataVisualizationProjectDAO.getProjectGraphs(new DataVisualizationProject.Builder
+        List<Graphic> projectGraphs = dataVisualizationProjectDAO.getProjectGraphs(new DataVisualizationProject.Builder
                 ("lul", new Date(), BigInteger.valueOf(52L)).buildId(BigInteger.valueOf(52L)).buildProject());
         LOGGER.info(projectGraphs);
-        for (GraphicDVImpl graph : projectGraphs) {
+        for (Graphic graph : projectGraphs) {
             LOGGER.info(graph);
         }
     }

@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.models.impl;
 
 
 import com.dreamteam.datavisualizator.models.Graphic;
+import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 
 import java.math.BigInteger;
@@ -19,7 +20,8 @@ public class DataVisualizationProject extends AbstractProject {
         this.setAuthor(builder.author);
         this.setDescription(builder.description);
         this.setUsersProjectAccessible(builder.usersProjectAccessible);
-        this.graphics = builder.graphics;
+        this.setGraphics(builder.graphics);
+        this.setType(ProjectTypes.DATA_VISUALIZATION);
     }
 
     public List<Graphic> getGraphics() {

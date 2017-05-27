@@ -5,13 +5,13 @@ import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
 
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.List;
 
 public interface UserDAO {
     User getUserById(BigInteger id);
     User getUserByFullName(String fullName);
     User getUserByEmail(String email);
-    Collection<User> getAllUsersList();
+    List<User> getAllUsersList();
     boolean deleteUser(User user);
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);
     User updateUsersEmail(User user,String email);

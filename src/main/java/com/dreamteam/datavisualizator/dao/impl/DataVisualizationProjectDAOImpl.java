@@ -40,7 +40,12 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     public Project getProjectById(BigInteger id) {
         try {
-            return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
+            Project project = generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
+            List<Graphic> graphics = getProjectGraphs(project);
+            ((DataVisualizationProject) project).setGraphics(graphics);
+           // List<User> usersHaveAccessToProject = get
+
+            return project;
         } catch (DataAccessException e) {
             LOGGER.error("Project not fetched by id " + id, e);
             return null;
@@ -67,6 +72,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             if (user != null) {
                 return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
             } else {
+                LOGGER.error("Projects for author wasn't selected because of author " + user);
                 return null;
             }
         } catch (DataAccessException e) {
@@ -78,11 +84,13 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
     }
 
+    @Override
     public List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user) {
         try {
             if (user != null) {
                 return generalTemplate.query(SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
             } else {
+                LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
             }
         } catch (DataAccessException e) {
@@ -92,13 +100,22 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             LOGGER.error("Accessible to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
             return null;
         }
+    }
+
+
+    public List<User> getUsersThatHaveAccessToProject(Project project) {
+        return null;
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteProject(Project project) {
         try {
             if (project != null) {
-                //TODO method for deleting a project
+                //TODO select all project graphs
+                //TODO select all graphs correlaations
+                //TODO delete project object cascade
+                //TODO delete all graphs
+                //TODO delete all correlations by left graphs ids
                 return true;
             } else {
                 return false;
@@ -122,6 +139,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
             generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
             for (Graphic graphic : graphics) {
+                GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
+
                 //!TODO SAVE GRAPHICS
             }
         } catch (DataAccessException e) {
@@ -134,7 +153,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         return project;
     }
 
-    public List<GraphicDVImpl> getProjectGraphs(Project project) {
+    public List<Graphic> getProjectGraphs(Project project) {
         try {
             if (project != null) {
                 return generalTemplate.query(SELECT_PROJECT_GRAPHS, new Object[]{project.getId()}, new GraphicDVRowMapper());
@@ -256,13 +275,11 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(name, creationDate, author);
             builder.buildId(id);
             builder.buildDescription(description);
-//            builder.buildUsersProjectAccessible();
-//            builder.buildGraphics();
             return builder.buildProject();
         }
     }
 
-    private class GraphicDVRowMapper implements RowMapper<GraphicDVImpl> {
+    private class GraphicDVRowMapper implements RowMapper<Graphic> {
         public GraphicDVImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
             BigInteger id = rs.getBigDecimal(DVProjectColumnName.id.toString()).toBigInteger();
             String name = rs.getString(DVProjectColumnName.name.toString());
@@ -282,6 +299,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
             String mathExpectationStr = rs.getString(DVProjectColumnName.mathExpectation.toString());
             BigDecimal mathExpectation = new BigDecimal(mathExpectationStr.replaceAll(",", "."));
+
+            //TODO build correlation
 
             GraphicDVImpl.DVGraphBuilder builder = new GraphicDVImpl.DVGraphBuilder();
             builder.buildId(id);

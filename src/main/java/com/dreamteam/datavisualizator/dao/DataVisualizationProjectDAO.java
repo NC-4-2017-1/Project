@@ -4,7 +4,6 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
-import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -16,6 +15,7 @@ public interface DataVisualizationProjectDAO {
     List<DataVisualizationProject> getProjectsUserHaveAccessTo(User user);
     boolean deleteProject(Project project);
     Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics);
-    List<GraphicDVImpl> getProjectGraphs(Project project);
+    List<Graphic> getProjectGraphs(Project project);
     void getPreviewProjectDataForUser(User user);
+    List<User> getUsersThatHaveAccessToProject(Project project);
 }
