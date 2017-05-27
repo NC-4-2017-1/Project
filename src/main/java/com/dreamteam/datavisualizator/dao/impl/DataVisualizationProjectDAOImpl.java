@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao.impl;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
@@ -125,6 +126,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
                 //TODO delete all correlations by left graphs ids or project id
                 return true;
             } else {
+                LOGGER.error("Project was not removed because it's null");
                 return false;
             }
         } catch (DataAccessException e) {
@@ -148,8 +150,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
             for (Graphic graphic : graphics) {
                 GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
-
-                //!TODO SAVE GRAPHICS
+                saveGraphic(graphicDV, insertedObjectId);
             }
         } catch (DataAccessException e) {
             LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
@@ -160,6 +161,49 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         }
         return project;
     }
+
+    private GraphicDVImpl saveGraphic(GraphicDVImpl graphic, BigInteger projectId) {
+        try {
+            String graphicName = graphic.getName();
+            JsonObject graphicJSON = graphic.getGraphicJSON();
+            BigDecimal avg = graphic.getAverage();
+            BigDecimal olympicAvg = graphic.getOlympicAverage();
+            BigDecimal dispersion = graphic.getDispersion();
+            BigDecimal mathExpectation = graphic.getMathExpectation();
+
+            BigInteger graphicId = createObject(graphicName, IdList.GRAPHIC_OBJTYPE_ID);
+
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.AVERAGE_DVPROJECT_ATTR_ID, graphicId, avg);
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.OLYMPIC_AVERAGE_DVPROJECT_ATTR_ID, graphicId, olympicAvg);
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.DISPERSION_DVPROJECT_ATTR_ID, graphicId, dispersion);
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation);
+
+            generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON);
+            //!TODO understand how to save Correlations
+
+            return getGraphById(graphicId);
+        } catch (DataAccessException e) {
+            LOGGER.error("Error in inserting graphic + " + graphic.getName() + " to project with id:" + projectId, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Error in inserting graphic + " + graphic.getName() + " to project with id:" + projectId, e);
+            return null;
+        }
+
+    }
+
+    private GraphicDVImpl getGraphById(BigInteger graphicId) {
+        try {
+            return (GraphicDVImpl) generalTemplate.query(SELECT_GRAPH_BY_ID, new Object[]{graphicId}, new GraphicDVRowMapper());
+        } catch (DataAccessException e) {
+            LOGGER.error("Graph not fetched by id:" + graphicId, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Graph not fetched by id:" + graphicId, e);
+            return null;
+        }
+    }
+
 
     @Override
     public List<Graphic> getProjectGraphs(Project project) {
@@ -245,6 +289,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.reference = graph.object_id" +
             " and ref.object_id = dvproject.object_id" +
             " and dvproject.object_id = ?";
+
+    private static final String SELECT_GRAPH_BY_ID = "";
 
     private enum DVProjectColumnName {
         id("id"),

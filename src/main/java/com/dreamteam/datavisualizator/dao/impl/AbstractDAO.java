@@ -31,6 +31,7 @@ public abstract class AbstractDAO {
     protected static final String INSERT_ATTR_VALUE = "insert into attributes(attr_id, object_id, value) values (?, ?, ?)";
     protected static final String INSERT_ATTR_DATE_VALUE = "insert into attributes(attr_id, object_id, date_value) values (?, ?, ?)";
     protected static final String INSERT_ATTR_LIST_VALUE = "insert into attributes(attr_id, object_id, list_value_id) values (?, ?, ?)";
+    protected static final String INSERT_ATTR_BIG_VALUE = "insert into attributes(attr_id, object_id, big_value) values (?, ?, ?)";
     protected static final String INSERT_OBJREFERENCE_RELATION = "insert into objreference(attr_id, reference, object_id) values (?, ?, ?)";
 
 
