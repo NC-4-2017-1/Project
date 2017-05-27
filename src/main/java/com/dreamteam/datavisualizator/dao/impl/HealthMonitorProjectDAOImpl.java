@@ -60,7 +60,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             if (project != null) {
                 return generalTemplate.queryForObject(SELECT_PROJECT_GRAPH, new Object[]{project.getId()}, new GraphicHMRowMapper());
             }else {
-                LOGGER.error("Graph not selected because project is broken");
+                LOGGER.error("Graph not selected because project is null");
                 return null;
             }
         } catch (DataAccessException e) {
@@ -84,7 +84,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 }
                 return arraySelectors;
             }else {
-                LOGGER.error("List of selectors not selected because project is broken");
+                LOGGER.error("List of selectors not selected because project is null");
                 return null;
             }
         } catch (DataAccessException e) {
@@ -201,9 +201,16 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     public boolean deleteProject(Project project) {
         try {
             if (project != null) {
-                //TODO delete project with graphic and selectors
+                Graphic hmGraph = getProjectGraph(project);                   //select project graphic
+                generalTemplate.update(DELETE_OBJECT, hmGraph.getId());       //delete project graphic
+                List<Selector> selectors = getProjectSelectors(project);      //select all project selectors
+                for (Selector selector : selectors) {
+                    generalTemplate.update(DELETE_OBJECT, selector.getId());  // deleting all project selectors
+                }
+                generalTemplate.update(DELETE_OBJECT, project.getId());         //deleting project
                 return true;
             } else {
+                LOGGER.error("Project was not removed because it's null");
                 return false;
             }
         } catch (DataAccessException e) {
