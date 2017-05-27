@@ -8,23 +8,30 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-class XmlHandler extends DefaultHandler {
+public class XmlHandler extends DefaultHandler {
+
     public static final Logger LOGGER = Logger.getLogger(XmlHandler.class);
 
-    private XmlTable table = new XmlTable();
-    private XmlRow row = null;
-    private Object content = null;
-    private String typeOfData = "";
+    private boolean isRow = false;
+    private boolean isElement = false;
+    List<Map<String, Object>> rows;
+    private Map<String, Object> elements;
+    private String elementName;
+    private String elementValue;
     private int countOfRows = 0;
     private boolean stopFlag = false;
 
-    public XmlHandler(boolean stopper, int countOfRows){
-        this.stopFlag = stopper;
-        this.countOfRows = countOfRows;
+    public XmlHandler() {
     }
 
-    public XmlHandler(){
+    public XmlHandler(boolean stopper, int countOfRows) {
+        this.stopFlag = stopper;
+        this.countOfRows = countOfRows;
     }
 
     @Override
@@ -40,15 +47,21 @@ class XmlHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         switch (qName) {
+            case "Table":
+                rows = new ArrayList<>();
+                break;
             case "Row":
-                if (stopFlag&&countOfRows==0){
+                if (stopFlag && countOfRows == 0) {
                     throw new SaxTerminatorException();
                 }
-                row = new XmlRow();
+                isRow = true;
+                elements = new LinkedHashMap<>();
                 break;
-            case "Data":
-                typeOfData = attributes.getValue(0);
-                break;
+            default:
+                if (isRow) {
+                    isElement = true;
+                    elementName = qName;
+                }
         }
     }
 
@@ -56,39 +69,41 @@ class XmlHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName) {
             case "Row":
-                if (stopFlag){
+                if (stopFlag) {
                     countOfRows--;
                 }
-                table.rows.add(row);
+                isRow = false;
+                rows.add(elements);
                 break;
-            case "Data":
-                row.cells.add(content);
-                break;
+        }
+        if (isElement) {
+            isElement = false;
         }
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        String value = String.copyValueOf(ch, start, length).trim();
-        switch (typeOfData) {
-            case "DateTime":
+        elementValue = String.copyValueOf(ch, start, length).trim();
+        if (isElement) {
+            if (elementValue.matches("^([0-9]+\\.[0-9]+)|([0-9])$")) {
+                elements.put(elementName, BigDecimal.valueOf(Double.parseDouble(elementValue)));
+            } else {
                 try {
-                    content = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss").parse(value);
+                    if (elementValue.matches("^[0-9]{2}(\\.|\\-|\\/)[0-9]{2}(\\.|\\-|\\/)(([0-9]{4})|([0-9]{2}))$")) {
+                        elements.put(elementName, new SimpleDateFormat("dd.MM.yyyy").parse(elementValue));
+                    } else if (elementValue.matches("^[0-9]{2}(\\.|\\-|\\/)[0-9]{2}(\\.|\\-|\\/)(([0-9]{4})|([0-9]{2}))\\s([0-9]{1}|[0-9]{2})\\:[0-9]{2}\\:[0-9]{2}$")) {
+                        elements.put(elementName, new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse(elementValue));
+                    } else {
+                        elements.put(elementName, elementValue);
+                    }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    throw new SaxInvalidDateFormatException();
                 }
-                break;
-            case "Number":
-                content = BigDecimal.valueOf(Long.parseLong(value));
-                break;
-            default:
-                content = value;
-                break;
+            }
         }
-        typeOfData = "";
     }
 
-    public XmlTable getTable() {
-        return table;
+    public List<Map<String, Object>> getRows() {
+        return rows;
     }
 }
