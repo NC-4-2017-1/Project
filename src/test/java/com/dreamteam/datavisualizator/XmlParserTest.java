@@ -2,7 +2,6 @@ package com.dreamteam.datavisualizator;
 
 import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -48,14 +47,12 @@ public class XmlParserTest {
     }
 
     @Test
-    @Ignore
     public void testParseXmlFileWithCorrectTimeZone() throws IOException {
         List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "EET");
         assertEquals(expectedRows1, result);
     }
 
     @Test
-    @Ignore
     public void testParseXmlFileWithIncorrectTimeZone() throws IOException {
         List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "WET");
         assertNotEquals(expectedRows1, result);
@@ -72,14 +69,12 @@ public class XmlParserTest {
     }
 
     @Test
-    @Ignore
     public void testParseXmlFileWithLimitOfRowsAndCorrectTimeZone() throws IOException {
         List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "EET", 1);
         assertEquals(expectedRows2, result);
     }
 
     @Test
-    @Ignore
     public void testParseXmlFileWithLimitOfRowsAndIncorrectTimeZone() throws IOException {
         List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "WET", 1);
         assertNotEquals(expectedRows2, result);
