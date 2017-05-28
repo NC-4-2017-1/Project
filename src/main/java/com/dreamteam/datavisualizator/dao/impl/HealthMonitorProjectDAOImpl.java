@@ -19,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -45,6 +48,15 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     @Autowired
     private UserDAO userDAO;
+
+    @Override
+    protected BigInteger createObject(String name, BigInteger objectTypeId) {
+        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("obj_type_id", objectTypeId)
+                .addValue("obj_name", name);
+        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
+    }
 
     public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
@@ -73,7 +85,6 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         try {
             if (project != null) {
                 BigInteger projectId = project.getId();
-                //BigInteger projectId = BigInteger.valueOf(77L);
                 List<BigInteger> arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[]{projectId}, BigInteger.class);
                 Map<BigInteger, Selector> mapSelectors = new HashMap<>();
                 for (BigInteger type : arraySelectorTypes) {
@@ -222,8 +233,9 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 String userName = ((HealthMonitorProject) project).getUserName();
                 String password = ((HealthMonitorProject) project).getPassword();
                 String description = project.getDescription();
+                String projectName = project.getName();
                 BigInteger authorId = project.getAuthor();
-                BigInteger projectId = createObject(project.getName(), HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
+                BigInteger projectId = createObject(projectName, HEALTH_MONITOR_PROJECT_OBJTYPE_ID);
 
                 generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, projectId, description);
                 generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, projectId, projectCreationDate);
@@ -242,7 +254,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
                 BigInteger graphId = createObject(graphName, GRAPHIC_OBJTYPE_ID);
                 generalTemplate.update(INSERT_ATTR_VALUE, HOUR_COUNT_ATTR_ID, graphId, graphicHourCount);
-                generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, graphId, graphJSON);
+                generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, graphId, graphJSON.toString());
                 generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_GRAPHICS_RELATION_ATTR_ID, graphId, projectId);
 
                 //selectors
@@ -268,11 +280,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Project with name " +project.getName() + " not saved", e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("Project with name not saved", e);
+            LOGGER.error("Project not saved", e);
             return null;
         }
     }
-
 
     private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
             " FROM objects hmproject, attributes creation_date, objects author, attributes description, objreference ref" +
@@ -382,6 +393,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +    /*hour count for selector*/
             " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
+
     private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
             put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
             put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,SELECT_SIMPLE_SELECTOR_BY_PROJECTID);

@@ -45,7 +45,7 @@ public class SelectorQueriesResultsCreator extends AbstactSelectorCreator implem
 
     @Override
     public String getAttrValue(Selector selector) {
-        int top = ((SelectorActiveSessions)selector).getTop();
+        int top = ((SelectorQueriesResults)selector).getTop();
         return Integer.toString(top);
     }
 

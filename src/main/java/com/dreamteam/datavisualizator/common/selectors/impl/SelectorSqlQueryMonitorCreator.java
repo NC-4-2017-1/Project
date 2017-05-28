@@ -33,7 +33,6 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("SQL queries monitor");
-            System.out.println(sql_query);
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
             mapSelectors.put(S_SQL_MONITOR_OBJTYPE_ID, selector);
         }catch (DataAccessException e) {
