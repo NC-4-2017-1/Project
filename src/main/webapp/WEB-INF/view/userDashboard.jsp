@@ -14,6 +14,11 @@
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
         crossorigin="anonymous">
 </script>
-
+﻿<button onclick="myFunction()">New Project</button>
+<script>
+    function myFunction() {
+        window.location.assign("/project/create-layout");
+    }
+</script>
 </body>
 </html>

@@ -11,7 +11,22 @@
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
         crossorigin="anonymous">
 </script>
-
+﻿<form method="post" action="/project/create">
+    Project Type:<br>
+    <select id="type" name="type">
+        <c:forEach items="${projectTypes}" var="entry">
+            <option value="${entry.key}">${entry.value}</option>
+        </c:forEach>
+    </select>
+    <br>
+    Project name:<br>
+    <input type="text" name="name" value="">
+    <br>
+    Description:<br>
+    <input type="text" name="description" value="">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
 
 </body>
 </html>
