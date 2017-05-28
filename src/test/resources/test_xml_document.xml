@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Table>
+<Rows>
+<Row>
+		<Title>SomeTitle1</Title>
+		<Date>29.04.2017 00:55:05</Date>
+		<Process_count>1002.03</Process_count>
+		<Db_load>3</Db_load>
+</Row>	
+<Row>	
+		<Title>SomeTitle2</Title>
+		<Date>12.05.17 00:00:01</Date>
+		<Process_count>3</Process_count>
+		<Db_load>4</Db_load>
+</Row>	
+</Rows>
+</Table>
