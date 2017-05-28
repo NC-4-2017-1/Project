@@ -1,6 +1,8 @@
 package com.dreamteam.datavisualizator.controllers;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
+import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,7 @@ public class ProjectController {
     @Autowired
     DataVisualizationProjectDAO projectDAO;
     @Autowired
-    DataVisualizationProjectDAO healthMonitorProjectDAOImpl;
-
-
-    @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share", method = RequestMethod.GET)
-    public String shareProject(Model model) {
-        return "shareProject";
-    }
+    HealthMonitorProjectDAO healthMonitorProjectDAOImpl;
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/create-layout", method = RequestMethod.GET)
@@ -50,6 +45,7 @@ public class ProjectController {
         return ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(type) ? "dataVisualizationProjectInitialSetup" : "healthMonitorProjectInitialSetup";
     }
 
+
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-setup", method = RequestMethod.GET)
     public String visualizationProjectSetup(Model model) {
@@ -63,6 +59,17 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
+    @ResponseBody
+    public Project saveVisualizationProject(@RequestParam("name") String name,
+                                            @RequestParam("description") String description,
+                                            Model model) {
+        // return projectDAO.saveProject();
+        return null;
+    }
+
+
+    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
     public String healthMonitorSetup(Model model) {
         return "healthMonitorProjectInitialSetup";
@@ -74,15 +81,12 @@ public class ProjectController {
         return "healthMonitorAdvancedSettings";
     }
 
-
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/save", method = RequestMethod.GET)
+    @RequestMapping(path = "/save-health-monitor", method = RequestMethod.GET)
     @ResponseBody
-    public Project saveProject(@RequestParam("name") String name,
-                               @RequestParam("description") String description,
-                               Model model) {
-        // return projectDAO.saveProject();
-        return null;
+    public Project saveHealthMonitorProject(Project project,
+                                            Model model) {
+        return healthMonitorProjectDAOImpl.saveProject(project);
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -96,7 +100,21 @@ public class ProjectController {
     @ResponseBody
     public boolean deleteProject(Project project,
                                  Model model) {
-        return projectDAO.deleteProject(project);
+        if (project != null) {
+            ProjectTypes projectTypes = project.getType();
+            if (projectTypes != null && projectTypes.equals(IdList.DATA_VISUALIZATION_PROJECT_OBJTYPE_ID)) {
+                return projectDAO.deleteProject(project);
+            } else if (projectTypes != null && projectTypes.equals(IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID)) {
+                return healthMonitorProjectDAOImpl.deleteProject(project);
+            }
+        }
+        return false;
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/share", method = RequestMethod.GET)
+    public String shareProject(Model model) {
+        return "shareProject";
     }
 
 }
