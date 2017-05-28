@@ -11,31 +11,36 @@ import java.util.*;
 
 public class CalculationService {
 
-    public BigDecimal calculateAverage(ArrayList<BigDecimal> dataForCalculate){
-        double[] arrayForCalculate = this.arrayListToDouble(dataForCalculate);
+    public static BigDecimal calculateAverage(ArrayList<BigDecimal> dataForCalculate){
+        double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
         BigDecimal result = new BigDecimal((new Mean()).evaluate(arrayForCalculate));
 
         return result;
     }
 
-    public BigDecimal calculateOlympicAverage(ArrayList<BigDecimal> dataForCalculate){
-        Collections.sort(dataForCalculate, Collections.<BigDecimal>reverseOrder());
+    public static BigDecimal calculateOlympicAverage(ArrayList<BigDecimal> dataForCalculate){
+        ArrayList<BigDecimal> newDataForCalculate = new ArrayList<>(dataForCalculate);
+        Collections.sort(newDataForCalculate, new Comparator<BigDecimal>() {
+            public int compare(BigDecimal o1, BigDecimal o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
-        BigDecimal minElement = dataForCalculate.get(dataForCalculate.size() - 1);
-        BigDecimal maxElement = dataForCalculate.get(0);
+        BigDecimal maxElement = newDataForCalculate.get(newDataForCalculate.size() - 1);
+        BigDecimal minElement = newDataForCalculate.get(0);
 
-        for(int i=dataForCalculate.size()-1; i!=0; i--){
-            if(maxElement == dataForCalculate.get(i)){
-                dataForCalculate.remove(i);
+        for(int i=newDataForCalculate.size()-1; i!=0; i--){
+            if(maxElement == newDataForCalculate.get(i)){
+                newDataForCalculate.remove(i);
             }
             else{
                 break;
             }
         }
 
-        for(int i=0; i<dataForCalculate.size(); i++){
-            if(minElement == dataForCalculate.get(i)){
-                dataForCalculate.remove(i);
+        for(int i=0; i<newDataForCalculate.size(); i++){
+            if(minElement == newDataForCalculate.get(i)){
+                newDataForCalculate.remove(i);
                 i--;
             }
             else{
@@ -43,31 +48,30 @@ public class CalculationService {
             }
         }
 
-        BigDecimal result = calculateAverage(dataForCalculate);
+        BigDecimal result = calculateAverage(newDataForCalculate);
 
         return result;
     }
 
-    public BigDecimal calculateCorrelaction(ArrayList<BigDecimal> listOfFirstGraph, ArrayList<BigDecimal> listOfSecondGraph){
-        double[] arrayOfFristGraph = this.arrayListToDouble(listOfFirstGraph);
-        double[] arrayOfSecondGraph = this.arrayListToDouble(listOfSecondGraph);
+    public static BigDecimal calculateCorrelation(ArrayList<BigDecimal> listOfFirstGraph, ArrayList<BigDecimal> listOfSecondGraph){
+        double[] arrayOfFirstGraph = new CalculationService().arrayListToDouble(listOfFirstGraph);
+        double[] arrayOfSecondGraph = new CalculationService().arrayListToDouble(listOfSecondGraph);
 
-        double correlation = new PearsonsCorrelation().correlation(arrayOfFristGraph, arrayOfSecondGraph);
-
+        double correlation = new PearsonsCorrelation().correlation(arrayOfFirstGraph, arrayOfSecondGraph);
 
         return new BigDecimal(correlation);
     }
 
-    public BigDecimal calculateDispersion(ArrayList<BigDecimal> dataForCalculate){
-        double[] arrayForCalculate = this.arrayListToDouble(dataForCalculate);
+    public static BigDecimal calculateDispersion(ArrayList<BigDecimal> dataForCalculate){
+        double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
         BigDecimal result = new BigDecimal((new Variance()).evaluate(arrayForCalculate));
 
         return result;
     }
 
-    public BigDecimal calculationMathExpectation(ArrayList<BigDecimal> dataForCalculate){
-        double[] arrayForCalculate = this.arrayListToDouble(dataForCalculate);
-        double probability = 1/arrayForCalculate.length;
+    public static BigDecimal calculationMathExpectation(ArrayList<BigDecimal> dataForCalculate){
+        double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
+        double probability = 1.0/arrayForCalculate.length;
         double expectedValue = 0;
 
         for(double elementOfArray : arrayForCalculate){
