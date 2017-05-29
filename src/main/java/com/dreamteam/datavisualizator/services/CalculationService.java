@@ -1,6 +1,10 @@
 package com.dreamteam.datavisualizator.services;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MathIllegalArgumentException;
+import org.apache.log4j.Logger;
 import com.dreamteam.datavisualizator.models.Graphic;
+import org.apache.commons.math3.exception.NullArgumentException;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
@@ -10,12 +14,19 @@ import java.util.*;
 
 
 public class CalculationService {
+    private static final Logger LOGGER = Logger.getLogger(CalculationService.class);
 
     public static BigDecimal calculateAverage(ArrayList<BigDecimal> dataForCalculate){
-        double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
-        BigDecimal result = new BigDecimal((new Mean()).evaluate(arrayForCalculate));
+        try{
+            double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
+            BigDecimal result = new BigDecimal((new Mean()).evaluate(arrayForCalculate));
 
-        return result;
+            return result;
+        }
+        catch(NullArgumentException e){
+            LOGGER.error("No data for Calculate", e);
+            return null;
+        }
     }
 
     public static BigDecimal calculateOlympicAverage(ArrayList<BigDecimal> dataForCalculate){
@@ -54,19 +65,34 @@ public class CalculationService {
     }
 
     public static BigDecimal calculateCorrelation(ArrayList<BigDecimal> listOfFirstGraph, ArrayList<BigDecimal> listOfSecondGraph){
-        double[] arrayOfFirstGraph = new CalculationService().arrayListToDouble(listOfFirstGraph);
-        double[] arrayOfSecondGraph = new CalculationService().arrayListToDouble(listOfSecondGraph);
+        try{
+            double[] arrayOfFirstGraph = new CalculationService().arrayListToDouble(listOfFirstGraph);
+            double[] arrayOfSecondGraph = new CalculationService().arrayListToDouble(listOfSecondGraph);
 
-        double correlation = new PearsonsCorrelation().correlation(arrayOfFirstGraph, arrayOfSecondGraph);
+            double correlation = new PearsonsCorrelation().correlation(arrayOfFirstGraph, arrayOfSecondGraph);
 
-        return new BigDecimal(correlation);
+            return new BigDecimal(correlation);
+        }
+        catch(DimensionMismatchException e){
+            LOGGER.error("Different sets of lists values", e);
+            return null;
+        }
+        catch(MathIllegalArgumentException e){
+            LOGGER.error("", e);
+            return null;
+        }
     }
 
     public static BigDecimal calculateDispersion(ArrayList<BigDecimal> dataForCalculate){
-        double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
-        BigDecimal result = new BigDecimal((new Variance()).evaluate(arrayForCalculate));
-
-        return result;
+        try {
+            double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
+            BigDecimal result = new BigDecimal((new Variance()).evaluate(arrayForCalculate));
+            return result;
+        }
+        catch(NullArgumentException e){
+            LOGGER.error("No data for Calculate", e);
+            return null;
+        }
     }
 
     public static BigDecimal calculationMathExpectation(ArrayList<BigDecimal> dataForCalculate){
