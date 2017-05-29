@@ -12,7 +12,7 @@
         crossorigin="anonymous">
 </script>
 
-﻿<div> HM project initial Setup</div>
+<div> HM project Setting</div>
 
 </body>
 </html>

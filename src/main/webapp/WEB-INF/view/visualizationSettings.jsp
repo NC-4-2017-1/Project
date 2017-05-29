@@ -12,10 +12,7 @@
         crossorigin="anonymous">
 </script>
 
-﻿<form method="POST" action="/project/upload" enctype="multipart/form-data">
-    <input type="file" accept=".xml, .csv"  name="file" /><br/>
-    <input type="submit" value="Submit" />
-</form>
+<div>Visualization Settings</div>
 
 
 
