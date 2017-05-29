@@ -8,8 +8,8 @@
 		<Db_load>3</Db_load>
 </Row>	
 <Row>	
-		<Title>SomeTitle2</Title>
-		<Date>12.05.17 00:00:01</Date>
+		<Title>SomeTitle2 </Title>
+		<Date>12.05.2017 00:00:01</Date>
 		<Process_count>3</Process_count>
 		<Db_load>4</Db_load>
 </Row>	

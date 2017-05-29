@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.services.xmlparser;
 
+import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -14,9 +15,9 @@ import java.util.Map;
 public class XmlParser {
     public static final Logger LOGGER = Logger.getLogger(XmlParser.class);
 
-    public static List<Map<String, Object>> parseXmlFile(File file, String timeZone) throws IOException {
+    public static List<Map<String, Object>> parseXmlFile(File file, DateFormat dateFormat) throws IOException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        XmlHandler handler = new XmlHandler(timeZone);
+        XmlHandler handler = new XmlHandler(dateFormat);
         try {
             SAXParser parser = parserFactory.newSAXParser();
             parser.parse(file, handler);
@@ -27,9 +28,9 @@ public class XmlParser {
         return handler.getRows();
     }
 
-    public static List<Map<String, Object>> parseXmlFile(File file, String timeZone, int countOfRows) throws IOException {
+    public static List<Map<String, Object>> parseXmlFile(File file, DateFormat dateFormat, int countOfRows) throws IOException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        XmlHandler handler = new XmlHandler(timeZone, true, countOfRows);
+        XmlHandler handler = new XmlHandler(dateFormat, true, countOfRows);
         try {
             SAXParser parser = parserFactory.newSAXParser();
             parser.parse(file, handler);

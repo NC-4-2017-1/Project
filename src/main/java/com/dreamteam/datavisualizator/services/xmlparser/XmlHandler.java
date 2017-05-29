@@ -1,13 +1,13 @@
 package com.dreamteam.datavisualizator.services.xmlparser;
 
+import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
+import com.dreamteam.datavisualizator.common.dateconverter.StringToDateConverter;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class XmlHandler extends DefaultHandler {
@@ -16,19 +16,19 @@ public class XmlHandler extends DefaultHandler {
 
     private boolean isRow = false;
     private boolean isElement = false;
-    List<Map<String, Object>> rows;
+    private List<Map<String, Object>> rows;
     private Map<String, Object> elements;
     private String elementName;
     private int countOfRows = 0;
     private boolean stopFlag = false;
-    private String timeZone = "EET";
+    private DateFormat dateFormat;
 
-    XmlHandler(String timeZone) {
-        this.timeZone = timeZone;
+    XmlHandler(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
-    XmlHandler(String timeZone, boolean stopper, int countOfRows) {
-        this(timeZone);
+    XmlHandler(DateFormat dateFormat, boolean stopper, int countOfRows) {
+        this(dateFormat);
         this.stopFlag = stopper;
         this.countOfRows = countOfRows;
     }
@@ -86,10 +86,11 @@ public class XmlHandler extends DefaultHandler {
         if (isElement) {
             if (elementValue.matches("^([0-9]+\\.[0-9]+)|([0-9])$")) {
                 elements.put(elementName, BigDecimal.valueOf(Double.parseDouble(elementValue)));
-            } else if (elementValue.matches("^[0-9]*(\\.|\\-|\\/)[0-9]*(\\.|\\-|\\/)[0-9]*$")) {
-                elements.put(elementName, dateParser(timeZone, elementValue, false));
-            } else if (elementValue.matches("^[0-9]*(\\.|\\-|\\/)[0-9]*(\\.|\\-|\\/)[0-9]*\\s[0-9]*\\:[0-9]*\\:[0-9]*$")) {
-                elements.put(elementName, dateParser(timeZone, elementValue, true));
+            } else
+            if (elementValue.matches("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$")) {
+                Date date = new StringToDateConverter(dateFormat).convertDateFromString(elementValue);
+                if (date == null) throw new SaxInvalidDateFormatException();
+                elements.put(elementName, date);
             } else {
                 elements.put(elementName, elementValue);
             }
@@ -99,34 +100,4 @@ public class XmlHandler extends DefaultHandler {
     List<Map<String, Object>> getRows() {
         return rows;
     }
-
-    private Date dateParser(String timeZone, String dateInStringFormat, boolean isDateWithTime) throws SaxInvalidDateFormatException {
-        SimpleDateFormat formatter;
-        Date parsedDate;
-        String pattern;
-        if (timeZone.equals("EET")) {
-            if (isDateWithTime) {
-                pattern = "dd.MM.yy HH:mm:ss";
-            } else {
-                pattern = "dd.MM.yy";
-            }
-        } else {
-            if (isDateWithTime) {
-                pattern = "MM.dd.yy HH:mm:ss";
-            } else {
-                pattern = "MM.dd.yy";
-            }
-        }
-        formatter = new SimpleDateFormat(pattern);
-        formatter.setLenient(false);
-        try {
-            parsedDate = formatter.parse(dateInStringFormat);
-        } catch (ParseException e) {
-            LOGGER.error("Date can not be read. Format of date must be: "+pattern, e);
-            throw new SaxInvalidDateFormatException();
-        }
-
-        return parsedDate;
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator;
 
+import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 public class XmlParserTest {
 
@@ -48,45 +49,45 @@ public class XmlParserTest {
 
     @Test
     public void testParseXmlFileWithCorrectTimeZone() throws IOException {
-        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "EET");
+        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER);
         assertEquals(expectedRows1, result);
     }
 
     @Test
     public void testParseXmlFileWithIncorrectTimeZone() throws IOException {
-        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "WET");
-        assertNotEquals(expectedRows1, result);
+        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, DateFormat.EET_WITH_SLASH_DELIMITER);
+        assertNull(result);
     }
 
     @Test(expected = FileNotFoundException.class)
     public void testParseXmlFileWithWrongPath() throws IOException {
-        XmlParser.parseXmlFile(new File("wrong url"), "EET");
+        XmlParser.parseXmlFile(new File("wrong url"), DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testParseXmlFileWithNullArgument() throws IOException {
-        XmlParser.parseXmlFile(null, "EET");
+        XmlParser.parseXmlFile(null, DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER);
     }
 
     @Test
     public void testParseXmlFileWithLimitOfRowsAndCorrectTimeZone() throws IOException {
-        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "EET", 1);
+        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER, 1);
         assertEquals(expectedRows2, result);
     }
 
     @Test
     public void testParseXmlFileWithLimitOfRowsAndIncorrectTimeZone() throws IOException {
-        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, "WET", 1);
-        assertNotEquals(expectedRows2, result);
+        List<Map<String, Object>> result = XmlParser.parseXmlFile(file, DateFormat.EET_WITH_SLASH_DELIMITER, 1);
+        assertNull(result);
     }
 
     @Test(expected = FileNotFoundException.class)
     public void testParseXmlFileWithLimitOfRowsAndWrongPath() throws IOException {
-        XmlParser.parseXmlFile(new File("wrong url"), "EET", 3);
+        XmlParser.parseXmlFile(new File("wrong url"), DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER, 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testParseXmlFileWithLimitOfRowsAndNullArgument() throws IOException {
-        XmlParser.parseXmlFile(null, "EET", 3);
+        XmlParser.parseXmlFile(null, DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER, 3);
     }
 }
