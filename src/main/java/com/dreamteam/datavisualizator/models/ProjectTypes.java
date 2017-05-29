@@ -4,8 +4,8 @@ package com.dreamteam.datavisualizator.models;
 import java.math.BigInteger;
 
 public enum ProjectTypes {
-    DATA_VISUALIZATION(BigInteger.valueOf(1L), "Data Visualization"),
-    HEALTH_MONITORING(BigInteger.valueOf(2L), "Health Monitoring");
+    DATA_VISUALIZATION(BigInteger.valueOf(4L), "Data Visualization"),
+    HEALTH_MONITORING(BigInteger.valueOf(3L), "Health Monitoring");
 
 
     private final BigInteger id;

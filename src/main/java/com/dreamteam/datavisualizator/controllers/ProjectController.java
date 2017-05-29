@@ -4,7 +4,9 @@ import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.Project;
+import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
+import com.dreamteam.datavisualizator.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,17 +62,6 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
-    @ResponseBody
-    public Project saveVisualizationProject(@RequestParam("name") String name,
-                                            @RequestParam("description") String description,
-                                            Model model) {
-        // return projectDAO.saveProject();
-        return null;
-    }
-
-
-    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
     public String healthMonitorSetup(Model model) {
         return "healthMonitorProjectInitialSetup";
@@ -79,6 +71,17 @@ public class ProjectController {
     @RequestMapping(path = "/health-monitor-settings", method = RequestMethod.GET)
     public String healthMonitorSettings(Model model) {
         return "healthMonitorAdvancedSettings";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
+    @ResponseBody
+    public Project saveVisualizationProject(@RequestParam("name") String name,
+                                            @RequestParam("description") String description,
+                                            @RequestParam("graphics") List<Graphic> graphics,
+                                            User user,
+                                            Model model) {
+        return projectDAO.saveProject(name, user.getId(), description, graphics);
     }
 
     @Secured("ROLE_REGULAR_USER")
