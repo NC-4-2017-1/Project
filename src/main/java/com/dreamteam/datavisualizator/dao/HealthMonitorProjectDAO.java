@@ -12,6 +12,8 @@ import java.util.Map;
 
 public interface HealthMonitorProjectDAO {
 
+    void setDataSourceTemplate(String serverName, String port, String sid, String username, String password);
+
     Graphic getProjectGraph(Project project);
 
     Map<BigInteger, Selector> getProjectSelectors(Project project);

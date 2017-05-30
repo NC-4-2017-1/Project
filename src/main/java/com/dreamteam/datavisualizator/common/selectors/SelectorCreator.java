@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface SelectorCreator {
-    public void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql);
-    public String getAttrValue(Selector selector);
+    void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql);
+    String getAttrValue(Selector selector);
 }

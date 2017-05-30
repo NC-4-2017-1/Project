@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -61,7 +62,17 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
         HMDataSource dataSourceHM = new HMDataSource(url, username, password);
-        templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
+        try {
+            templateHM = new JdbcTemplate(dataSourceHM.createDataSource());
+            templateHM.queryForList("SELECT 1 FROM DUAL");
+        }
+        catch (DataAccessException e) {
+            LOGGER.error("Error connection", e);
+            throw e;
+        }catch (Exception e) {
+            LOGGER.error("Error connection", e);
+            throw e;
+        }
     }
 
     public Graphic getProjectGraph(Project project) {
@@ -506,23 +517,22 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
     private class GraphicHMRowMapper implements RowMapper<GraphicHMImpl> {
         public GraphicHMImpl mapRow(ResultSet rs, int rowNum) throws SQLException {
-            BigInteger id = null;
-            Integer hourCount = null;
-            String name = null;
+            BigInteger id = BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString()));
+            Integer hourCount = rs.getInt(HWProjectColumnName.hourCount.toString());
+            String name = rs.getString(HWProjectColumnName.name.toString());
 
             GraphicHMImpl.HMGraphBuilder builder = new GraphicHMImpl.HMGraphBuilder();
-            builder.buildId(BigInteger.valueOf(rs.getLong(HWProjectColumnName.id.toString())));
-            builder.buildHourCount(rs.getInt(HWProjectColumnName.hourCount.toString()));
-            builder.buildName(rs.getString(HWProjectColumnName.name.toString()));
+            builder.buildId(id);
+            builder.buildHourCount(hourCount);
+            builder.buildName(name);
 
             Clob graphicInClobType = rs.getClob(HWProjectColumnName.json.toString());
-            LOGGER.info("clob = " + graphicInClobType);
+           // LOGGER.info("clob = " + graphicInClobType);
             String clobString = ClobToStringService.clobToString(graphicInClobType);
-            LOGGER.info("clobString = " + clobString);
+            //LOGGER.info("clobString = " + clobString);
             //JsonObject jsonObj = new JsonObject().getAsJsonObject(clobString);
             JsonObject graphicInJsonType = new JsonParser().parse(clobString).getAsJsonObject();
-            LOGGER.info("jsonObj = " + graphicInJsonType);
-
+            //LOGGER.info("jsonObj = " + graphicInJsonType);
             builder.buildGraphicJson(graphicInJsonType);
             return builder.buildGraphic();
         }
