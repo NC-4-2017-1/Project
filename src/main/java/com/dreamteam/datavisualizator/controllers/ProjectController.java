@@ -48,7 +48,6 @@ public class ProjectController {
     public String create(@RequestParam("type") String type,
                          @RequestParam("name") String name,
                          @RequestParam("description") String description, Model model) {
-
         //sessionScopeBean.getCustomerProject().setType(ProjectTypes.valueOf(type));
         sessionScopeBean.getCustomerProject().setName(name);
         sessionScopeBean.getCustomerProject().setDescription(description);

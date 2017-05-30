@@ -1,7 +1,14 @@
 package com.dreamteam.datavisualizator.common.beans;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 
+
+@Service
+@Scope(value="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SessionScopeBean {
 
     private CustomerProject customerProject;

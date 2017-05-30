@@ -17,7 +17,7 @@
 ﻿<button onclick="myFunction()">New Project</button>
 <script>
     function myFunction() {
-        window.location.assign("/project/create-layout");
+        window.location.assign("/project/new-layout");
     }
 </script>
 </body>
