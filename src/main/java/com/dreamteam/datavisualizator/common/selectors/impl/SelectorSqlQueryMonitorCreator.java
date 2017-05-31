@@ -34,8 +34,19 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
             SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-            selector.setName("SQL queries monitor");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
+            System.out.println(sql_query);
+            selector.setName("SQL queries monitor-plan");
+            if (results.next()) {
+                selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
+                //TODO clob selection
+            }else{
+                SimpleJdbcCall simpleCallTemplatePlan = new SimpleJdbcCall(generalTemplate);
+                simpleCallTemplatePlan.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_PLAN);
+                sql_query = simpleCallTemplatePlan.executeFunction(String.class, in).toString();
+                results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
+                selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
+                //TODO serializer
+            }
             mapSelectors.put(S_SQL_MONITOR_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'SQL queries monitor' can not be selected from HM DataBase", e);
@@ -56,4 +67,5 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
     }
 
     private static final String QUERY_FOR_SQL_MONITOR = "sql_query_monitor";
+    private static final String QUERY_FOR_SQL_PLAN = "sql_x_plan";
 }
