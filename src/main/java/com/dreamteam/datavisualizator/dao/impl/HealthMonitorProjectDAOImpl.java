@@ -2,6 +2,8 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
+import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
+import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.common.selectors.impl.*;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
@@ -67,10 +69,13 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             templateHM.queryForList("SELECT 1 FROM DUAL");
         }
         catch (DataAccessException e) {
-            LOGGER.error("Error connection", e);
-            throw e;
+            LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
+                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
+            throw new HMConnectionException("Connection with wrong parameters(SERVER - " + serverName + "; PORT - " + port + "; SID - "
+                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ") have error:\n"+ e.getLocalizedMessage());
         }catch (Exception e) {
-            LOGGER.error("Error connection", e);
+            LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
+                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
             throw e;
         }
     }
@@ -139,11 +144,15 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 return mapSelectors;
             }else {
                 LOGGER.error("List of selectors not created because selector settings is wrong");
-                return null;
+                throw new SelectorCreateException("List of selectors not created because selector settings is wrong");
             }
-        } catch (Exception e) {
+        }catch (SelectorCreateException e){
             LOGGER.error("List of buildSelectors not created", e);
-            return null;
+            throw e;
+        }
+        catch (Exception e) {
+            LOGGER.error("List of buildSelectors not created", e);
+            throw new SelectorCreateException("List of buildSelectors not created");
         }
     }
 

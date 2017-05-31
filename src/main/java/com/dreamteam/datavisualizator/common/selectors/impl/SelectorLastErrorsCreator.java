@@ -1,11 +1,13 @@
 package com.dreamteam.datavisualizator.common.selectors.impl;
 
+import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.impl.SelectorLastErrors;
 import com.dreamteam.datavisualizator.services.HtmlSerializer;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
@@ -30,10 +32,15 @@ public class SelectorLastErrorsCreator extends AbstactSelectorCreator implements
             selector.setName("Last DB errors");
             selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorLastErrors"));
             mapSelectors.put(S_LAST_ERRORS_OBJTYPE_ID, selector);
+        }catch (BadSqlGrammarException e) {
+            LOGGER.error("Selector 'Last DB errors' can not be selected from HM DataBase", e);
+            throw  new SelectorCreateException("Selector 'Last DB errors' can not be selected from HM DataBase. " + e.getSQLException().getLocalizedMessage());
         }catch (DataAccessException e) {
             LOGGER.error("Selector 'Last DB errors' can not be selected from HM DataBase", e);
+            throw  new SelectorCreateException("Selector 'Last DB errors' can not be selected from HM DataBase");
         }catch (Exception e) {
             LOGGER.error("Selector 'Last DB errors' can not be created", e);
+            throw  new SelectorCreateException("Selector 'Last DB errors' can not be created");
         }
     }
 
