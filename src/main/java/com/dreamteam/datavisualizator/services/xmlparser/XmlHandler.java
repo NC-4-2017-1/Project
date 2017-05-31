@@ -2,6 +2,8 @@ package com.dreamteam.datavisualizator.services.xmlparser;
 
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.common.dateconverter.StringToDateConverter;
+import com.dreamteam.datavisualizator.common.exceptions.SaxInvalidDateFormatException;
+import com.dreamteam.datavisualizator.common.exceptions.SaxTerminatorException;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

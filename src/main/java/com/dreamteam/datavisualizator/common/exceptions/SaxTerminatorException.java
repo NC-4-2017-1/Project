@@ -1,4 +1,4 @@
-package com.dreamteam.datavisualizator.services.xmlparser;
+package com.dreamteam.datavisualizator.common.exceptions;
 
 import org.xml.sax.SAXException;
 
