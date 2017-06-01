@@ -28,7 +28,7 @@ public class HtmlSerializer {
                 rowCount++;
                 htmlTable.append("<tr>");
                 for (int i = 0; i < columnCount; i++) {
-                    htmlTable.append("<td>" + selectorResultSet.getString(i + 1) + "</td>");
+                    htmlTable.append("<td><pre style=\"margin: 0;\">" + selectorResultSet.getString(i + 1) + "</pre></td>");
                 }
                 htmlTable.append("</tr>");
             }
@@ -60,9 +60,9 @@ public class HtmlSerializer {
             while (resultData.next()) {
                 rowCount++;
                 htmlTable.append("<tr>");
-                htmlTable.append("<td>" + resultData.getString(1) + "</td>");
+                htmlTable.append("<td><pre style=\"margin: 0;\">" + resultData.getString(1) + "</pre></td>");
                 String clobString = ClobToStringService.clobToString(resultData.getClob(2));
-                htmlTable.append("<td>" + clobString + "</td>");
+                htmlTable.append("<td><pre style=\"margin: 0;\">" + clobString + "</pre></td>");
                 htmlTable.append("</tr>");
             }
             htmlTable.append("</table>");
