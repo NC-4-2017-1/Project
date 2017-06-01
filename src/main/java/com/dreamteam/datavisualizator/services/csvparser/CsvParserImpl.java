@@ -85,9 +85,9 @@ public class CsvParserImpl implements CsvParser {
     private void parseRowByType(DateFormat dateFormat, Map<String, Object> elements, Map<String, Integer> headers, Map<String, String> headerValue) throws IOException {
         for (String header : headers.keySet()) {
             String value = headerValue.get(header).trim();
-            if (value.matches(checkStringConvet.toDouble.toString())) {
+            if (value.matches(checkStringConvert.toDouble.toString())) {
                 elements.put(header, BigDecimal.valueOf(Double.parseDouble(value)));
-            } else if (value.matches(checkStringConvet.toDateWithSec.toString()) || value.matches(checkStringConvet.toDateWithoutSec.toString())) {
+            } else if (value.matches(checkStringConvert.toDateWithSec.toString()) || value.matches(checkStringConvert.toDateWithoutSec.toString())) {
                 Date date = new StringToDateConverter(dateFormat).convertDateFromString(value);
                 try{
                     if(date==null){
@@ -103,14 +103,14 @@ public class CsvParserImpl implements CsvParser {
             }
         }
     }
-    private enum checkStringConvet{
+    private enum checkStringConvert {
         toDouble("\\-?\\d+(\\.\\d{0,})?"),
         toDateWithSec(" ^ ([0 - 9] * (\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$"),
         toDateWithoutSec("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*)$");
 
         private final String stringConvert;
 
-        checkStringConvet(String stringConvert) {
+        checkStringConvert(String stringConvert) {
             this.stringConvert=stringConvert;
         }
         @Override

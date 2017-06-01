@@ -8,7 +8,7 @@ import java.io.File;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    private int maxUploadSizeInMb = 5242880;
+    private int maxUploadSizeInBytes = 5242880;
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{ServletContext.class};
@@ -28,7 +28,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         File uploadDirectory = new File(System.getProperty("java.io.tmpdir"));
         MultipartConfigElement multipartConfigElement = new MultipartConfigElement(uploadDirectory.getAbsolutePath(),
-                        maxUploadSizeInMb, maxUploadSizeInMb * 2, maxUploadSizeInMb / 2);
+                maxUploadSizeInBytes, maxUploadSizeInBytes * 2, maxUploadSizeInBytes / 2);
         registration.setMultipartConfig(multipartConfigElement);
     }
 }
