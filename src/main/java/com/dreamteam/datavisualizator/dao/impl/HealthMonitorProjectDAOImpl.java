@@ -25,6 +25,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,11 +122,33 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public Graphic createGraph(int hourCount) {
+    public Graphic createGraph(int hourCount){
         try {
-            //TODO method for saving buildGraphic
+            SimpleJdbcCall simpleCallTemplate = new SimpleJdbcCall(generalTemplate);
+            GraphicHMImpl.HMGraphBuilder builderGraph = new GraphicHMImpl.HMGraphBuilder();
+            builderGraph.buildHourCount(hourCount);
+            builderGraph.buildName("Time-Tasks");
+
+            simpleCallTemplate.withCatalogName(GRAPHIC_QUERY_PACKAGE).withFunctionName(GRAPHIC_QUERY);
+            SqlParameterSource in = new MapSqlParameterSource().addValue("hour_count", hourCount);
+            String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
+            ResultSetWrappingSqlRowSet resultsRow = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
+            ResultSet results = resultsRow.getResultSet();
+            if (results.next()) {
+                //todo serialize and build json
+                JsonObject noData = new JsonObject();
+                noData.addProperty("data", "empty");
+                builderGraph.buildGraphicJson(noData);
+            }else{
+                JsonObject noData = new JsonObject();
+                noData.addProperty("data", "empty");
+                builderGraph.buildGraphicJson(noData);
+            }
+            return builderGraph.buildGraphic();
+        } catch (DataAccessException e) {
+            LOGGER.error("Graph not created from HM data base", e);
             return null;
-        } catch (Exception e) {
+        }catch (Exception e) {
             LOGGER.error("Graph not created", e);
             return null;
         }
@@ -233,17 +256,16 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             }
         } catch (DataAccessException e) {
             LOGGER.error("Project with id " +project.getId() + " not deleted", e);
-            return false;
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Project with not deleted", e);
-            return false;
+            throw e;
         }
     }
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public Project saveProject(Project project) {
         Date projectCreationDate = new Date();
-        Project savingProject;
         try {
             if (project != null) {
                 //project
@@ -298,10 +320,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             }
         } catch (DataAccessException e) {
             LOGGER.error("Project with name " +project.getName() + " not saved", e);
-            return null;
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Project not saved", e);
-            return null;
+            throw e;
         }
     }
 
@@ -413,6 +435,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " and selector_hour_count.object_id = selector.object_id and selector_hour_count.attr_id = 16" +    /*hour count for selector*/
             " and selector.object_id = selector_ref.reference and selector_ref.attr_id = 19" +                  /*reference - selectors*/
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
+    private static final String GRAPHIC_QUERY_PACKAGE = "pkg_selectors";
+    private static final String GRAPHIC_QUERY = "graph";
 
     private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
             put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);

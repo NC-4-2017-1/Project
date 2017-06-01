@@ -34,18 +34,15 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
             SqlParameterSource in = new MapSqlParameterSource().addValue("top", top);
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-            System.out.println(sql_query);
             selector.setName("SQL queries monitor-plan");
             if (results.next()) {
-                selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
-                //TODO clob selection
+                selector.setValue(HtmlSerializer.createHtmlTableForClob(results, "selectorSqlMonitor"));
             }else{
                 SimpleJdbcCall simpleCallTemplatePlan = new SimpleJdbcCall(generalTemplate);
                 simpleCallTemplatePlan.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_PLAN);
                 sql_query = simpleCallTemplatePlan.executeFunction(String.class, in).toString();
                 results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
                 selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
-                //TODO serializer
             }
             mapSelectors.put(S_SQL_MONITOR_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
