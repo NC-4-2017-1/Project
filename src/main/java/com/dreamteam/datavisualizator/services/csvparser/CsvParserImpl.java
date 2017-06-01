@@ -20,9 +20,9 @@ public class CsvParserImpl implements CsvParser {
         List<Map<String, Object>> rows = new ArrayList<>();
         Reader reader = new FileReader(file);
         Map<String, Object> elements;
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
+        CSVParser csvParser = new CSVParser(reader, csvFormat);
         try {
-            CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
-            CSVParser csvParser = new CSVParser(reader, csvFormat);
             Map<String, Integer> headers = csvParser.getHeaderMap();
             List<CSVRecord> records = csvParser.getRecords();
             for (CSVRecord record : records) {
@@ -38,8 +38,8 @@ public class CsvParserImpl implements CsvParser {
             LOGGER.error("Wrong file format", e);
             throw new IOException(e);
         } finally {
+            csvParser.close();
             reader.close();
-            LOGGER.error("Parse of file is finished with mistakes");
         }
         return rows;
     }
@@ -47,11 +47,11 @@ public class CsvParserImpl implements CsvParser {
     public List<Map<String, Object>> parseCsvFile(File file, DateFormat dateFormat, int countOfRows) throws IOException {
         List<Map<String, Object>> rows = new ArrayList<>();
         Map<String, Object> elements;
+        Reader reader = new FileReader(file);
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
+        CSVParser csvParser = new CSVParser(reader, csvFormat);
         try {
 
-            Reader reader = new FileReader(file);
-            CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
-            CSVParser csvParser = new CSVParser(reader, csvFormat);
             Map<String, Integer> headers = csvParser.getHeaderMap();
             List<CSVRecord> records = csvParser.getRecords();
             int i = 0;
@@ -64,8 +64,6 @@ public class CsvParserImpl implements CsvParser {
                 i++;
 
                 if (i >= countOfRows) {
-                    csvParser.close();
-                    reader.close();
                     return rows;
                 }
             }
@@ -76,17 +74,19 @@ public class CsvParserImpl implements CsvParser {
             LOGGER.error("Wrong file format", e);
             throw new IOException(e);
         } finally {
-            LOGGER.error("Parse of file is finished with mistakes");
+            csvParser.close();
+            reader.close();
         }
         return rows;
+
     }
 
     private void parseRowByType(DateFormat dateFormat, Map<String, Object> elements, Map<String, Integer> headers, Map<String, String> headerValue) {
         for (String header : headers.keySet()) {
             String value = headerValue.get(header).trim();
-            if (value.matches("^([0-9]+\\.[0-9]+)|([0-9])$")) {
+            if (value.matches(checkStringConvet.toDouble.toString())) {
                 elements.put(header, BigDecimal.valueOf(Double.parseDouble(value)));
-            } else if (value.matches("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$") || value.matches("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*)$")) {
+            } else if (value.matches(checkStringConvet.toDateWithSec.toString()) || value.matches(checkStringConvet.toDateWithoutSec.toString())) {
                 Date date = new StringToDateConverter(dateFormat).convertDateFromString(value);
                 elements.put(header, date);
             } else {
@@ -94,6 +94,19 @@ public class CsvParserImpl implements CsvParser {
             }
         }
     }
+    private enum checkStringConvet{
+        toDouble("\\-?\\d+(\\.\\d{0,})?"),
+        toDateWithSec(" ^ ([0 - 9] * (\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$"),
+        toDateWithoutSec("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*)$");
 
+        private final String stringConvert;
 
+        checkStringConvet(String stringConvert) {
+            this.stringConvert=stringConvert;
+        }
+        @Override
+        public String toString() {
+            return stringConvert;
+        }
+    }
 }
