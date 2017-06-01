@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.zip.DataFormatException;
 
 @Service
 public class CsvParserImpl implements CsvParser {
@@ -81,13 +82,21 @@ public class CsvParserImpl implements CsvParser {
 
     }
 
-    private void parseRowByType(DateFormat dateFormat, Map<String, Object> elements, Map<String, Integer> headers, Map<String, String> headerValue) {
+    private void parseRowByType(DateFormat dateFormat, Map<String, Object> elements, Map<String, Integer> headers, Map<String, String> headerValue) throws IOException {
         for (String header : headers.keySet()) {
             String value = headerValue.get(header).trim();
             if (value.matches(checkStringConvet.toDouble.toString())) {
                 elements.put(header, BigDecimal.valueOf(Double.parseDouble(value)));
             } else if (value.matches(checkStringConvet.toDateWithSec.toString()) || value.matches(checkStringConvet.toDateWithoutSec.toString())) {
                 Date date = new StringToDateConverter(dateFormat).convertDateFromString(value);
+                try{
+                    if(date==null){
+                        throw new DataFormatException();
+                    }
+                } catch (DataFormatException e) {
+                    LOGGER.error("Wrong date. Stop parcing file");
+                    throw new IOException("wrong date");
+                }
                 elements.put(header, date);
             } else {
                 elements.put(header, value);
