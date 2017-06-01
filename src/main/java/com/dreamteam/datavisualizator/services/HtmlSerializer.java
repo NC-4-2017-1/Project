@@ -8,15 +8,20 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class HtmlSerializer {
     private static final Logger LOGGER = Logger.getLogger(HtmlSerializer.class);
 
-    public static String createHtmlTable(ResultSetWrappingSqlRowSet selectorResultSet, String cssId){
+    public static String createHtmlTable(ResultSetWrappingSqlRowSet selectorResultSet, String cssId) {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table border=1 class=\"selector\" id=\""+cssId+"\">");
+            htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
             htmlTable.append("<tr>");
@@ -38,7 +43,7 @@ public class HtmlSerializer {
                 return "no data";
             }
             return htmlTable.toString();
-        }catch (InvalidResultSetAccessException e){
+        } catch (InvalidResultSetAccessException e) {
             LOGGER.error("Serialize selector error", e);
             throw e;
         }
@@ -48,7 +53,7 @@ public class HtmlSerializer {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table border=1 class=\"selector\" id=\""+cssId+"\">");
+            htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
             htmlTable.append("<tr>");
@@ -70,12 +75,36 @@ public class HtmlSerializer {
                 return "no data";
             }
             return htmlTable.toString();
-        }catch (InvalidResultSetAccessException e){
+        } catch (InvalidResultSetAccessException e) {
             LOGGER.error("Serialize selector with clob error", e);
             throw e;
         } catch (SQLException e) {
             LOGGER.error("Serialize selector with clob error", e);
             throw e;
         }
+    }
+
+    public static String createHtmlTableForParsingFile(List<Map<String, Object>> resultPrepareParsing, String cssId) {
+        StringBuffer htmlTable = new StringBuffer();
+        htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
+        htmlTable.append("<tr>");
+        Set<String> headers = resultPrepareParsing.get(0).keySet();
+        for (String header : headers) {
+            htmlTable.append("<th>" + header + "</th>");
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+        htmlTable.append("</tr>");
+        for (Map<String, Object> row : resultPrepareParsing) {
+            htmlTable.append("<tr>");
+            for (String header : headers) {
+                if (row.get(header) instanceof Date) {
+                    htmlTable.append("<td>" + dateFormat.format((Date) row.get(header)) + "</td>");
+                } else {
+                    htmlTable.append("<td>" + row.get(header) + "</td>");
+                }
+            }
+            htmlTable.append("</tr>");
+        }
+        return htmlTable.toString();
     }
 }
