@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class XmlParserImpl implements XmlParser{
+public class XmlParserImpl implements XmlParser {
     public static final Logger LOGGER = Logger.getLogger(XmlParserImpl.class);
 
     public List<Map<String, Object>> parseXmlFile(File file, DateFormat dateFormat) throws IOException {
@@ -25,7 +25,13 @@ public class XmlParserImpl implements XmlParser{
         try {
             SAXParser parser = parserFactory.newSAXParser();
             parser.parse(file, handler);
-        } catch (ParserConfigurationException | SAXException e) {
+        } catch (ParserConfigurationException e) {
+            LOGGER.error("File not parsed", e);
+            return null;
+        } catch (SaxInvalidDateFormatException e) {
+            LOGGER.error("Parser stopped. Invalid format of the date in file", e);
+            return null;
+        } catch (SAXException e) {
             LOGGER.error("File not parsed", e);
             return null;
         }
@@ -43,11 +49,11 @@ public class XmlParserImpl implements XmlParser{
             return null;
         } catch (SaxTerminatorException e) {
             LOGGER.debug("Parser stopped. Number of parsed rows: " + countOfRows);
-        } catch (SaxInvalidDateFormatException e){
+        } catch (SaxInvalidDateFormatException e) {
             LOGGER.error("Parser stopped. Invalid format of the date in file", e);
             return null;
-        } catch (SAXException e){
-            LOGGER.error("File not parsed, e");
+        } catch (SAXException e) {
+            LOGGER.error("File not parsed", e);
         }
         return handler.getRows();
     }

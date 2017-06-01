@@ -84,12 +84,15 @@ public class XmlHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
+        String dateWithoutTime = "^[0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*$";
+        String dateWithTime = "^[0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*$";
+        String dateWithTimeWithoutSeconds = "^[0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*$";
         String elementValue = String.copyValueOf(ch, start, length).trim();
         if (isElement) {
             if (elementValue.matches("^([0-9]+\\.[0-9]+)|([0-9])$")) {
                 elements.put(elementName, BigDecimal.valueOf(Double.parseDouble(elementValue)));
             } else
-            if (elementValue.matches("^([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$")) {
+            if (elementValue.matches("("+dateWithoutTime+")|("+dateWithTime+")|("+dateWithTimeWithoutSeconds+")")) {
                 Date date = new StringToDateConverter(dateFormat).convertDateFromString(elementValue);
                 if (date == null) throw new SaxInvalidDateFormatException();
                 elements.put(elementName, date);
