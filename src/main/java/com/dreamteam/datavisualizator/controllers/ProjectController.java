@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -40,7 +41,9 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/new-layout", method = RequestMethod.GET)
-    public String createProject(Model model) {
+    public String createProject(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("userObject");
+        sessionScopeBean.setUser(user);
         Map<String, String> project = new LinkedHashMap<>();
         project.put(ProjectTypes.DATA_VISUALIZATION.getId().toString(), ProjectTypes.DATA_VISUALIZATION.toString());
         project.put(ProjectTypes.HEALTH_MONITORING.getId().toString(), ProjectTypes.HEALTH_MONITORING.toString());
@@ -109,6 +112,7 @@ public class ProjectController {
                     request.getPort(), request.getSid(), request.getUsername(), request.getPassword());
             return "successful";
         } catch (Exception e) {
+            LOGGER.error("healthMonitorSetupTestConn" + e.getMessage());
             return e.getMessage();
         }
     }
@@ -127,6 +131,7 @@ public class ProjectController {
             sessionScopeBean.getCustomerProject().setPassword(request.getPassword());
             return "successful";
         } catch (Exception e) {
+            LOGGER.error("healthMonitorSetupNext" + e.getMessage());
             return e.getMessage();
         }
     }
@@ -145,6 +150,9 @@ public class ProjectController {
                                             @RequestParam("graphics") List<Graphic> graphics,
                                             User user,
                                             Model model) {
+
+        name = sessionScopeBean.getCustomerProject().getName();
+        description = sessionScopeBean.getCustomerProject().getDescription();
         return projectDAO.saveProject(name, user.getId(), description, graphics);
     }
 
