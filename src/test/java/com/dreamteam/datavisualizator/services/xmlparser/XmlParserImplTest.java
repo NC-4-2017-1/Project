@@ -1,8 +1,7 @@
-package com.dreamteam.datavisualizator;
+package com.dreamteam.datavisualizator.services.xmlparser;
 
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
-import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +36,7 @@ public class XmlParserImplTest {
 
     @Before
     public void setUp() throws ParseException {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("test_xml_document.xml");
+        URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/test_xml_document.xml");
         file = new File(url.getPath());
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
         Date date1 = formatter.parse("29.04.2017 00:55:05");
