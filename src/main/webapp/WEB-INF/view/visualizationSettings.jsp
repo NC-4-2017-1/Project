@@ -13,6 +13,7 @@
 </script>
 
 <div>Visualization Settings</div>
+<p><c:out value="${message}"/></p>
 
 
 

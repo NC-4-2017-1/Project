@@ -4,26 +4,36 @@ import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
-import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Graphic;
+import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 
 @Controller
-@Secured("ROLE_REGULAR_USER")
 @RequestMapping("/project")
 public class ProjectController {
+
+    public static final Logger LOGGER = Logger.getLogger(ProjectController.class);
     @Autowired
     DataVisualizationProjectDAO projectDAO;
 
@@ -68,26 +78,26 @@ public class ProjectController {
         return "visualizationSettings";
     }
 
-  /*  @PostMapping("/upload")
-    public String singleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path="/upload", method = RequestMethod.POST)
+    public String singleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
         if (file.isEmpty()) {
+            LOGGER.warn("File '"+file.getOriginalFilename()+"' is empty");
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-            return "redirect:uploadStatus";
+            return "redirect:/project/visualization-setup";
         }
         try {
-            // Get the file and save it somewhere
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+            Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
             Files.write(path, bytes);
-            redirectAttributes.addFlashAttribute("message",
-                    "You successfully uploaded '" + file.getOriginalFilename() + "'");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Uploaded temporary file '"+file.getOriginalFilename()+"' has not be retained", e);
+            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+            return "redirect:/project/visualization-setup";
         }
-        return "redirect:/uploadStatus";
-    }*/
-
+        return "redirect:/project/visualization-settings";
+    }
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
