@@ -143,6 +143,28 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/health-monitor-settings-post", method = RequestMethod.POST)
+    @ResponseBody
+    public String healthMonitorSettingsPost(@RequestParam("tableindexlob") String tableIndexLobSize,
+                                            @RequestParam("activesessions") int activeSessionsTop,
+                                            @RequestParam("activequeries") int activeQueriesTop,
+                                            @RequestParam("queriesresults") int queriesResultsTop,
+                                            @RequestParam("queriesmonitor") int queriesMonitorTop,
+                                            @RequestParam("activejobs") int activeJobsPastHours,
+                                            Model model) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Table index lob size " + tableIndexLobSize + "<br>")
+                .append("Active sessions " + activeSessionsTop + "<br>")
+                .append("Active queries " + activeQueriesTop + "<br>")
+                .append("Queries results " + queriesResultsTop + "<br>")
+                .append("Queries monitor " + queriesMonitorTop + "<br>")
+                .append("Active jobs " + activeJobsPastHours + "<br>");
+
+        return stringBuilder.toString();
+    }
+
+
+    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
     @ResponseBody
     public Project saveVisualizationProject(@RequestParam("name") String name,
