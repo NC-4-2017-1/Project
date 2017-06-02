@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,16 +43,6 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     @Autowired
     private UserDAO userDAO;
-
-    @Override
-    protected BigInteger createObject(String name, BigInteger objectTypeId) {
-        simpleCallTemplate.withFunctionName(INSERT_OBJECT);
-        SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("obj_type_id", objectTypeId)
-                .addValue("obj_name", name);
-        return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
-    }
-
 
     @Override
     public Project getProjectById(BigInteger id) {

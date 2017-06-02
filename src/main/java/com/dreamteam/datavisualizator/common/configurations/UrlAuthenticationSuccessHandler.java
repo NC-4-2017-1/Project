@@ -87,8 +87,7 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         String principalName = authentication.getName();
         User user = userDAO.getUserByEmail(principalName);
         session2.setAttribute("userObject", user);
-        //User userFromSession = (User) session2.getAttribute("userObject");
-        
+
         HttpSession session = request.getSession(false);
         if (session == null) {
             return;

@@ -10,20 +10,33 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Spring Security</title>
+    <title>Data Visualization Platform</title>
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
+    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
 
 </head>
 
 <body>
-    <div class="container" style="width: 300px;">
-        <c:url value="/j_spring_security_check" var="loginUrl"/>
-        <form action="${loginUrl}" method="post">
-            <h2 class="form-signin-heading">Please sign in</h2>
-            <input type="text" class="form-control" name="j_username" placeholder="Email address" required autofocus>
-            <input type="password" class="form-control" name="j_password" placeholder="Password" required>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-        </form>
+<!--Content-->
+<div class="container bg-white"  style="margin-top: 200px; width: 400px; height: 400px;">
+    <div class="row">
+        <div class="content">
+
+            <div class="container" style="width: 300px;">
+                <c:url value="/j_spring_security_check" var="loginUrl"/>
+                <form action="${loginUrl}" method="post">
+                    <h2 class="form-signin-heading">Please sign in</h2>
+                    <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
+                    <input type="password" class="form-control" name="j_password" placeholder="Password" required>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+                </form>
+            </div>
+
+        </div>
     </div>
+</div>
+<!--/Content-->
 </body>
 </html>

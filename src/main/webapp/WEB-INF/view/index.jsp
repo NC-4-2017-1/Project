@@ -11,10 +11,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Spring Security</title>
+    <title>Index</title>
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-
+    <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
+    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
 </head>
 
 <body>
@@ -39,7 +41,7 @@
 
             <p><a class="btn btn-default" href="<c:url value="/project/layout" />" role="button">Proj: project view</a></p>
             <p><a class="btn btn-default" href="<c:url value="/project/share" />" role="button">Proj: share project</a></p>
-            <p><a class="btn btn-default" href="<c:url value="/project/create-layout" />" role="button">Proj: create project</a></p>
+            <p><a class="btn btn-default" href="<c:url value="/project/new-layout" />" role="button">Proj: create project</a></p>
             <p><a class="btn btn-default" href="<c:url value="/project/visualization-setup" />" role="button">Proj: dv setup</a></p>
             <p><a class="btn btn-default" href="<c:url value="/project/visualization-settings" />" role="button">Proj: dv settings</a></p>
             <p><a class="btn btn-default" href="<c:url value="/project/health-monitor-setup" />" role="button">Proj: hm setup</a></p>
