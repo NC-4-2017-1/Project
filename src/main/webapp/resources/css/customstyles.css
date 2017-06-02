@@ -10,11 +10,6 @@
     margin: 25px;
 }
 
-.brand-img {
-    height: 60px;
-    width: 60px;
-}
-
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus {
     background-color: rgb(245,245,245);
@@ -56,7 +51,7 @@ footer {
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus {
     background-color: rgb(245,245,245);
-    color: black;
+    color: lightgrey;
 }
 
 .navbar-default {
@@ -68,28 +63,28 @@ footer {
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
-    color: black;
+    color: lightgrey;
 }
 .navbar-default .navbar-text {
-    color: black;
+    color: lightgrey;
 }
 .navbar-default .navbar-nav > li > a {
-    color: black;
+    color: lightgrey;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-    color: black;
+    color: lightgrey;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
-    color: black;
+    color: lightgrey;
     background-color: #ffffff;
 }
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
-    color: black;
+    color: lightgrey;
     background-color: #ffffff;
 }
 .navbar-default .navbar-toggle {
@@ -107,10 +102,10 @@ footer {
     border-color: #ecf0f1;
 }
 .navbar-default .navbar-link {
-    color: black;
+    color: lightgrey;
 }
 .navbar-default .navbar-link:hover {
-    color: black;
+    color: lightgrey;
 }
 
 @media (max-width: 767px) {

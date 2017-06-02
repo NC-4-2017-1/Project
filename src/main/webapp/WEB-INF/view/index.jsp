@@ -29,11 +29,11 @@
             MODULE1&2 LLC
         </p>
         <sec:authorize access="!isAuthenticated()">
-            <p><a class="btn btn-lg btn-success" href="<c:url value="/login" />" role="button">Войти</a></p>
+            <p><a class="btn btn-lg btn-success" href="<c:url value="/login" />" role="button">Log in</a></p>
         </sec:authorize>
         <sec:authorize access="isAuthenticated()">
             <p>Ваш логин: <sec:authentication property="principal.username" /></p>
-            <p><a class="btn btn-lg btn-danger" href="<c:url value="/logout" />" role="button">Выйти</a></p>
+            <p><a class="btn btn-lg btn-danger" href="<c:url value="/logout" />" role="button">Log out</a></p>
 
             <p><a class="btn btn-default" href="<c:url value="/user/dashboard" />" role="button">User: dashboard</a></p>
             <p><a class="btn btn-default" href="<c:url value="/user/admin-panel" />" role="button">Admin: admin panel</a></p>
