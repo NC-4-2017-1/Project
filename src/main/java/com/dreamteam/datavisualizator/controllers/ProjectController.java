@@ -20,9 +20,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -145,22 +143,38 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-settings-post", method = RequestMethod.POST)
     @ResponseBody
-    public String healthMonitorSettingsPost(@RequestParam("tableindexlob") String tableIndexLobSize,
-                                            @RequestParam("activesessions") int activeSessionsTop,
-                                            @RequestParam("activequeries") int activeQueriesTop,
-                                            @RequestParam("queriesresults") int queriesResultsTop,
-                                            @RequestParam("queriesmonitor") int queriesMonitorTop,
-                                            @RequestParam("activejobs") int activeJobsPastHours,
+    public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", required = false) String tableIndexLobSize,
+                                            @RequestParam(value = "activesessions", required = false) Integer activeSessionsTop,
+                                            @RequestParam(value = "activequeries", required = false) Integer activeQueriesTop,
+                                            @RequestParam(value = "queriesresults", required = false) Integer queriesResultsTop,
+                                            @RequestParam(value = "queriesmonitor", required = false) Integer queriesMonitorTop,
+                                            @RequestParam(value = "activejobs", required = false) Integer activeJobsPastHours,
                                             Model model) {
+        if (tableIndexLobSize.equals("")) {
+            tableIndexLobSize = "default"; // default value
+        }
+        Map<String, Integer> mapOfIntegers = new HashMap<>();
+        mapOfIntegers.put("activesessions", activeSessionsTop);
+        mapOfIntegers.put("activequeries", activeQueriesTop);
+        mapOfIntegers.put("queriesresults", queriesResultsTop);
+        mapOfIntegers.put("queriesmonitor", queriesMonitorTop);
+        mapOfIntegers.put("activejobs", activeJobsPastHours);
+
+        for (Map.Entry<String, Integer> entry : mapOfIntegers.entrySet()) {
+            if (entry.getValue() == null) {
+                entry.setValue(Integer.MAX_VALUE - new Random().nextInt(Integer.MAX_VALUE)); // default value
+            }
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table index lob size " + tableIndexLobSize + "<br>")
-                .append("Active sessions " + activeSessionsTop + "<br>")
-                .append("Active queries " + activeQueriesTop + "<br>")
-                .append("Queries results " + queriesResultsTop + "<br>")
-                .append("Queries monitor " + queriesMonitorTop + "<br>")
-                .append("Active jobs " + activeJobsPastHours + "<br>");
-
+                .append("Active sessions " + mapOfIntegers.get("activesessions") + "<br>")
+                .append("Active queries " + mapOfIntegers.get("activequeries") + "<br>")
+                .append("Queries results " + mapOfIntegers.get("queriesresults") + "<br>")
+                .append("Queries monitor " + mapOfIntegers.get("queriesmonitor") + "<br>")
+                .append("Active jobs " + mapOfIntegers.get("activejobs") + "<br>");
         return stringBuilder.toString();
+        //!TODO Process data inputed by user
     }
 
 

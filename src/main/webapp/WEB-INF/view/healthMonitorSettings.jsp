@@ -49,7 +49,7 @@
                             <a href="#">${sessionScope.userObject.getFullName()}</a>
                         </li>
                         <li>
-                            <a href="#">Exit</a>
+                            <a href="<c:url value="/logout" />">Exit</a>
                         </li>
                     </ul>
                 </div>
