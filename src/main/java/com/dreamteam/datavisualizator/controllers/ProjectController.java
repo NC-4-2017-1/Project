@@ -143,16 +143,14 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-settings-post", method = RequestMethod.POST)
     @ResponseBody
-    public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", required = false) String tableIndexLobSize,
-                                            @RequestParam(value = "activesessions", required = false) Integer activeSessionsTop,
-                                            @RequestParam(value = "activequeries", required = false) Integer activeQueriesTop,
-                                            @RequestParam(value = "queriesresults", required = false) Integer queriesResultsTop,
-                                            @RequestParam(value = "queriesmonitor", required = false) Integer queriesMonitorTop,
-                                            @RequestParam(value = "activejobs", required = false) Integer activeJobsPastHours,
+    public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", required = false, defaultValue = "default") String tableIndexLobSize,
+                                            @RequestParam(value = "activesessions", required = false, defaultValue = "10") int activeSessionsTop,
+                                            @RequestParam(value = "activequeries", required = false , defaultValue = "11") int activeQueriesTop,
+                                            @RequestParam(value = "queriesresults", required = false , defaultValue = "12") int queriesResultsTop,
+                                            @RequestParam(value = "queriesmonitor", required = false , defaultValue = "13") int queriesMonitorTop,
+                                            @RequestParam(value = "activejobs", required = false , defaultValue = "14") int activeJobsPastHours,
                                             Model model) {
-        if (tableIndexLobSize.equals("")) {
-            tableIndexLobSize = "default"; // default value
-        }
+
         Map<String, Integer> mapOfIntegers = new HashMap<>();
         mapOfIntegers.put("activesessions", activeSessionsTop);
         mapOfIntegers.put("activequeries", activeQueriesTop);
@@ -160,11 +158,8 @@ public class ProjectController {
         mapOfIntegers.put("queriesmonitor", queriesMonitorTop);
         mapOfIntegers.put("activejobs", activeJobsPastHours);
 
-        for (Map.Entry<String, Integer> entry : mapOfIntegers.entrySet()) {
-            if (entry.getValue() == null) {
-                entry.setValue(Integer.MAX_VALUE - new Random().nextInt(Integer.MAX_VALUE)); // default value
-            }
-        }
+
+
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Table index lob size " + tableIndexLobSize + "<br>")
