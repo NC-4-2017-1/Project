@@ -4,109 +4,57 @@
 <html>
 <head>
     <title>Title</title>
+    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
+    ﻿<script src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/resources/js/HMsetup.js"></script>
 </head>
 <body>
-﻿<script
-        src="https://code.jquery.com/jquery-3.2.1.js"
-        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-        crossorigin="anonymous">
-</script>
-
-<div> HM project Connection</div>
-<br>
-<form>
-    Server name:<br>
-    <input type="text" id="serverName" name="serverName" value="">
-    <br>
-    <br>
-    Port:<br>
-    <input type="text" id="port" name="port" value="">
-    <br>
-    <br>
-    SID:<br>
-    <input type="text" id="sid" name="sid" value="">
-    <br>
-    <br>
-    User Name:<br>
-    <input type="text" id="username" name="username" value="">
-    <br>
-    <br>
-    Password:<br>
-    <input type="text" id="password" name="password" value="">
-    <br>
-    <br>
-    <input type="button" id="submit" value="Test"><br>
-    <br>
-    <input type="button" id="next" value="Next"><br>
-</form>
-
-<script>
-    $("#submit").click(function () {
-        var data = isData();
-        if (data == false) {
-            return false
-        }
-
-        $.ajax({
-            url: "/project/health-monitor-setup-test-conn",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-
-                $("div")
-                    .text(responce.responseText)
-                    .css({'color': 'red', 'position': 'absolute', 'bottom': '0'});
-            }
-        });
-    });
-
-    $("#next").click(function () {
-        var data = isData();
-        if (data == false) {
-            return false
-        }
-
-        $.ajax({
-            url: "/project/health-monitor-setup-save",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-                if (responce.responseText == "successful") {
-                    window.location.assign("/project/health-monitor-settings");
-                }
-                else {
-                    $("div")
-                        .text(responce.responseText)
-                        .css({'color': 'red', 'position': 'absolute', 'bottom': '0'});
-                }
-            }
-        });
-    });
-
-    function isData() {
-        var serverName = $("#serverName").val();
-        var port = $("#port").val();
-        var sid = $("#sid").val();
-        var username = $("#username").val();
-        var password = $("#password").val();
-
-        if (!serverName || !port || !sid || !username || !password) {
-            alert("Fill all the fields");
-            return false;
-        }
-        var data = {
-            serverName: serverName,
-            port: port,
-            sid: sid,
-            username: username,
-            password: password
-        };
-        return data;
-    }
-</script>
+<div class="container bg-white">
+    <div class="content">
+        <h2 class="col-sm-offset-3"> HM project Connection</h2>
+        <form data-toggle="validator" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="control-label col-sm-2 col-sm-offset-3" for="serverName">Server name:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="serverName" name="serverName" placeholder="Server name" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2 col-sm-offset-3" for="port">Port:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="port" name="port" placeholder="Port" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2 col-sm-offset-3" for="sid">SID:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="sid" name="sid" placeholder="SID" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2 col-sm-offset-3" for="username">User name:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="User name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2 col-sm-offset-3" for="password">Password:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="password" name="password" placeholder="Password" required>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-3" type="button" id="submit">Test</button>
+                <button class="btn btn-lg btn-primary col-sm-2 col-md-offset-1" type="button" id="next">Next</button>
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="alert alert-danger hide"></div>
+                <div class="alert alert-success hide"></div>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
