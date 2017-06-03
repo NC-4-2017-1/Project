@@ -19,6 +19,7 @@ import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -72,8 +73,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         catch (DataAccessException e) {
             LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
-            throw new HMConnectionException("Connection with wrong parameters(SERVER - " + serverName + "; PORT - " + port + "; SID - "
-                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ") have error:\n"+ e.getLocalizedMessage());
+            throw new HMConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
+                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ".");
         }catch (Exception e) {
             LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
@@ -89,7 +90,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 LOGGER.error("Graph not selected because project is null");
                 return null;
             }
-        } catch (DataAccessException e) {
+        }catch (EmptyResultDataAccessException e){
+            LOGGER.warn("Graph is absent for project", e);
+            return null;
+        }catch (DataAccessException e) {
             LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
             return null;
         }catch (Exception e) {
@@ -112,7 +116,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 LOGGER.error("List of selectors not selected because project is null");
                 return null;
             }
-        } catch (DataAccessException e) {
+        } catch (EmptyResultDataAccessException e){
+            LOGGER.warn("Selectors is absent for project", e);
+            return null;
+        }catch (DataAccessException e) {
             LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
             return null;
         }catch (Exception e) {
@@ -242,11 +249,15 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         try {
             if (project != null) {
                 Graphic hmGraph = getProjectGraph(project);                   //select project graphic
-                generalTemplate.update(DELETE_OBJECT, hmGraph.getId());       //delete project graphic
+                if (hmGraph != null) {
+                    generalTemplate.update(DELETE_OBJECT, hmGraph.getId());       //delete project graphic
+                }
                 Map<BigInteger, Selector> selectors = getProjectSelectors(project);      //select all project selectors
-                for (Map.Entry<BigInteger, Selector> entry : selectors.entrySet()) {
-                    Selector value = entry.getValue();
-                    generalTemplate.update(DELETE_OBJECT, value.getId());  // deleting all project selectors
+                if (selectors != null) {
+                    for (Map.Entry<BigInteger, Selector> entry : selectors.entrySet()) {
+                        Selector value = entry.getValue();
+                        generalTemplate.update(DELETE_OBJECT, value.getId());  // deleting all project selectors
+                    }
                 }
                 generalTemplate.update(DELETE_OBJECT, project.getId());         //deleting project
                 return true;
@@ -258,7 +269,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             LOGGER.error("Project with id " +project.getId() + " not deleted", e);
             throw e;
         } catch (Exception e) {
-            LOGGER.error("Project with not deleted", e);
+            LOGGER.error("Project not deleted", e);
             throw e;
         }
     }
@@ -290,28 +301,31 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
 
                 //graph
                 Graphic graph = ((HealthMonitorProject) project).getGraphic();
-                String graphName = graph.getName();
-                int graphicHourCount = ((GraphicHMImpl) graph).getHourCount();
-                JsonObject graphJSON = graph.getGraphicJSON();
+                if (graph != null) {
+                    String graphName = graph.getName();
+                    int graphicHourCount = ((GraphicHMImpl) graph).getHourCount();
+                    JsonObject graphJSON = graph.getGraphicJSON();
 
-                BigInteger graphId = createObject(graphName, GRAPHIC_OBJTYPE_ID);
-                generalTemplate.update(INSERT_ATTR_VALUE, HOUR_COUNT_ATTR_ID, graphId, graphicHourCount);
-                generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, graphId, graphJSON.toString());
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_GRAPHICS_RELATION_ATTR_ID, graphId, projectId);
-
+                    BigInteger graphId = createObject(graphName, GRAPHIC_OBJTYPE_ID);
+                    generalTemplate.update(INSERT_ATTR_VALUE, HOUR_COUNT_ATTR_ID, graphId, graphicHourCount);
+                    generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, graphId, graphJSON.toString());
+                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_GRAPHICS_RELATION_ATTR_ID, graphId, projectId);
+                }
                 //selectors
                 Map<BigInteger, Selector> projectSelectors = ((HealthMonitorProject) project).getSelectors();
-                for (Map.Entry<BigInteger, Selector> entry : projectSelectors.entrySet()) {
-                    BigInteger key = entry.getKey();
-                    Selector selector = entry.getValue();
-                    BigInteger selectorId = createObject(selector.getName(), key);
-                    String selectorValue = selector.getValue();
-                    generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, selectorId, selectorValue);
-                    if (mapSelectorsAttr.get(key) != null){
-                        String value = mapSelectorCreators.get(key).getAttrValue(selector);
-                        generalTemplate.update(INSERT_ATTR_VALUE, mapSelectorsAttr.get(key), selectorId, value);
+                if(projectSelectors != null) {
+                    for (Map.Entry<BigInteger, Selector> entry : projectSelectors.entrySet()) {
+                        BigInteger key = entry.getKey();
+                        Selector selector = entry.getValue();
+                        BigInteger selectorId = createObject(selector.getName(), key);
+                        String selectorValue = selector.getValue();
+                        generalTemplate.update(INSERT_ATTR_BIG_VALUE, JSON_RESULT_ATTR_ID, selectorId, selectorValue);
+                        if (mapSelectorsAttr.get(key) != null) {
+                            String value = mapSelectorCreators.get(key).getAttrValue(selector);
+                            generalTemplate.update(INSERT_ATTR_VALUE, mapSelectorsAttr.get(key), selectorId, value);
+                        }
+                        generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SELECTORS_RELATION_ATTR_ID, selectorId, projectId);
                     }
-                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SELECTORS_RELATION_ATTR_ID, selectorId, projectId);
                 }
                 return getProjectById(projectId);
             } else {
