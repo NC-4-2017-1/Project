@@ -1,10 +1,12 @@
 package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.common.IdList;
+import com.dreamteam.datavisualizator.common.beans.CustomerProject;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.*;
+import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -145,10 +147,10 @@ public class ProjectController {
     @ResponseBody
     public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", required = false, defaultValue = "default") String tableIndexLobSize,
                                             @RequestParam(value = "activesessions", required = false, defaultValue = "10") int activeSessionsTop,
-                                            @RequestParam(value = "activequeries", required = false , defaultValue = "11") int activeQueriesTop,
-                                            @RequestParam(value = "queriesresults", required = false , defaultValue = "12") int queriesResultsTop,
-                                            @RequestParam(value = "queriesmonitor", required = false , defaultValue = "13") int queriesMonitorTop,
-                                            @RequestParam(value = "activejobs", required = false , defaultValue = "14") int activeJobsPastHours,
+                                            @RequestParam(value = "activequeries", required = false, defaultValue = "11") int activeQueriesTop,
+                                            @RequestParam(value = "queriesresults", required = false, defaultValue = "12") int queriesResultsTop,
+                                            @RequestParam(value = "queriesmonitor", required = false, defaultValue = "13") int queriesMonitorTop,
+                                            @RequestParam(value = "activejobs", required = false, defaultValue = "14") int activeJobsPastHours,
                                             Model model) {
 
         Map<String, Integer> mapOfIntegers = new HashMap<>();
@@ -157,8 +159,6 @@ public class ProjectController {
         mapOfIntegers.put("queriesresults", queriesResultsTop);
         mapOfIntegers.put("queriesmonitor", queriesMonitorTop);
         mapOfIntegers.put("activejobs", activeJobsPastHours);
-
-
 
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -190,8 +190,8 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-health-monitor", method = RequestMethod.GET)
     @ResponseBody
-    public Project saveHealthMonitorProject(Project project,
-                                            Model model) {
+    public Project saveHealthMonitorProject(Project project, Model model) {
+        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         return healthMonitorProjectDAOImpl.saveProject(project);
     }
 

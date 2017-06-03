@@ -3,14 +3,16 @@ package com.dreamteam.datavisualizator.common.beans;
 import com.dreamteam.datavisualizator.models.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.Serializable;
 
 
-@Service
+@Component
 @Scope(value="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class SessionScopeBean {
+public class SessionScopeBean implements Serializable {
 
     private CustomerProject customerProject;
     private File file;

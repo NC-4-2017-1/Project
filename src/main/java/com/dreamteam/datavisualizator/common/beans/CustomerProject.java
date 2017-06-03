@@ -4,15 +4,17 @@ import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.Selector;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-public class CustomerProject {
+public class CustomerProject implements Serializable {
 
     private ProjectTypes type;
     private String name;
     private String description;
+    private BigInteger author;
     private List<Graphic> graphics;
     private Map<BigInteger, Selector> selectors;
     private Graphic graphic;
@@ -44,6 +46,14 @@ public class CustomerProject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigInteger getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(BigInteger author) {
+        this.author = author;
     }
 
     public List<Graphic> getGraphics() {
