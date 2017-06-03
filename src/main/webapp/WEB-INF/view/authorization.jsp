@@ -22,22 +22,21 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<!--Content-->
-<div class="container bg-white"  style="margin-top: 200px; width: 400px; height: 400px;">
-    <div class="row">
-        <div class="content">
-
-            <div class="container" style="width: 300px;">
+<div class = "modal-content">
+    <div class="container" style="width: 300px;">
                 <c:url value="/j_spring_security_check" var="loginUrl"/>
                 <form action="${loginUrl}" method="post">
                     <h2 class="form-signin-heading">Please sign in</h2>
-                    <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
-                    <input type="password" class="form-control" name="j_password" placeholder="Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+                    <div class="form-group">
+                       <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
+                    </div>
+                    <div class="form-group">
+                       <input type="password" class="form-control" name="j_password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                       <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+                    </div>
                 </form>
-            </div>
-
-        </div>
     </div>
 </div>
 

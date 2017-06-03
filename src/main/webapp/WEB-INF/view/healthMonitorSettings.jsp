@@ -22,81 +22,93 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-
-
-                <form method="POST" action="/project/health-monitor-settings-post" onsubmit="return(validate());">
-
-                    <div class="form-group has-success">
-                        <label for="checkinstance" class="custom-control custom-checkbox">
-                            <input id="checkinstance" type="checkbox" class="custom-control-input" checked disabled>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Instance information.</span>
-                        </label>
+<div class = "modal-content">
+    <div class="container">
+        <h2> Select parameters:</h2>
+                <form method="POST"  role="form" action="/project/health-monitor-settings-post" onsubmit="return(validate());">
+                    <div class="form-group">
+                        <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked disabled>
+                        <label for="checkinstance" class="custom-control custom-checkbox">Instance information</label>
                     </div>
-                    <div class="form-group has-success">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" checked disabled>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Last DB errors.</span>
-                        </label>
+                    <div class="form-group">
+                        <input type="checkbox" name="selectors[]"  id="lasterrors" class="custom-control-input" value="11">
+                        <label for="lasterrors" class="custom-control custom-checkbox">Last DB errors</label>
                     </div>
-                    <div class="form-group has-success">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" checked disabled>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">DB locks.</span>
-                        </label>
+                    <div class="form-group">
+                        <input type="checkbox" name="selectors[]"  id="dblocks" class="custom-control-input" value="16">
+                        <label for="dblocks" class="custom-control custom-checkbox">DB locks</label>
                     </div>
-                    <div class="form-group has-success">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" checked disabled>
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Size for tablespace.</span>
-                        </label>
+                    <div class="form-group">
+                        <input type="checkbox" name="selectors[]"  id="sizetablespace" class="custom-control-input" value="9">
+                        <label for="sizetablespace" class="custom-control custom-checkbox">Size for tablespace</label>
                     </div>
-
-
                     <div class="form-group row">
-                        <label for="tableindexlob" class="col-sm-3 col-form-label">Size for table-index-lob</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="sizetablelobCheck" class="custom-control-input" value="10">
+                            <label for="sizetablelobCheck" class="custom-control custom-checkbox">Size for table-index-lob</label>
+                        </div>
+                        <div class="col-sm-3">
                             <input type="text" class="form-control" id="tableindexlob" name="tableindexlob" placeholder="Segment name">
                         </div>
                     </div>
 
-
                     <div class="form-group row">
-                        <label for="activesessions" class="col-sm-3 col-form-label">Active sessions</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="activesessions" name="activesessions" placeholder="Top value">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="activesessioncheck" class="custom-control-input" value="12">
+                            <label for="activesessioncheck" class="custom-control custom-checkbox">Active sessions</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="activesession" name="activesession" placeholder="Top value">
                         </div>
                     </div>
 
-
                     <div class="form-group row">
-                        <label for="activequeries" class="col-sm-3 col-form-label">Active queries</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="activequeriescheck" class="custom-control-input" value="13">
+                            <label for="activequeriescheck" class="custom-control custom-checkbox">Active queries</label>
+                        </div>
+                        <div class="col-sm-3">
                             <input type="text" class="form-control" id="activequeries" name="activequeries" placeholder="Top value">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="queriesresults" class="col-sm-3 col-form-label">Queries results</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="queriesresults" name="queriesresults" placeholder="Top value">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="queriesrescheck" class="custom-control-input" value="14">
+                            <label for="queriesrescheck" class="custom-control custom-checkbox">Queries results</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="queriesres" name="queriesres" placeholder="Top value">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="queriesmonitor" class="col-sm-3 col-form-label">SQL queries monitor</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="queriesmonitor" name="queriesmonitor" placeholder="Top value">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="sqlmonitorcheck" class="custom-control-input" value="15">
+                            <label for="sqlmonitorcheck" class="custom-control custom-checkbox">SQL queries monitor</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="sqlmonitor" name="sqlmonitor" placeholder="Top value">
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="activejobs" class="col-sm-3 col-form-label">Active jobs</label>
-                        <div class="col-sm-9">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="activejobscheck" class="custom-control-input" value="17">
+                            <label for="activejobscheck" class="custom-control custom-checkbox">Active jobs</label>
+                        </div>
+                        <div class="col-sm-3">
                             <input type="text" class="form-control" id="activejobs" name="activejobs" placeholder="Hour count (max: 48h)">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="graphcheck" class="custom-control-input" value="17">
+                            <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="graph" name="graph" placeholder="Hour count (max: 48h)">
                         </div>
                     </div>
 
@@ -106,11 +118,8 @@
                         </div>
                     </div>
                 </form>
-
-
-
+    </div>
+</div>
 <jsp:include page="footer.jsp"/>
-
-
 </body>
 </html>

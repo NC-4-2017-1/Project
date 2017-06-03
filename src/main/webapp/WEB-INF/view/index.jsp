@@ -63,11 +63,6 @@
 
         </sec:authorize>
     </div>
-
-    <div class="footer">
-        <p>© dreamteam 2017</p>
-    </div>
-
 </div>
 
 <jsp:include page="footer.jsp"/>
