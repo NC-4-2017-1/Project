@@ -198,6 +198,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
+        //!TODO check if email exists and don't let to create account if so
         User user;
         BigInteger insertedObjectId;
         try {

@@ -19,7 +19,7 @@ public interface DataVisualizationProjectDAO {
 
     boolean deleteProject(Project project);
 
-    Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics);
+    Project saveProject(Project project);
 
     List<Graphic> getProjectGraphs(Project project);
 

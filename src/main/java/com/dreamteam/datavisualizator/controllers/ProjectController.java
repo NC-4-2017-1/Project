@@ -6,6 +6,7 @@ import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.models.*;
+import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,7 +185,12 @@ public class ProjectController {
 
         name = sessionScopeBean.getCustomerProject().getName();
         description = sessionScopeBean.getCustomerProject().getDescription();
-        return projectDAO.saveProject(name, user.getId(), description, graphics);
+        Project project =  new DataVisualizationProject
+                .Builder(name, null, user.getId())
+                .buildDescription(description)
+                .buildGraphics(graphics)
+                .buildProject();
+        return projectDAO.saveProject(project);
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -221,7 +227,7 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/layout", method = RequestMethod.GET)
     public String projectView(Model model) {
-        return "project";
+        return "projectDV";
     }
 
     @Secured("ROLE_REGULAR_USER")

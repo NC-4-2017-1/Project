@@ -145,24 +145,26 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public Project saveProject(String name, BigInteger authorId, String description, List<Graphic> graphics) {
+    public Project saveProject(Project project) {
         Date projectCreationDate = new Date();
-        Project project;
         try {
-            BigInteger insertedObjectId = createObject(name, DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
-            generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, description);
+            BigInteger insertedObjectId = createObject(project.getName(), DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
+            generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, project.getDescription());
             generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, authorId, insertedObjectId);
-            for (Graphic graphic : graphics) {
+            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, project.getAuthor(), insertedObjectId);
+            DataVisualizationProject projectDV = (DataVisualizationProject) project;
+            for (Graphic graphic : projectDV.getGraphics()) {
                 GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
                 saveGraphic(graphicDV, insertedObjectId);
             }
             project = getProjectById(insertedObjectId);
         } catch (DataAccessException e) {
-            LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
+            LOGGER.error("Project not saved with input params name:" + project.getName() + ", author_id:" +
+                    project.getAuthor() + ", description:" + project.getDescription() + ", graphics:" + ((DataVisualizationProject) project).getGraphics(), e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("Project not saved with input params name:" + name + ", author_id:" + authorId + ", description:" + description + ", graphics:" + graphics, e);
+            LOGGER.error("Project not saved with input params name:" + project.getName() + ", author_id:" +
+                    project.getAuthor() + ", description:" + project.getDescription() + ", graphics:" + ((DataVisualizationProject) project).getGraphics(), e);
             return null;
         }
         return project;
