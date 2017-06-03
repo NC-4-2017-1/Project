@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HM Settings</title>
+    <title>HM Project</title>
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
@@ -24,23 +24,8 @@
 
 <jsp:include page="header.jsp"/>
 
-﻿
-<form method="post" action="/project/create">
-    Project Type:<br>
-    <select id="type" name="type">
-        <c:forEach items="${projectTypes}" var="entry">
-            <option value="${entry.key}">${entry.value}</option>
-        </c:forEach>
-    </select>
-    <br>
-    Project name:<br>
-    <input type="text" name="name" value="">
-    <br>
-    Description:<br>
-    <input type="text" name="description" value="">
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
+
+HM
 
 <jsp:include page="footer.jsp"/>
 

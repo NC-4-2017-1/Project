@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>DV Setup</title>
+    <title>DV Project</title>
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
@@ -24,12 +24,10 @@
 
 <jsp:include page="header.jsp"/>
 
-<div>Visualization Setup</div>
 
-﻿<form method="POST" action="/project/upload" enctype="multipart/form-data">
-    <input type="file" accept=".xml, .csv"  name="file" /><br/>
-    <input type="submit" value="Submit" />
-</form>
+DV
+
+<jsp:include page="footer.jsp"/>
 
 </body>
 </html>

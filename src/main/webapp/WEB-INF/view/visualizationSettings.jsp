@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HM Settings</title>
+    <title>DV Settings</title>
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
@@ -24,12 +24,13 @@
 
 <jsp:include page="header.jsp"/>
 
-
 <div>Visualization Settings</div>
 <p><c:out value="${message}"/></p>
+
 
 
 <jsp:include page="footer.jsp"/>
 
 </body>
 </html>
+
