@@ -190,9 +190,16 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-health-monitor", method = RequestMethod.GET)
     @ResponseBody
-    public Project saveHealthMonitorProject(Project project, Model model) {
+    public Project saveHealthMonitorProject(Model model) {
         CustomerProject customerProject = sessionScopeBean.getCustomerProject();
-        return healthMonitorProjectDAOImpl.saveProject(project);
+        HealthMonitorProject.Builder projectBuilder = new HealthMonitorProject.Builder(null, customerProject.getName(),
+                null, customerProject.getDescription(), customerProject.getAuthor(), customerProject.getSid(),
+                customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
+                customerProject.getPassword());
+        projectBuilder.buildProject();
+        //TODO Build Graph
+        //TODO Build Selectors
+        return healthMonitorProjectDAOImpl.saveProject(projectBuilder.buildProject());
     }
 
     @Secured("ROLE_REGULAR_USER")
