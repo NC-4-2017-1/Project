@@ -1,10 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("#submit").click(function () {
         var data = isData();
         if (data == false) {
             return false;
         }
-         $.ajax({
+        $.ajax({
             url: "/project/health-monitor-setup-test-conn",
             type: "POST",
             dataType: "json",

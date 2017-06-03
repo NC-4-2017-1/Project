@@ -7,6 +7,9 @@ public class DataSourceRequest {
     private String username;
     private String password;
 
+    public DataSourceRequest(){
+    }
+
     public String getServerName() {
         return serverName;
     }

@@ -20,7 +20,7 @@
 <body>
 <jsp:include page="header.jsp"/>
 <div class = "modal-content">
-        <h2 class="col-sm-offset-3"> HM project Connection</h2>
+        <h2 class="col-sm-offset-4"> HM project Connection:</h2>
         <form data-toggle="validator" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="serverName">Server name:</label>

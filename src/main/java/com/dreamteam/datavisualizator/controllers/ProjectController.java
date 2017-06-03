@@ -53,16 +53,17 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public String create(@RequestParam("type") String type,
-                         @RequestParam("name") String name,
-                         @RequestParam("description") String description, Model model) {
-        sessionScopeBean.getCustomerProject().setType(ProjectTypes.getRoleById(new BigInteger(type)));
-        sessionScopeBean.getCustomerProject().setName(name);
-        sessionScopeBean.getCustomerProject().setDescription(description);
-        return "redirect:" + (ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(type)
-                ? "visualization-setup"
-                : "health-monitor-setup");
+    @PostMapping("/create")
+    @ResponseBody
+    public String create(@RequestBody CreateProjectRequest request, Model model) {
+        sessionScopeBean.getCustomerProject().setType(ProjectTypes.getRoleById(new BigInteger(request.getType())));
+        sessionScopeBean.getCustomerProject().setName(request.getName());
+        sessionScopeBean.getCustomerProject().setDescription(request.getDescription());
+        if (ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(request.getType())) {
+            return "visualization-setup";
+        } else {
+            return "health-monitor-setup";
+        }
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -185,7 +186,7 @@ public class ProjectController {
 
         name = sessionScopeBean.getCustomerProject().getName();
         description = sessionScopeBean.getCustomerProject().getDescription();
-        Project project =  new DataVisualizationProject
+        Project project = new DataVisualizationProject
                 .Builder(name, null, user.getId())
                 .buildDescription(description)
                 .buildGraphics(graphics)
