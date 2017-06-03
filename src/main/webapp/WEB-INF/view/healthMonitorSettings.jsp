@@ -21,51 +21,7 @@
 </head>
 
 <body>
-
-
-<!--Navigation-->
-<div class="container">
-    <div class="row">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="<c:url value="/" />" class="navbar-brand hidden-sm">
-                        <img class="brand-img" src="#" alt="Brand">
-                    </a>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#respinsive-menu">
-                        <span class="sr-only">Open navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="respinsive-menu">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="<c:url value="/"/>">Main</a></li>
-                        <li><a href="<c:url value="/user/dashboard"/>">Projects</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#">${sessionScope.userObject.getFullName()}</a>
-                        </li>
-                        <li>
-                            <a href="<c:url value="/logout" />">Exit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="page-wrap">
-    <div style="height: 100px;"></div>
-</div>
-<div class="container bg-white">
-    <div class="row">
-        <div class="content">
-            <div class="col-md-12">
-
+<jsp:include page="header.jsp"/>
 
 
                 <form method="POST" action="/project/health-monitor-settings-post" onsubmit="return(validate());">
@@ -150,48 +106,11 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-
-<script type="text/javascript">
-    function validate()
-    {
-     var form = $('form');
-       console.log(form) ;
-
-      /*  if( document.myForm.Country.value == "-1" )
-        {
-            return false;
-        }*/
-        return( false );
-    }
-</script>
 
 
 
-
-<!--Footer-->
-
-
-<div class="container">
-    <div class="row">
-        <div class="page-wrap">
-
-        </div>
-        <footer class="site-footer bg-white">
-            <div class="col-md-12">
-                <div class="padding-text-footer">Copyright © DREAMTEAM 2017. All rights reserved.</div>
-            </div>
-            <div class="padding-text-footer">
-            </div>
+<jsp:include page="footer.jsp"/>
 
 
-        </footer>
-    </div>
-</div>
 </body>
 </html>
