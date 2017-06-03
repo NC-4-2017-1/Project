@@ -173,35 +173,28 @@ public class ProjectController {
 
         Map<BigInteger, String> selectorsType = new HashMap<>();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < selectors.length; i++){
+        for (int i = 0; i < selectors.length; i++) {
             if (Integer.parseInt(selectors[i]) != 0) {
                 BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
                 selectorsType.put(key, selectorsParam.get(key));
-            }else {
+            } else {
                 sessionScopeBean.getCustomerProject().setHourCountGraph(graphHourcount);
             }
             //stringBuilder.append(" - ").append(selectors[i]);
         }
         sessionScopeBean.getCustomerProject().setSelectors(selectorsType);
-        return "oooo"+graphHourcount;
+        return "oooo" + graphHourcount;
     }
-
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
     @ResponseBody
-    public Project saveVisualizationProject(@RequestParam("name") String name,
-                                            @RequestParam("description") String description,
-                                            @RequestParam("graphics") List<Graphic> graphics,
-                                            User user,
-                                            Model model) {
-
-        name = sessionScopeBean.getCustomerProject().getName();
-        description = sessionScopeBean.getCustomerProject().getDescription();
+    public Project saveVisualizationProject(Model model) {
+        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         Project project = new DataVisualizationProject
-                .Builder(name, null, user.getId())
-                .buildDescription(description)
-                .buildGraphics(graphics)
+                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId())
+                .buildDescription(customerProject.getDescription())
+                .buildGraphics(customerProject.getGraphics())
                 .buildProject();
         return projectDAO.saveProject(project);
     }
