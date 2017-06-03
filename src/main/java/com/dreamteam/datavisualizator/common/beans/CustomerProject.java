@@ -16,13 +16,22 @@ public class CustomerProject implements Serializable {
     private String description;
     private BigInteger author;
     private List<Graphic> graphics;
-    private Map<BigInteger, Selector> selectors;
+    private Map<BigInteger, String> selectors;
+    int hourCountGraph;
     private Graphic graphic;
     private String serverName;
     private String port;
     private String sid;
     private String userName;
     private String password;
+
+    public int getHourCountGraph() {
+        return hourCountGraph;
+    }
+
+    public void setHourCountGraph(int hourCountGraph) {
+        this.hourCountGraph = hourCountGraph;
+    }
 
     public ProjectTypes getType() {
         return type;
@@ -64,11 +73,11 @@ public class CustomerProject implements Serializable {
         this.graphics = graphics;
     }
 
-    public Map<BigInteger, Selector> getSelectors() {
+    public Map<BigInteger, String> getSelectors() {
         return selectors;
     }
 
-    public void setSelectors(Map<BigInteger, Selector> selectors) {
+    public void setSelectors(Map<BigInteger, String> selectors) {
         this.selectors = selectors;
     }
 

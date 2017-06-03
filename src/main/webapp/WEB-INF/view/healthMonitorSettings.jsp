@@ -27,7 +27,8 @@
         <h2> Select parameters:</h2>
                 <form method="POST"  role="form" action="/project/health-monitor-settings-post" onsubmit="return(validate());">
                     <div class="form-group">
-                        <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked disabled>
+                        <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
+                        <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
                         <label for="checkinstance" class="custom-control custom-checkbox">Instance information</label>
                     </div>
                     <div class="form-group">
@@ -104,7 +105,7 @@
 
                     <div class="form-group row">
                         <div class="col-sm-3">
-                            <input type="checkbox" name="selectors[]"  id="graphcheck" class="custom-control-input" value="17">
+                            <input type="checkbox" name="selectors[]"  id="graphcheck" class="custom-control-input" value="0">
                             <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
                         </div>
                         <div class="col-sm-3">

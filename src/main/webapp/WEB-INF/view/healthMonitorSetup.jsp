@@ -15,13 +15,14 @@
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="    crossorigin="anonymous"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/resources/js/HMsetup.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 <div class = "modal-content">
         <h2 class="col-sm-offset-4"> HM project Connection:</h2>
-        <form data-toggle="validator" class="form-horizontal" role="form">
+        <form id="connform" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="serverName">Server name:</label>
                 <div class="col-sm-3">
@@ -52,14 +53,13 @@
                     <input type="text" class="form-control" id="password" name="password" placeholder="Password" required>
                 </div>
             </div>
-            <div class="row">
+            <div class="form-group row">
                 <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-3" type="button" id="submit">Test</button>
                 <button class="btn btn-lg btn-primary col-sm-2 col-md-offset-1" type="button" id="next">Next</button>
             </div>
-            <br>
-            <div class="form-group">
-                <div class="alert alert-danger hide" style="width: 500px;"></div>
-                <div class="alert alert-success hide" style="width: 500px;"></div>
+            <div class="form-group row">
+                <div class="col-sm-5 col-sm-offset-3 alert alert-danger hide" id = "error_conn"></div>
+                <div class="col-sm-5 col-sm-offset-3 alert alert-success hide" id = "right_conn"></div>
             </div>
         </form>
 </div>

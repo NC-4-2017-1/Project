@@ -25,6 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static com.dreamteam.datavisualizator.common.IdList.*;
+
 
 @Controller
 @RequestMapping("/project")
@@ -147,31 +149,41 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-settings-post", method = RequestMethod.POST)
     @ResponseBody
-    public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", required = false, defaultValue = "default") String tableIndexLobSize,
-                                            @RequestParam(value = "activesessions", required = false, defaultValue = "10") int activeSessionsTop,
-                                            @RequestParam(value = "activequeries", required = false, defaultValue = "11") int activeQueriesTop,
-                                            @RequestParam(value = "queriesresults", required = false, defaultValue = "12") int queriesResultsTop,
-                                            @RequestParam(value = "queriesmonitor", required = false, defaultValue = "13") int queriesMonitorTop,
-                                            @RequestParam(value = "activejobs", required = false, defaultValue = "14") int activeJobsPastHours,
-                                            Model model) {
+    public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", defaultValue = "user") String tableIndexLobSize,
+                                            @RequestParam(value = "activesession", defaultValue = "10") String activeSessionsTop,
+                                            @RequestParam(value = "activequeries", defaultValue = "10") String activeQueriesTop,
+                                            @RequestParam(value = "queriesres", defaultValue = "10") String queriesResultsTop,
+                                            @RequestParam(value = "sqlmonitor", defaultValue = "10") String queriesMonitorTop,
+                                            @RequestParam(value = "activejobscheck", defaultValue = "24") String activeJobsPastHours,
+                                            @RequestParam(value = "graph", defaultValue = "24") int graphHourcount,
+                                            @RequestParam("selectors[]") String[] selectors,
+                                            Model model
+    ) {
+        Map<BigInteger, String> selectorsParam = new HashMap<>();
+        selectorsParam.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
+        selectorsParam.put(S_SIZE_TABLESPACE_OBJTYPE_ID, null);
+        selectorsParam.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, tableIndexLobSize);
+        selectorsParam.put(S_LAST_ERRORS_OBJTYPE_ID, null);
+        selectorsParam.put(S_ACTIVE_SESSIONS_OBJTYPE_ID, activeSessionsTop);
+        selectorsParam.put(S_ACTIVE_QUERIES_OBJTYPE_ID, activeQueriesTop);
+        selectorsParam.put(S_QUERIES_RESULTS_OBJTYPE_ID, queriesResultsTop);
+        selectorsParam.put(S_SQL_MONITOR_OBJTYPE_ID, queriesMonitorTop);
+        selectorsParam.put(S_DB_LOCKS_OBJTYPE_ID, null);
+        selectorsParam.put(S_ACTIVE_JOBS_OBJTYPE_ID, activeJobsPastHours);
 
-        Map<String, Integer> mapOfIntegers = new HashMap<>();
-        mapOfIntegers.put("activesessions", activeSessionsTop);
-        mapOfIntegers.put("activequeries", activeQueriesTop);
-        mapOfIntegers.put("queriesresults", queriesResultsTop);
-        mapOfIntegers.put("queriesmonitor", queriesMonitorTop);
-        mapOfIntegers.put("activejobs", activeJobsPastHours);
-
-
+        Map<BigInteger, String> selectorsType = new HashMap<>();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Table index lob size " + tableIndexLobSize + "<br>")
-                .append("Active sessions " + mapOfIntegers.get("activesessions") + "<br>")
-                .append("Active queries " + mapOfIntegers.get("activequeries") + "<br>")
-                .append("Queries results " + mapOfIntegers.get("queriesresults") + "<br>")
-                .append("Queries monitor " + mapOfIntegers.get("queriesmonitor") + "<br>")
-                .append("Active jobs " + mapOfIntegers.get("activejobs") + "<br>");
-        return stringBuilder.toString();
-        //!TODO Process data inputed by user
+        for (int i = 0; i < selectors.length; i++){
+            if (Integer.parseInt(selectors[i]) != 0) {
+                BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
+                selectorsType.put(key, selectorsParam.get(key));
+            }else {
+                sessionScopeBean.getCustomerProject().setHourCountGraph(graphHourcount);
+            }
+            //stringBuilder.append(" - ").append(selectors[i]);
+        }
+        sessionScopeBean.getCustomerProject().setSelectors(selectorsType);
+        return "oooo"+graphHourcount;
     }
 
 
