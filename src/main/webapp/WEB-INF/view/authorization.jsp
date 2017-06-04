@@ -36,6 +36,13 @@
                     <div class="form-group">
                        <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
                     </div>
+
+                    <c:if test = "${param.error != null}">
+                  <div class="alert alert-danger center-block" style="padding: 5px;" role="alert">
+                      Login failed: bad credentials
+                    </div>
+                    </c:if>
+
                 </form>
     </div>
 </div>
