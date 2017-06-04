@@ -4,14 +4,13 @@ import com.google.gson.JsonArray;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class JsonSerializer {
     private static final Logger LOGGER = Logger.getLogger(JsonSerializer.class);
+    private static String jsStringForDvGraph;
 
-    public static JsonArray serializeData(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
+    public static JsonArray serializeTableData(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
         JsonArray jsonWithValuesForGraphic = new JsonArray();
         for(Map<String, Object> oneElementForSerialize : dataForSerialize) {
             JsonArray arrayWithData = new JsonArray();
@@ -25,13 +24,11 @@ public class JsonSerializer {
         return jsonWithValuesForGraphic;
     }
 
-    public static String serializeDataToJsStringWithGraph(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
-        StringBuilder jsStringForGraph = new StringBuilder();
+    public static String serializeGraph(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
+        JsonArray arrayForGraph = serializeTableData(dataForSerialize,columnNameAxisX,columnNameAxisY);
+        String typeOfAxisX = columnNameAxisX.compareTo("Date")==0 ? "datetime" : "linear";
 
-        JsonArray arrayForGraph = serializeData(dataForSerialize,columnNameAxisX,columnNameAxisY);
-        String typeOfAxisX = columnNameAxisX == "Date" ? "datetime" : "linear";
-
-        jsStringForGraph.append("var chart = new Highcharts.chart('container', {" +
+        String jsStringForGraph = ("var chart = new Highcharts.chart('container', {" +
                 "        chart: {" +
                 "            zoomType: 'x'" +
                 "        }," +
@@ -89,15 +86,16 @@ public class JsonSerializer {
                 "        }]" +
                 "    });");
 
-        return jsStringForGraph.toString();
+        jsStringForDvGraph = String.format("%s", jsStringForGraph);
+        return jsStringForDvGraph;
     }
 
 
     private JsonArray addToArray(Map<String, Object> elementOfSerialize, String columnName, JsonArray arrayWithData){
         for(Map.Entry<String, Object> elementOfList : elementOfSerialize.entrySet()){
-            if(elementOfList.getKey() == columnName){
-                if(columnName == "Date") {
-                    arrayWithData.add(new JsonSerializer().convertDateToMs(elementOfList.getValue().toString()));
+            if(elementOfList.getKey().compareTo(columnName)==0){
+                if(elementOfList.getValue()instanceof Date){
+                    arrayWithData.add(ConvertDateToMs.convertDateToMs(elementOfList.getValue().toString()));
                 }
                 else{
                     arrayWithData.add(new BigDecimal(elementOfList.getValue().toString()));
@@ -106,19 +104,5 @@ public class JsonSerializer {
         }
 
         return arrayWithData;
-    }
-
-    private Long convertDateToMs(String date){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZ yyyy");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("EET"));
-
-        try {
-            Date convertDate =  simpleDateFormat.parse(date);
-
-            return convertDate.getTime();
-        } catch (ParseException e) {
-            LOGGER.error("Serialize json error in convert date", e);
-            return null;
-        }
     }
 }
