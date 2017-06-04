@@ -11,7 +11,7 @@ public class JsonSerializer {
     private static final Logger LOGGER = Logger.getLogger(JsonSerializer.class);
     private static String jsStringForDvGraph;
 
-    public static JsonArray serializeTableData(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
+    private static JsonArray serializeTableData(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
         JsonArray jsonWithValuesForGraphic = new JsonArray();
         for(Map<String, Object> oneElementForSerialize : dataForSerialize) {
             JsonArray arrayWithData = new JsonArray();
@@ -25,7 +25,8 @@ public class JsonSerializer {
         return jsonWithValuesForGraphic;
     }
 
-    public static JsonObject serializeGraph(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
+    public static JsonObject serializeGraph(List<Map<String, Object>> dataForSerialize,
+                                            String columnNameAxisX, String columnNameAxisY){
         JsonArray arrayForGraph = serializeTableData(dataForSerialize,columnNameAxisX,columnNameAxisY);
         String typeOfAxisX = columnNameAxisX.compareTo("Date")==0 ? "datetime" : "linear";
 

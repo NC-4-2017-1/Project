@@ -6,10 +6,15 @@ import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
-import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
+import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
+import com.dreamteam.datavisualizator.services.HtmlSerializer;
+import com.dreamteam.datavisualizator.services.JsonSerializer;
+import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
+import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
+import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -20,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -43,6 +49,13 @@ public class ProjectController {
 
     @Autowired
     SessionScopeBean sessionScopeBean;
+
+    @Autowired
+    CsvParser csvParser;
+
+    @Autowired
+    XmlParser xmlParser;
+
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/new-layout", method = RequestMethod.GET)
@@ -105,6 +118,29 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-settings", method = RequestMethod.GET)
     public String visualizationProjectSettings(Model model) {
+        List<Map<String, Object>> result = null;
+        if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
+            try {
+                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
+                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as csv", e);
+            }
+        } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
+            try {
+                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
+                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as xml", e);
+            }
+        }
+
+        String tablee = HtmlSerializer.createHtmlTableForParsingFile(result, "dvtable");
+        model.addAttribute("table", tablee);
+        model.addAttribute("tableKeys", result.get(0).keySet());
+
         return "visualizationSettings";
     }
 
@@ -121,12 +157,63 @@ public class ProjectController {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
             Files.write(path, bytes);
+
+            sessionScopeBean.getCustomerProject().setFileType(file.getOriginalFilename().split("\\.")[1]);
+            sessionScopeBean.getCustomerProject().setFile(file);
         } catch (IOException e) {
             LOGGER.error("Uploaded temporary file '" + file.getOriginalFilename() + "' has not be retained", e);
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
             return "redirect:/project/visualization-setup";
         }
         return "redirect:/project/visualization-settings";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/save-visualization", method = RequestMethod.POST)
+    public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest,
+                                           Model model) {
+
+        List<Map<String, Object>> result = null;
+        if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
+            try {
+                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
+                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as csv", e);
+            }
+        } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
+            try {
+                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
+                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as xml", e);
+            }
+        }
+
+        List<Graphic> graphicList = new ArrayList<>();
+
+        for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length
+                && i < dvGraphicCreationRequest.getxAxis().length; i++) {
+            JsonObject jsonObj = JsonSerializer.serializeGraph(result,
+                    dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i]);
+            Graphic graphic = new GraphicDVImpl.DVGraphBuilder().buildGraphicJSON(jsonObj).buildGraphic();
+            graphicList.add(graphic);
+        }
+        sessionScopeBean.getCustomerProject().setGraphics(graphicList);
+
+
+        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
+        Project project = new DataVisualizationProject
+                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId())
+                .buildDescription(customerProject.getDescription())
+                .buildGraphics(customerProject.getGraphics())
+                .buildProject();
+        Project projectFromDb = projectDAO.saveProject(project);
+
+
+        return "redirect:/project/project-dv";
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -207,59 +294,42 @@ public class ProjectController {
         healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
                 customerProject.getUserName(), customerProject.getPassword());
         Map<BigInteger, String> selectorsType = new HashMap<>();
-        for (int i = 0; i < selectors.length; i++){
+        for (int i = 0; i < selectors.length; i++) {
             if (Integer.parseInt(selectors[i]) != 0) {
                 BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
                 selectorsType.put(key, selectorsParam.get(key));
-            }else {
+            } else {
                 Graphic graph = healthMonitorProjectDAOImpl.createGraph(graphHourcount);
-                if(graph != null) {
+                if (graph != null) {
                     projectBuilder.buildGraphic(graph);
-                } else{
+                } else {
                     model.addAttribute("errorGraphic", "Graph not created for project");
                 }
             }
         }
-        if(selectorsType != null){
+        if (selectorsType != null) {
             Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
             projectBuilder.buildSelectors(mapSelectors);
-        }else{
+        } else {
             model.addAttribute("errorSelector", "Selectors not created for project");
         }
         Project p = projectBuilder.buildProject();
         Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
-        //Project projectNew = null;
-        if(projectNew == null){
-            model.addAttribute("errorProject", "Project not created");
-            return "healthMonitorSettings";
-        }else{
-            customerProject.setIdProject(projectNew.getId());
-            return "redirect:/project/open-health-monitor";
+        customerProject.setIdProject(projectNew.getId());
+        if (projectNew == null) {
+            model.addAttribute("errorProject", "Selectors not created for project");
+            return "redirect:/project/health-monitor-settings-post";
+        } else {
+            return "redirect:/project/project-hm";
         }
     }
 
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
-    @ResponseBody
-    public Project saveVisualizationProject(Model model) {
-        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
-        Project project = new DataVisualizationProject
-                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId())
-                .buildDescription(customerProject.getDescription())
-                .buildGraphics(customerProject.getGraphics())
-                .buildProject();
-        return projectDAO.saveProject(project);
-    }
+    @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
+    public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
 
-    @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/open-health-monitor", method = RequestMethod.GET)
-    //@ResponseBody
-    public String openHealthMonitorProject(Model model) {
-        Project project = healthMonitorProjectDAOImpl.getProjectById(sessionScopeBean.getCustomerProject().getIdProject());
-        Graphic graphic = ((HealthMonitorProject)project).getGraphic();
-        model.addAttribute("graphValue", graphic.getGraphicJSON());
-        return "projectHM";//+graphic.getId();
+        return "projectHM";
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -279,8 +349,9 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/layout", method = RequestMethod.GET)
-    public String projectView(Model model) {
+    @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
+    public String projectView(Model model, RedirectAttributes redirectAttributes) {
+
         return "projectDV";
     }
 

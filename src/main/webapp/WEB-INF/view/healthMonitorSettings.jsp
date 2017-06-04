@@ -25,7 +25,7 @@
 <div class = "modal-content">
     <div class="container">
         <h2> Select parameters:</h2>
-                <form method="POST"  role="form" action="/project/health-monitor-settings-post" onsubmit="return(validate());">
+                <form method="POST"  role="form" action="/project/health-monitor-settings-post">
                     <div class="form-group">
                         <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
                         <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>

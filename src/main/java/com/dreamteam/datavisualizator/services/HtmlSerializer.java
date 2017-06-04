@@ -1,7 +1,6 @@
 package com.dreamteam.datavisualizator.services;
 
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -105,6 +104,7 @@ public class HtmlSerializer {
             }
             htmlTable.append("</tr>");
         }
+        htmlTable.append("</table>");
         return htmlTable.toString();
     }
 }
