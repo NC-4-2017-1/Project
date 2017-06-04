@@ -228,11 +228,12 @@ public class ProjectController {
         }
         Project p = projectBuilder.buildProject();
         Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
-        customerProject.setIdProject(projectNew.getId());
+        //Project projectNew = null;
         if(projectNew == null){
-            model.addAttribute("errorProject", "Selectors not created for project");
-            return "redirect:/project/health-monitor-settings-post";
+            model.addAttribute("errorProject", "Project not created");
+            return "healthMonitorSettings";
         }else{
+            customerProject.setIdProject(projectNew.getId());
             return "redirect:/project/open-health-monitor";
         }
     }
@@ -253,9 +254,12 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/open-health-monitor", method = RequestMethod.GET)
+    //@ResponseBody
     public String openHealthMonitorProject(Model model) {
-
-        return "projectHM";
+        Project project = healthMonitorProjectDAOImpl.getProjectById(sessionScopeBean.getCustomerProject().getIdProject());
+        Graphic graphic = ((HealthMonitorProject)project).getGraphic();
+        model.addAttribute("graphValue", graphic.getGraphicJSON());
+        return "projectHM";//+graphic.getId();
     }
 
     @Secured("ROLE_REGULAR_USER")

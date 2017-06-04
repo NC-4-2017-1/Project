@@ -119,6 +119,11 @@
                         </div>
                     </div>
                 </form>
+                 <c:if test = "${errorProject != null}">
+                    <div class="alert alert-danger center-block" style="padding: 5px;" role="alert">
+                      ${errorProject}
+                    </div>
+                </c:if>
     </div>
 </div>
 <jsp:include page="footer.jsp"/>

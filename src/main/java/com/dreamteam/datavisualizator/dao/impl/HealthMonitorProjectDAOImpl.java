@@ -14,6 +14,7 @@ import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.*;
 import com.dreamteam.datavisualizator.services.ClobToStringService;
+import com.dreamteam.datavisualizator.services.HmGraphSerializer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.log4j.Logger;
@@ -142,10 +143,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             ResultSetWrappingSqlRowSet resultsRow = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             ResultSet results = resultsRow.getResultSet();
             if (results.next()) {
-                //todo serialize and build json
-                JsonObject noData = new JsonObject();
-                noData.addProperty("data", "empty");
-                builderGraph.buildGraphicJson(noData);
+                JsonObject valueG = HmGraphSerializer.serialiseHmGraph(resultsRow);
+                //System.out.println(HmGraphSerializer.serialiseHmGraph(resultsRow));
+                //JsonObject valueG = null;
+                builderGraph.buildGraphicJson(valueG);
             }else{
                 JsonObject noData = new JsonObject();
                 noData.addProperty("data", "empty");
