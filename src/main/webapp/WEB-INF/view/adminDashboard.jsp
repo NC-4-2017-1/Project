@@ -22,13 +22,47 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-
-
-content code
-
+<div class="container" id="container-middle">
+    <div class="panel panel-default">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>first name</th>
+                <th>last name</th>
+                <th>email</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${users}" var="user">
+            <tr>
+                <td><p>${user.firstName}</p></td>
+                <td><p>${user.lastName}</p></td>
+                <td><p>${user.email}</p></td>
+                <td>
+                    <input class="btn btn-default btn-sm" type="button" value="delete"
+                           onclick="deleteObj(${user.id});"/>
+                </td>
+            </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
 <jsp:include page="footer.jsp"/>
 
 
 </body>
+<script>
+    /*<![CDATA[*/
+    function deleteObj(id) {
+        var x = new XMLHttpRequest();
+        x.open("DELETE", "/user/delete/" + id);
+        x.onreadystatechange = function () {
+            window.location.replace("/user/admin-panel");
+        }
+        x.send();
+    }
+</script>
 </html>
 

@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -217,14 +216,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 return generalTemplate.query(SELECT_HMPROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new CuttedHealthMonitorProjectRowMapper());
             } else {
                 LOGGER.error("Projects for author wasn't selected");
-                return null;
+                return new ArrayList<HealthMonitorProject>();
             }
         } catch (DataAccessException e) {
             LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
-            return null;
+            return new ArrayList<HealthMonitorProject>();
         }catch (Exception e) {
             LOGGER.error("Project not fetched by author", e);
-            return null;
+            return new ArrayList<HealthMonitorProject>();
         }
     }
 

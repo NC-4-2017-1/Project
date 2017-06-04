@@ -1,14 +1,17 @@
 package com.dreamteam.datavisualizator.controllers;
 
-import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigInteger;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -19,6 +22,8 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/admin-panel", method = RequestMethod.GET)
     public String adminDashboard(Model model) {
+        List<User> users = userDAO.getAllUsersList();
+        model.addAttribute("users", users);
         return "adminDashboard";
     }
 
@@ -43,11 +48,10 @@ public class UserController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(path = "/delete", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean deleteUser(User user,
-                              Model model) {
-        return userDAO.deleteUser(user);
+    @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable BigInteger id) {
+        User user = userDAO.getUserById(id);
+        userDAO.deleteUser(user);
     }
 
     @Secured("ROLE_ADMIN")

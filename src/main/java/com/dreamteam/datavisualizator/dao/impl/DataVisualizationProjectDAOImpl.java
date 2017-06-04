@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,14 +84,14 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
                 return generalTemplate.query(SELECT_DV_PROJECTS_BY_AUTHOR, new Object[]{user.getId()}, new DataVisualizationProjectRowMapper());
             } else {
                 LOGGER.error("Projects for author wasn't selected because of author " + user);
-                return null;
+                return new ArrayList<DataVisualizationProject>();
             }
         } catch (DataAccessException e) {
             LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
-            return null;
+            return new ArrayList<DataVisualizationProject>();
         } catch (Exception e) {
             LOGGER.error("Projects not fetched by author (id:" + user.getId() + " name:" + user.getFullName() + ")", e);
-            return null;
+            return new ArrayList<DataVisualizationProject>();
         }
     }
 
