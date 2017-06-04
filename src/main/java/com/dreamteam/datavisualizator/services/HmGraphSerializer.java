@@ -1,12 +1,15 @@
 package com.dreamteam.datavisualizator.services;
 
 
+import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
+import com.dreamteam.datavisualizator.common.dateconverter.StringToDateConverter;
 import com.google.gson.JsonArray;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,25 +29,18 @@ public class HmGraphSerializer {
                 "    }," +
                 "" +
                 "    title: {" +
-                "        text: 'Temperature variation by month'" +
-                "    }," +
-                "" +
-                "    subtitle: {" +
-                "        text: 'Observed in Vik i Sogn, Norway'" +
+                "        text: 'Task by Date-Time'" +
                 "    }," +
                 "" +
                 "    xAxis: {" +
-                "        categories: "+arrayDataForHm.get(0) +"" +
+                "        categories: " + arrayDataForHm.get(0) + "" +
                 "    }," +
                 "" +
                 "    yAxis: {" +
-                "        title: " +
-                "            text: 'Temperature ( °C )'" +
+                "       type: 'datetime',"+
+                "        title:{ " +
+                "            text: 'Date-Time'" +
                 "        }" +
-                "    }," +
-                "" +
-                "    tooltip: {" +
-                "        valueSuffix: '°C'" +
                 "    }," +
                 "" +
                 "    plotOptions: {" +
@@ -52,7 +48,7 @@ public class HmGraphSerializer {
                 "            dataLabels: {" +
                 "                enabled: true," +
                 "                formatter: function () {" +
-                "                    return this.y + '°C';" +
+                "                    return new Date(this.y).toLocaleString();" +
                 "                }" +
                 "            }" +
                 "        }" +
@@ -63,8 +59,9 @@ public class HmGraphSerializer {
                 "    }," +
                 "" +
                 "    series: [{" +
-                "        name: 'Temperatures'," +
-                "        data: "+arrayDataForHm.get(0) +" "+
+                "        name: 'Time'," +
+
+                "        data: " + arrayDataForHm.get(1) + " " +
                 "    }]" +
                 "" +
                 "});";
@@ -82,19 +79,24 @@ public class HmGraphSerializer {
         ArrayList<Date> startDate = new ArrayList<>();
         ArrayList<Date> endDate = new ArrayList<>();
         ArrayList<String> informationTask = new ArrayList<>();
-        ResultSet graphSet=graphResultSet.getResultSet();
+        ResultSet graphSet = graphResultSet.getResultSet();
+        DateFormat dateFormat = DateFormat.getDateFormatById(BigInteger.valueOf(1L));
+
         try {
             while (graphSet.next()) {
-                    xNameTask.add(graphSet.getString(0));
-                    startDate.add(graphSet.getDate(1));
-                    endDate.add(graphSet.getDate(2));
-                    informationTask.add(graphSet.getString(3)+" "+graphSet.getString(4)+" "
-                            +graphSet.getString(5)+" "+ClobToStringService.clobToString(graphSet.getClob(6)));
+                xNameTask.add(graphSet.getString(rowNames.task.toString()));
+               // String s=graphSet.getString(rowNames.start.toString());
+                startDate.add(new StringToDateConverter(dateFormat).convertDateFromString(graphSet.getString(rowNames.start.toString())));
+                endDate.add(new StringToDateConverter(dateFormat).convertDateFromString(graphSet.getString(rowNames.end.toString())));
+                //startDate.add(graphSet.getString(rowNames.start.toString()));
+              //  endDate.add(graphSet.getDate(rowNames.end.toString()));
+                informationTask.add(graphSet.getString(rowNames.status.toString()) + " " + graphSet.getString(rowNames.errorC.toString()) + " "
+                        + graphSet.getString(rowNames.errorM.toString()) + " " + ClobToStringService.clobToString(graphSet.getClob(rowNames.sqlText.toString())));
 
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
-            return  null;
+            return null;
         }
 
         JsonArray serizlizeData = new JsonArray();
@@ -102,12 +104,12 @@ public class HmGraphSerializer {
         JsonArray dateArray = new JsonArray();
         JsonArray informationArray = new JsonArray();
 
-        for(int i=0; i<xNameTask.size(); i++){
+        for (int i = 0; i < xNameTask.size(); i++) {
             JsonArray temporaryDateArray = new JsonArray();
 
             nameArray.add(xNameTask.get(i));
-            temporaryDateArray.add(new BigDecimal(startDate.get(i).toString()));
-            temporaryDateArray.add(new BigDecimal(endDate.get(i).toString()));
+            temporaryDateArray.add(startDate.get(i).getTime());
+            temporaryDateArray.add(endDate.get(i).getTime());
             dateArray.add(temporaryDateArray);
             informationArray.add(informationTask.get(i));
         }
@@ -117,6 +119,28 @@ public class HmGraphSerializer {
         serizlizeData.add(informationArray);
 
         return serizlizeData;
+    }
+
+    private static enum rowNames {
+        task("TASK"),
+        start("Time start"),
+        end("Time end"),
+        status("Status"),
+        errorC("Error code"),
+        errorM("Error message"),
+        sqlText("Sql text");
+
+        String nameRow;
+
+        rowNames(String nameRow) {
+            this.nameRow = nameRow;
+
+        }
+
+        @Override
+        public String toString() {
+            return nameRow;
+        }
     }
 
 }
