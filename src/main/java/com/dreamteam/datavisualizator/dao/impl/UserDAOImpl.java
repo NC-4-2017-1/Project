@@ -356,6 +356,4 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and usertype.attr_id = 5" +
             " and usertype.list_value_id = 1" +
             " and obj_user.object_id = ?";
-
-
 }

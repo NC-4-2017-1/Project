@@ -29,7 +29,7 @@ public class UserController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
-    public String userDashboard(Model model) {
+    public String userDashboard() {
         return "userDashboard";
     }
 
@@ -56,11 +56,9 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/update-user", method = RequestMethod.GET)
-    @ResponseBody
     public User updateUser(@RequestParam("firstName") String firstName,
-                            @RequestParam("lastName") String lastName,
-                            @RequestParam("email") String email,
-                            Model model) {
+                           @RequestParam("lastName") String lastName,
+                           @RequestParam("email") String email) {
         return null;
     }
 

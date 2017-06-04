@@ -54,7 +54,6 @@
 
 </body>
 <script>
-    /*<![CDATA[*/
     function deleteObj(id) {
         var x = new XMLHttpRequest();
         x.open("DELETE", "/user/delete/" + id);

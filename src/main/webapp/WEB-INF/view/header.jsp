@@ -6,8 +6,8 @@
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="<c:url value="/" />" class="navbar-brand hidden-sm">
-                        <img class="brand-img" src="#" alt="Brand">
+                    <a href="<c:url value="/" />" class="navbar-brand">
+                        Dve sosny
                     </a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#respinsive-menu">
                         <span class="sr-only">Open navigation</span>
