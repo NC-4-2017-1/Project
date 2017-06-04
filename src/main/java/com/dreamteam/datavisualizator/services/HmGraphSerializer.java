@@ -4,6 +4,7 @@ package com.dreamteam.datavisualizator.services;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.common.dateconverter.StringToDateConverter;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -19,7 +20,7 @@ public class HmGraphSerializer {
     private static final Logger LOGGER = Logger.getLogger(HmGraphSerializer.class);
     private static String jsStringForHmGraph;
 
-    public static String serialiseHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {
+    public static JsonObject serialiseHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {
         JsonArray arrayDataForHm = serializeDataForHmGraph(graphResultSet);
 
         String stringJsCode = "var chart = new Highcharts.chart('container', {" +
@@ -69,7 +70,10 @@ public class HmGraphSerializer {
 
         jsStringForHmGraph = String.format("%s", stringJsCode);
 
-        return jsStringForHmGraph;
+        JsonObject jsonGraph = new JsonObject();
+        jsonGraph.addProperty("jsCodeForGraph", jsStringForHmGraph);
+
+        return jsonGraph;
     }
 
     public static JsonArray serializeDataForHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {

@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.services;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -24,7 +25,7 @@ public class JsonSerializer {
         return jsonWithValuesForGraphic;
     }
 
-    public static String serializeGraph(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
+    public static JsonObject serializeGraph(List<Map<String, Object>> dataForSerialize, String columnNameAxisX, String columnNameAxisY){
         JsonArray arrayForGraph = serializeTableData(dataForSerialize,columnNameAxisX,columnNameAxisY);
         String typeOfAxisX = columnNameAxisX.compareTo("Date")==0 ? "datetime" : "linear";
 
@@ -87,7 +88,11 @@ public class JsonSerializer {
                 "    });");
 
         jsStringForDvGraph = String.format("%s", jsStringForGraph);
-        return jsStringForDvGraph;
+
+        JsonObject jsonGraph = new JsonObject();
+        jsonGraph.addProperty("jsCodeForGraph", jsStringForDvGraph);
+
+        return jsonGraph;
     }
 
 
