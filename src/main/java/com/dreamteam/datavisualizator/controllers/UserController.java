@@ -30,16 +30,16 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create-user", method = RequestMethod.GET)
-    public String createUser(Model model) {
+    public String createUser(@ModelAttribute("user") UserRequest userRequest) {
         return "userCreation";
     }
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    @ResponseBody
-    public User create(@RequestBody UserRequest userRequest, Model model) {
-        return userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),
+    public String create(@ModelAttribute("user") UserRequest userRequest) {
+        userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),
                 userRequest.getEmail(), userRequest.getPassword(), UserTypes.REGULAR_USER);
+        return "redirect:/user/admin-panel";
     }
 
     @Secured("ROLE_ADMIN")
