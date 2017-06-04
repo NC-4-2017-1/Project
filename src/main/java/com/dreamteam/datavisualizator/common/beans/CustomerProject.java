@@ -17,7 +17,7 @@ public class CustomerProject implements Serializable {
     private BigInteger author;
     private List<Graphic> graphics;
     private Map<BigInteger, String> selectors;
-    int hourCountGraph;
+    BigInteger idProject;
     private Graphic graphic;
     private String serverName;
     private String port;
@@ -25,12 +25,12 @@ public class CustomerProject implements Serializable {
     private String userName;
     private String password;
 
-    public int getHourCountGraph() {
-        return hourCountGraph;
+    public BigInteger getIdProject() {
+        return idProject;
     }
 
-    public void setHourCountGraph(int hourCountGraph) {
-        this.hourCountGraph = hourCountGraph;
+    public void setIdProject(BigInteger idProject) {
+        this.idProject = idProject;
     }
 
     public ProjectTypes getType() {

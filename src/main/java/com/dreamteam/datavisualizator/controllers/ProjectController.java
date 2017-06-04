@@ -6,6 +6,7 @@ import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
+import com.dreamteam.datavisualizator.dao.impl.HealthMonitorProjectDAOImpl;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
@@ -48,6 +49,7 @@ public class ProjectController {
     public String createProject(Model model, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("userObject");
         sessionScopeBean.setUser(user);
+        sessionScopeBean.getCustomerProject().setAuthor(user.getId());
         Map<String, String> project = new LinkedHashMap<>();
         project.put(ProjectTypes.DATA_VISUALIZATION.getId().toString(), ProjectTypes.DATA_VISUALIZATION.toString());
         project.put(ProjectTypes.HEALTH_MONITORING.getId().toString(), ProjectTypes.HEALTH_MONITORING.toString());
@@ -174,7 +176,6 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-settings-post", method = RequestMethod.POST)
-    @ResponseBody
     public String healthMonitorSettingsPost(@RequestParam(value = "tableindexlob", defaultValue = "user") String tableIndexLobSize,
                                             @RequestParam(value = "activesession", defaultValue = "10") String activeSessionsTop,
                                             @RequestParam(value = "activequeries", defaultValue = "10") String activeQueriesTop,
@@ -197,20 +198,45 @@ public class ProjectController {
         selectorsParam.put(S_DB_LOCKS_OBJTYPE_ID, null);
         selectorsParam.put(S_ACTIVE_JOBS_OBJTYPE_ID, activeJobsPastHours);
 
+        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
+        HealthMonitorProject.Builder projectBuilder = new HealthMonitorProject.Builder(null, customerProject.getName(),
+                null, customerProject.getDescription(), customerProject.getAuthor(), customerProject.getSid(),
+                customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
+                customerProject.getPassword());
+        projectBuilder.buildProject();
+        healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
+                customerProject.getUserName(), customerProject.getPassword());
         Map<BigInteger, String> selectorsType = new HashMap<>();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < selectors.length; i++) {
+        for (int i = 0; i < selectors.length; i++){
             if (Integer.parseInt(selectors[i]) != 0) {
                 BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
                 selectorsType.put(key, selectorsParam.get(key));
-            } else {
-                sessionScopeBean.getCustomerProject().setHourCountGraph(graphHourcount);
+            }else {
+                Graphic graph = healthMonitorProjectDAOImpl.createGraph(graphHourcount);
+                if(graph != null) {
+                    projectBuilder.buildGraphic(graph);
+                } else{
+                    model.addAttribute("errorGraphic", "Graph not created for project");
+                }
             }
-            //stringBuilder.append(" - ").append(selectors[i]);
         }
-        sessionScopeBean.getCustomerProject().setSelectors(selectorsType);
-        return "oooo" + graphHourcount;
+        if(selectorsType != null){
+            Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
+            projectBuilder.buildSelectors(mapSelectors);
+        }else{
+            model.addAttribute("errorSelector", "Selectors not created for project");
+        }
+        Project p = projectBuilder.buildProject();
+        Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
+        customerProject.setIdProject(projectNew.getId());
+        if(projectNew == null){
+            model.addAttribute("errorProject", "Selectors not created for project");
+            return "redirect:/project/health-monitor-settings-post";
+        }else{
+            return "redirect:/project/open-health-monitor";
+        }
     }
+
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-visualization", method = RequestMethod.GET)
@@ -226,18 +252,10 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/save-health-monitor", method = RequestMethod.GET)
-    @ResponseBody
-    public Project saveHealthMonitorProject(Model model) {
-        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
-        HealthMonitorProject.Builder projectBuilder = new HealthMonitorProject.Builder(null, customerProject.getName(),
-                null, customerProject.getDescription(), customerProject.getAuthor(), customerProject.getSid(),
-                customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
-                customerProject.getPassword());
-        projectBuilder.buildProject();
-        //TODO Build Graph
-        //TODO Build Selectors
-        return healthMonitorProjectDAOImpl.saveProject(projectBuilder.buildProject());
+    @RequestMapping(path = "/open-health-monitor", method = RequestMethod.GET)
+    public String openHealthMonitorProject(Model model) {
+
+        return "projectHM";
     }
 
     @Secured("ROLE_REGULAR_USER")
