@@ -204,7 +204,7 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/save-visualization", method = RequestMethod.POST)
-    public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest,
+    public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest, RedirectAttributes redirectAttributes,
                                            Model model) {
 
         List<Map<String, Object>> result = null;
@@ -230,7 +230,9 @@ public class ProjectController {
                 && i < dvGraphicCreationRequest.getxAxis().length; i++) {
             JsonObject jsonObj = JsonSerializer.serializeGraph(result,
                     dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i]);
-            Graphic graphic = new GraphicDVImpl.DVGraphBuilder().buildGraphicJSON(jsonObj).buildGraphic();
+            Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
+                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size()+2)
+                    .buildGraphicJSON(jsonObj).buildGraphic();
             graphicList.add(graphic);
         }
         sessionScopeBean.getCustomerProject().setGraphics(graphicList);
@@ -243,7 +245,7 @@ public class ProjectController {
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
         Project projectFromDb = projectDAO.saveProject(project);
-
+        redirectAttributes.addFlashAttribute("savedProject", project);
 
         return "redirect:/project/project-dv";
     }
@@ -350,7 +352,7 @@ public class ProjectController {
         if (projectNew == null) {
             model.addAttribute("errorProject", "Project not created!!!");
         }
-        if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")){
+        if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")) {
             return "healthMonitorSettings";
         }
         customerProject.setIdProject(projectNew.getId());
@@ -388,6 +390,8 @@ public class ProjectController {
     @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
     public String projectView(Model model, RedirectAttributes redirectAttributes/*, @RequestParam("projDvId") BigInteger id*/) {
         DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
+        Project pr = (Project) model.asMap().get("savedProject");
+        LOGGER.info(pr + " !saved!");
         model.addAttribute("project", dvProject);
 
         User author = userDAO.getUserById(dvProject.getAuthor());

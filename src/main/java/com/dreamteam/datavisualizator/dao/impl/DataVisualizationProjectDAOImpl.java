@@ -172,7 +172,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
     private GraphicDVImpl saveGraphic(GraphicDVImpl graphic, BigInteger projectId) {
         try {
-            String graphicName = graphic.getName();
+            String graphicName =  graphic.getName();
             JsonObject graphicJSON = graphic.getGraphicJSON();
             BigDecimal avg = graphic.getAverage();
             BigDecimal olympicAvg = graphic.getOlympicAverage();
