@@ -6,6 +6,7 @@ import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
+import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
@@ -43,6 +44,9 @@ public class ProjectController {
     public static final Logger LOGGER = Logger.getLogger(ProjectController.class);
     @Autowired
     DataVisualizationProjectDAO projectDAO;
+
+    @Autowired
+    UserDAO userDAO;
 
     @Autowired
     HealthMonitorProjectDAO healthMonitorProjectDAOImpl;
@@ -351,7 +355,21 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model, RedirectAttributes redirectAttributes) {
+    public String projectView(Model model, RedirectAttributes redirectAttributes/*, @RequestParam("projDvId") BigInteger id*/) {
+        DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
+        model.addAttribute("project", dvProject);
+
+        User author = userDAO.getUserById(dvProject.getAuthor());
+        model.addAttribute("author", author);
+
+        //add to model dv graphics
+        List<Graphic> graphics = dvProject.getGraphics();
+        List<GraphicDVImpl> graphicsDV = new ArrayList<>(graphics.size());
+        for (Graphic graphic : graphics) {
+            graphicsDV.add((GraphicDVImpl) graphic);
+        }
+        model.addAttribute("graphics", graphicsDV);
+
 
         return "projectDV";
     }

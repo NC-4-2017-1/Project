@@ -45,7 +45,11 @@
             <p><a class="btn btn-default" href="<c:url value="/user/create-user" />" role="button">Admin: create
                 user</a></p>
 
-            <p><a class="btn btn-default" href="<c:url value="/project/layout" />" role="button">Proj: project view</a>
+            <p><a class="btn btn-default" href="<c:url value="/project/project-dv" />" role="button">Proj: project dv
+                view</a>
+            </p>
+            <p><a class="btn btn-default" href="<c:url value="/project/project-hm" />" role="button">Proj: project hm
+                view</a>
             </p>
             <p><a class="btn btn-default" href="<c:url value="/project/share" />" role="button">Proj: share project</a>
             </p>

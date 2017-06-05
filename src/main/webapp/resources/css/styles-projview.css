@@ -1,0 +1,64 @@
+.projtype {
+    text-align: center;
+    color: #5bc0de;
+}
+
+.projname {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.projdescription {
+    text-align: left;
+}
+
+.author {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.buttons {
+    width: 225px;
+    margin: auto;
+}
+
+.graphs {
+    margin: 10px;
+}
+
+.graphitem {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.graphname {
+    padding: 20px;
+    text-align: center;
+}
+
+.graphmath {
+    margin-top: 25px;
+}
+
+.graphmathitem {
+    margin-top: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
