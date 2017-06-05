@@ -23,7 +23,7 @@ public class HmGraphSerializer {
     public static JsonObject serialiseHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {
         JsonArray arrayDataForHm = serializeDataForHmGraph(graphResultSet);
 
-        String stringJsCode = "var chart = new Highcharts.chart('container', {" +
+        String stringJsCode = "var chart = new Highcharts.chart('containerGraphic', {" +
                 "    chart: {" +
                 "        type: 'columnrange'," +
                 "        inverted: true" +

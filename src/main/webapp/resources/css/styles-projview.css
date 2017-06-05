@@ -19,7 +19,7 @@
 
 .buttons {
     width: 225px;
-    margin: auto;
+    margin: 10px auto;
 }
 
 .graphs {
@@ -42,6 +42,16 @@
 
 .graphmathitem {
     margin-top: 5px;
+}
+
+.tab-pane{
+    overflow-x: auto;
+    overflow-y: hidden;
+    width:100%;
+}
+
+.selector-info-mess{
+    margin-top: 10px;
 }
 
 

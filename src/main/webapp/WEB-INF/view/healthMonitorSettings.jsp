@@ -39,8 +39,8 @@
                     <div class="row col-sm-12">
                         <div class="form-group row col-sm-4">
                             <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
-                            <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
-                            <label for="checkinstance" class="custom-control custom-checkbox">Instance information</label>
+                           <!-- <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>-->
+                            <label for="instshow" class="custom-control custom-checkbox">Instance information</label>
                         </div>
 
                         <div class="form-group row col-sm-3">

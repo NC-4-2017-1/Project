@@ -279,7 +279,6 @@ public class ProjectController {
                                             Model model
     ) {
         Map<BigInteger, String> selectorsParam = new HashMap<>();
-        selectorsParam.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
         selectorsParam.put(S_SIZE_TABLESPACE_OBJTYPE_ID, null);
         selectorsParam.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, tableIndexLobSize);
         selectorsParam.put(S_LAST_ERRORS_OBJTYPE_ID, null);
@@ -299,6 +298,7 @@ public class ProjectController {
         healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
                 customerProject.getUserName(), customerProject.getPassword());
         Map<BigInteger, String> selectorsType = new HashMap<>();
+        selectorsType.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
         for (int i = 0; i < selectors.length; i++) {
             if (Integer.parseInt(selectors[i]) != 0) {
                 BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
@@ -335,8 +335,9 @@ public class ProjectController {
     @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
     public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
         Project project = healthMonitorProjectDAOImpl.getProjectById(sessionScopeBean.getCustomerProject().getIdProject());
-        Graphic graphic = ((HealthMonitorProject)project).getGraphic();
-        model.addAttribute("graphValue", graphic.getGraphicJSON());
+        model.addAttribute("project", project);
+        User author = userDAO.getUserById(project.getAuthor());
+        model.addAttribute("author", author);
         return "projectHM";
     }
 

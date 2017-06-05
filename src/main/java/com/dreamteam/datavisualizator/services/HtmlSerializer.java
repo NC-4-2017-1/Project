@@ -20,14 +20,14 @@ public class HtmlSerializer {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
+            htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
-            htmlTable.append("<tr>");
+            htmlTable.append("<thead><tr>");
             for (int i = 0; i < columnCount; i++) {
                 htmlTable.append("<th>" + selectorSetMeta.getColumnLabel(i + 1) + "</th>");
             }
-            htmlTable.append("</tr>");
+            htmlTable.append("</tr></thead><tbody>");
             while (selectorResultSet.next()) {
                 rowCount++;
                 htmlTable.append("<tr>");
@@ -37,9 +37,9 @@ public class HtmlSerializer {
                 htmlTable.append("</tr>");
             }
 
-            htmlTable.append("</table>");
+            htmlTable.append("</tbody></table>");
             if (rowCount == 0) {
-                return "no data";
+                return "<div class=\"alert alert-info selector-info-mess\"><strong>Info!</strong> No data in database for this selector.</div>";
             }
             return htmlTable.toString();
         } catch (InvalidResultSetAccessException e) {
@@ -52,14 +52,14 @@ public class HtmlSerializer {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
+            htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
-            htmlTable.append("<tr>");
+            htmlTable.append("<thead><tr>");
             for (int i = 0; i < columnCount; i++) {
                 htmlTable.append("<th>" + selectorSetMeta.getColumnLabel(i + 1) + "</th>");
             }
-            htmlTable.append("</tr>");
+            htmlTable.append("</tr></thead><tbody>");
             ResultSet resultData = selectorResultSet.getResultSet();
             while (resultData.next()) {
                 rowCount++;
@@ -69,9 +69,9 @@ public class HtmlSerializer {
                 htmlTable.append("<td><pre style=\"margin: 0;\">" + clobString + "</pre></td>");
                 htmlTable.append("</tr>");
             }
-            htmlTable.append("</table>");
+            htmlTable.append("</tbody></table>");
             if (rowCount == 0) {
-                return "no data";
+                return "<div class=\"alert alert-info selector-info-mess\"><strong>Info!</strong> No data in database for this selector.</div>";
             }
             return htmlTable.toString();
         } catch (InvalidResultSetAccessException e) {
@@ -85,14 +85,14 @@ public class HtmlSerializer {
 
     public static String createHtmlTableForParsingFile(List<Map<String, Object>> resultPrepareParsing, String cssId) {
         StringBuffer htmlTable = new StringBuffer();
-        htmlTable.append("<table border=1 class=\"selector\" id=\"" + cssId + "\">");
-        htmlTable.append("<tr>");
+        htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
+        htmlTable.append("<thead><tr>");
         Set<String> headers = resultPrepareParsing.get(0).keySet();
         for (String header : headers) {
             htmlTable.append("<th>" + header + "</th>");
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
-        htmlTable.append("</tr>");
+        htmlTable.append("</tr></thead><tbody>");
         for (Map<String, Object> row : resultPrepareParsing) {
             htmlTable.append("<tr>");
             for (String header : headers) {
@@ -104,7 +104,7 @@ public class HtmlSerializer {
             }
             htmlTable.append("</tr>");
         }
-        htmlTable.append("</table>");
+        htmlTable.append("</tbody></table>");
         return htmlTable.toString();
     }
 }
