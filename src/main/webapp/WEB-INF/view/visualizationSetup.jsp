@@ -22,22 +22,15 @@
 </head>
 
 <body>
-
 <jsp:include page="header.jsp"/>
-
-<%--<form method="POST" action="/project/upload" enctype="multipart/form-data">--%>
-    <%--<input type="file" accept=".xml, .csv"  name="file" /><br/>--%>
-    <%--<input type="submit" value="Submit" />--%>
-<%--</form>--%>
-
 <div class="container bg-white">
     <div class="content">
         <h2 class="col-sm-offset-3"> Visualization Setup</h2>
-        <form data-toggle="validator" class="form-horizontal" role="form">
+        <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/upload" enctype="multipart/form-data"  >
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select date format:</label>
                 <div class="col-sm-3">
-                    <select class="form-control"  id="format" name="format">
+                    <select class="form-control"  id="dateFormat" name="dateFormat">
                         <c:forEach items="${dateFormat}" var="entry">
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
@@ -48,54 +41,11 @@
                 <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
                 <div class="col-sm-3">
                     <input type="file" accept=".xml, .csv"  name="file" /><br/>
+                    <input type="submit" value="Submit" />
                 </div>
             </div>
-            <div class="row">
-                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next
-                </button>
-            </div>
-            <br>
         </form>
     </div>
 </div>
-
-<script>
-    function isData() {
-        var format = $("#format").val();
-
-        if (!format) {
-            alert("Fill all the fields");
-            return false;
-        }
-        var data = {
-            format: format,
-        };
-        return data;
-    };
-
-    $("#submit").click(function () {
-        var data = isData();
-        if (data == false) {
-            return false;
-        }
-        $.ajax({
-            url: "/project/create",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-                if (responce.responseText == "visualization-setup") {
-                    window.location.assign("/project/visualization-setup");
-                }
-                else {
-                    window.location.assign("/project/health-monitor-setup");
-                }
-            }
-        });
-    });
-
-</script>
-
 </body>
 </html>

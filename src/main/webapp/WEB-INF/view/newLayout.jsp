@@ -22,10 +22,7 @@
 </head>
 
 <body>
-
 <jsp:include page="header.jsp"/>
-
-
 <div class="container bg-white">
     <div class="content">
         <h2 class="col-sm-offset-4"> Please select project Type:</h2>

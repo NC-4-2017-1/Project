@@ -116,6 +116,31 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+    public String singleFileUpload(@RequestParam("dateFormat") String dateFormat,
+                                   @RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()) {
+            LOGGER.warn("File '" + file.getOriginalFilename() + "' is empty");
+            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+            return "redirect:/project/visualization-setup";
+        }
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
+            Files.write(path, bytes);
+            sessionScopeBean.getCustomerProject().setDateFormat(DateFormat.getDateFormatById(new BigInteger(dateFormat)));
+            sessionScopeBean.getCustomerProject().setFileType(file.getOriginalFilename().split("\\.")[1]);
+            sessionScopeBean.getCustomerProject().setFile(file);
+        } catch (IOException e) {
+            LOGGER.error("Uploaded temporary file '" + file.getOriginalFilename() + "' has not be retained", e);
+            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+            return "redirect:/project/visualization-setup";
+        }
+        return "redirect:/project/visualization-settings";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-settings", method = RequestMethod.GET)
     public String visualizationProjectSettings(Model model) {
         List<Map<String, Object>> result = null;
@@ -142,30 +167,6 @@ public class ProjectController {
         model.addAttribute("tableKeys", result.get(0).keySet());
 
         return "visualizationSettings";
-    }
-
-    @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public String singleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-
-        if (file.isEmpty()) {
-            LOGGER.warn("File '" + file.getOriginalFilename() + "' is empty");
-            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-            return "redirect:/project/visualization-setup";
-        }
-        try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
-            Files.write(path, bytes);
-
-            sessionScopeBean.getCustomerProject().setFileType(file.getOriginalFilename().split("\\.")[1]);
-            sessionScopeBean.getCustomerProject().setFile(file);
-        } catch (IOException e) {
-            LOGGER.error("Uploaded temporary file '" + file.getOriginalFilename() + "' has not be retained", e);
-            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-            return "redirect:/project/visualization-setup";
-        }
-        return "redirect:/project/visualization-settings";
     }
 
     @Secured("ROLE_REGULAR_USER")
