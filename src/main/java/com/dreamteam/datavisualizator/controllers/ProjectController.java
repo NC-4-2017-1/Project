@@ -135,11 +135,14 @@ public class ProjectController {
             Files.write(path, bytes);
             DateFormat dateFormatById = DateFormat.getDateFormatById(new BigInteger(dateFormat));
             String fileType = file.getOriginalFilename().split("\\.")[1];
-            boolean checkFormatDate = checkDateFormat(file, dateFormatById, fileType);
+            File fileFromTomcat = new File(Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename()).toUri());
+
+
+            boolean checkFormatDate = checkDateFormat(fileFromTomcat, dateFormatById, fileType);
             if (checkFormatDate) {
                 sessionScopeBean.getCustomerProject().setDateFormat(dateFormatById);
                 sessionScopeBean.getCustomerProject().setFileType(fileType);
-                sessionScopeBean.getCustomerProject().setFile(file);
+                sessionScopeBean.getCustomerProject().setFile(fileFromTomcat);
             } else {
                 redirectAttributes.addFlashAttribute("message", "Please select a correct FormatDate");
                 model.addAttribute("errorDateFormat", "Please select a correct FormatDate");
@@ -153,19 +156,17 @@ public class ProjectController {
         return "redirect:/project/visualization-settings";
     }
 
-    private boolean checkDateFormat(MultipartFile file, DateFormat dateFormat, String fileType) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
-        file.transferTo(convFile);
+    private boolean checkDateFormat(File file, DateFormat dateFormat, String fileType) throws IOException {
         if (fileType.equals("csv")) {
             try {
-                csvParser.parseCsvFile(convFile, dateFormat, 10);
+                csvParser.parseCsvFile(file, dateFormat, 10);
                 return true;
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as csv", e);
             }
         } else if (fileType.equals("xml")) {
             try {
-                xmlParser.parseXmlFile(convFile, dateFormat, 10);
+                xmlParser.parseXmlFile(file, dateFormat, 10);
                 return true;
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as xml", e);
@@ -180,16 +181,14 @@ public class ProjectController {
         List<Map<String, Object>> result = null;
         if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
             try {
-                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
-                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                File file = sessionScopeBean.getCustomerProject().getFile();
                 result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as csv", e);
             }
         } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
             try {
-                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
-                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                File file = sessionScopeBean.getCustomerProject().getFile();
                 result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as xml", e);
@@ -211,16 +210,14 @@ public class ProjectController {
         List<Map<String, Object>> result = null;
         if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
             try {
-                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
-                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                File file = sessionScopeBean.getCustomerProject().getFile();
                 result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as csv", e);
             }
         } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
             try {
-                File file = new File(sessionScopeBean.getCustomerProject().getFile().getOriginalFilename());
-                sessionScopeBean.getCustomerProject().getFile().transferTo(file);
+                File file = sessionScopeBean.getCustomerProject().getFile();
                 result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as xml", e);

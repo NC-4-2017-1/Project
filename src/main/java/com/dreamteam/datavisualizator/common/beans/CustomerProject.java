@@ -3,8 +3,8 @@ package com.dreamteam.datavisualizator.common.beans;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -25,7 +25,7 @@ public class CustomerProject implements Serializable {
     private String sid;
     private String userName;
     private String password;
-    private MultipartFile file;
+    private File file;
     private String fileType;
     private DateFormat dateFormat;
 
@@ -45,11 +45,11 @@ public class CustomerProject implements Serializable {
         this.fileType = fileType;
     }
 
-    public MultipartFile getFile() {
+    public File getFile() {
         return file;
     }
 
-    public void setFile(MultipartFile file) {
+    public void setFile(File file) {
         this.file = file;
     }
 
