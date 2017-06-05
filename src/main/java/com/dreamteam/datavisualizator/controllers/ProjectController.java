@@ -123,7 +123,7 @@ public class ProjectController {
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String singleFileUpload(@RequestParam("dateFormat") String dateFormat,
                                    @RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes, Model model) {
         if (file.isEmpty()) {
             LOGGER.warn("File '" + file.getOriginalFilename() + "' is empty");
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
@@ -133,15 +133,45 @@ public class ProjectController {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
             Files.write(path, bytes);
-            sessionScopeBean.getCustomerProject().setDateFormat(DateFormat.getDateFormatById(new BigInteger(dateFormat)));
-            sessionScopeBean.getCustomerProject().setFileType(file.getOriginalFilename().split("\\.")[1]);
-            sessionScopeBean.getCustomerProject().setFile(file);
+            DateFormat dateFormatById = DateFormat.getDateFormatById(new BigInteger(dateFormat));
+            String fileType = file.getOriginalFilename().split("\\.")[1];
+            boolean checkFormatDate = checkDateFormat(file, dateFormatById, fileType);
+            if (checkFormatDate) {
+                sessionScopeBean.getCustomerProject().setDateFormat(dateFormatById);
+                sessionScopeBean.getCustomerProject().setFileType(fileType);
+                sessionScopeBean.getCustomerProject().setFile(file);
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Please select a correct FormatDate");
+                model.addAttribute("errorDateFormat", "Please select a correct FormatDate");
+                return "redirect:/project/visualization-setup";
+            }
         } catch (IOException e) {
             LOGGER.error("Uploaded temporary file '" + file.getOriginalFilename() + "' has not be retained", e);
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
             return "redirect:/project/visualization-setup";
         }
         return "redirect:/project/visualization-settings";
+    }
+
+    private boolean checkDateFormat(MultipartFile file, DateFormat dateFormat, String fileType) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        file.transferTo(convFile);
+        if (fileType.equals("csv")) {
+            try {
+                csvParser.parseCsvFile(convFile, dateFormat, 10);
+                return true;
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as csv", e);
+            }
+        } else if (fileType.equals("xml")) {
+            try {
+                xmlParser.parseXmlFile(convFile, dateFormat, 10);
+                return true;
+            } catch (IOException e) {
+                LOGGER.error("IOException in parsing proj as xml", e);
+            }
+        }
+        return false;
     }
 
     @Secured("ROLE_REGULAR_USER")
