@@ -23,8 +23,8 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container bg-white">
-    <div class="content">
+<div class = "modal-content">
+    <div class="container">
         <h2 class="col-sm-offset-4"> Please select project Type:</h2>
         <form data-toggle="validator" class="form-horizontal" role="form">
             <div class="form-group">
@@ -49,9 +49,8 @@
                     <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
                 </div>
             </div>
-            <div class="row">
-                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next
-                </button>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next</button>
             </div>
         </form>
     </div>

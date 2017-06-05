@@ -24,24 +24,39 @@
 <jsp:include page="header.jsp"/>
 <div class = "modal-content">
     <div class="container">
-        <h2> Select parameters:</h2>
+        <div class="col-sm-offset-3">
+            <h2> Select parameters:</h2>
                 <form method="POST"  role="form" action="/project/health-monitor-settings-post">
-                    <div class="form-group">
-                        <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
-                        <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
-                        <label for="checkinstance" class="custom-control custom-checkbox">Instance information</label>
+                    <div class="row col-sm-12">
+                        <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
+                            <div class="alert alert-danger col-sm-6" role="alert">
+                                    ${errorProject} <br>
+                                    ${errorSelector}<br>
+                                    ${errorGraphic}
+                            </div>
+                        </c:if>
                     </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="selectors[]"  id="lasterrors" class="custom-control-input" value="11">
-                        <label for="lasterrors" class="custom-control custom-checkbox">Last DB errors</label>
+                    <div class="row col-sm-12">
+                        <div class="form-group row col-sm-4">
+                            <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
+                            <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
+                            <label for="checkinstance" class="custom-control custom-checkbox">Instance information</label>
+                        </div>
+
+                        <div class="form-group row col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="lasterrors" class="custom-control-input" value="11">
+                            <label for="lasterrors" class="custom-control custom-checkbox">Last DB errors</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="selectors[]"  id="dblocks" class="custom-control-input" value="16">
-                        <label for="dblocks" class="custom-control custom-checkbox">DB locks</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="selectors[]"  id="sizetablespace" class="custom-control-input" value="9">
-                        <label for="sizetablespace" class="custom-control custom-checkbox">Size for tablespace</label>
+                    <div class="row col-sm-12">
+                        <div class="form-group row col-sm-4">
+                            <input type="checkbox" name="selectors[]"  id="dblocks" class="custom-control-input" value="16">
+                            <label for="dblocks" class="custom-control custom-checkbox">DB locks</label>
+                        </div>
+                        <div class="form-group row col-sm-3">
+                            <input type="checkbox" name="selectors[]"  id="sizetablespace" class="custom-control-input" value="9">
+                            <label for="sizetablespace" class="custom-control custom-checkbox">Size for tablespace</label>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-3">
@@ -114,16 +129,12 @@
                     </div>
 
                     <div class="form-group row">
-                        <div class="offset-sm-2 col-sm-10">
+                        <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit" class="btn btn-primary">Create</button>
                         </div>
                     </div>
                 </form>
-                 <c:if test = "${errorProject != null}">
-                    <div class="alert alert-danger center-block" style="padding: 5px;" role="alert">
-                      ${errorProject}
-                    </div>
-                </c:if>
+        </div>
     </div>
 </div>
 <jsp:include page="footer.jsp"/>

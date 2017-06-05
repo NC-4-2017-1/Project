@@ -308,7 +308,7 @@ public class ProjectController {
                 if (graph != null) {
                     projectBuilder.buildGraphic(graph);
                 } else {
-                    model.addAttribute("errorGraphic", "Graph not created for project");
+                    model.addAttribute("errorGraphic", "Graph not created for project.");
                 }
             }
         }
@@ -316,24 +316,27 @@ public class ProjectController {
             Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
             projectBuilder.buildSelectors(mapSelectors);
         } else {
-            model.addAttribute("errorSelector", "Selectors not created for project");
+            model.addAttribute("errorSelector", "Selectors not created for project.");
         }
         Project p = projectBuilder.buildProject();
         Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
-        customerProject.setIdProject(projectNew.getId());
         if (projectNew == null) {
-            model.addAttribute("errorProject", "Selectors not created for project");
-            return "redirect:/project/health-monitor-settings-post";
-        } else {
-            return "redirect:/project/project-hm";
+            model.addAttribute("errorProject", "Project not created!!!");
         }
+        if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")){
+            return "healthMonitorSettings";
+        }
+        customerProject.setIdProject(projectNew.getId());
+        return "redirect:/project/project-hm";
     }
 
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
     public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
-
+        Project project = healthMonitorProjectDAOImpl.getProjectById(sessionScopeBean.getCustomerProject().getIdProject());
+        Graphic graphic = ((HealthMonitorProject)project).getGraphic();
+        model.addAttribute("graphValue", graphic.getGraphicJSON());
         return "projectHM";
     }
 
