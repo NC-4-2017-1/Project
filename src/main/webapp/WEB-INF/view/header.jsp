@@ -7,7 +7,7 @@
             <div class="container">
                 <div class="navbar-header">
                     <a href="<c:url value="/" />" class="navbar-brand">
-                        Dve sosny
+                        Brand placeholder
                     </a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#respinsive-menu">
                         <span class="sr-only">Open navigation</span>
@@ -43,7 +43,7 @@
         <div class="content">
             <div class="col-md-12">
                 <div class="center-block" style="width:1170px;max-width:100%;">
-                    <img src="<c:url value="/resources/images/dve_sosni2.png" />">
+                    <img src="<c:url value="/resources/images/header.png" />">
                 </div>
             </div>
         </div>
