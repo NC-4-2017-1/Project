@@ -22,7 +22,7 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/admin-panel", method = RequestMethod.GET)
-    public String adminDashboard(Model model) {
+    public String getAdminDashboard(Model model) {
         List<User> users = userDAO.getAllUsersList();
         model.addAttribute("users", users);
         return "adminDashboard";
