@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -228,13 +229,17 @@ public class ProjectController {
 
         List<Graphic> graphicList = new ArrayList<>();
 
-        for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length
-                && i < dvGraphicCreationRequest.getxAxis().length; i++) {
+        for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
             JsonObject jsonObj = JsonSerializer.serializeGraph(result,
                     dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i]);
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
-                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size()+2)
-                    .buildGraphicJSON(jsonObj).buildGraphic();
+                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size() + 2)
+                    .buildGraphicJSON(jsonObj)
+                    .buildAverage(new BigDecimal("4.33"))
+                    .buildDispersion(new BigDecimal("4.34"))
+                    .buildMathExpectation(new BigDecimal("4.35"))
+                    .buildOlympicAverage(new BigDecimal("4.36"))
+                    .buildGraphic();
             graphicList.add(graphic);
         }
         sessionScopeBean.getCustomerProject().setGraphics(graphicList);
@@ -246,7 +251,7 @@ public class ProjectController {
                 .buildDescription(customerProject.getDescription())
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
-        Project projectFromDb = projectDAO.saveProject(project);
+     //   Project projectFromDb = projectDAO.saveProject(project);
         redirectAttributes.addFlashAttribute("savedProject", project);
 
         return "redirect:/project/project-dv";
