@@ -206,8 +206,9 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
+    @ResponseBody
     @RequestMapping(path = "/save-visualization", method = RequestMethod.POST)
-    public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest, RedirectAttributes redirectAttributes,
+    public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest,
                                            Model model) {
 
         List<Map<String, Object>> result = null;
@@ -230,8 +231,7 @@ public class ProjectController {
         List<Graphic> graphicList = new ArrayList<>();
 
         for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
-            JsonObject jsonObj = JsonSerializer.serializeGraph(result,
-                    dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i]);
+            JsonObject jsonObj = JsonSerializer.serializeGraph(result, dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i]);
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
                     .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size() + 2)
                     .buildGraphicJSON(jsonObj)
@@ -240,6 +240,7 @@ public class ProjectController {
                     .buildMathExpectation(new BigDecimal("4.35"))
                     .buildOlympicAverage(new BigDecimal("4.36"))
                     .buildGraphic();
+            LOGGER.info(graphic + " added");
             graphicList.add(graphic);
         }
         sessionScopeBean.getCustomerProject().setGraphics(graphicList);
@@ -251,17 +252,18 @@ public class ProjectController {
                 .buildDescription(customerProject.getDescription())
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
-     //   Project projectFromDb = projectDAO.saveProject(project);
-        redirectAttributes.addFlashAttribute("savedProject", project);
+        Project projectFromDb = projectDAO.saveProject(project);
+        LOGGER.info(project.getName() + " " + project.getDescription() + " " + project.getAuthor() + " " + project.getType() + " passed further");
+        sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) project);
 
-        return "redirect:/project/project-dv";
+        return "successful";
     }
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model, RedirectAttributes redirectAttributes/*, @RequestParam("projDvId") BigInteger id*/) {
-       // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
-        DataVisualizationProject pr = (DataVisualizationProject) model.asMap().get("savedProject");
+    public String projectView(Model model/*, @RequestParam("projDvId") BigInteger id*/) {
+        // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
+        DataVisualizationProject pr = sessionScopeBean.getCustomerProject().getSavedProject();
         LOGGER.info(pr + " !saved!");
         model.addAttribute("project", pr);
 
@@ -371,22 +373,22 @@ public class ProjectController {
                     } else {
                         model.addAttribute("errorGraphic", "Graph not created for project.");
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     LOGGER.error("Graph not created", e);
-                    model.addAttribute("errorGraphic", "Graph not created for project."+e.getLocalizedMessage());
+                    model.addAttribute("errorGraphic", "Graph not created for project." + e.getLocalizedMessage());
                 }
             }
         }
-        try{
+        try {
             if (selectorsType != null) {
                 Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
                 projectBuilder.buildSelectors(mapSelectors);
             } else {
                 model.addAttribute("errorSelector", "Selectors not created for project.");
             }
-        }catch (SelectorCreateException e) {
+        } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not created", e);
-            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> "+e.getLocalizedMessage());
+            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> " + e.getLocalizedMessage());
         }
         Project p = projectBuilder.buildProject();
         Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
@@ -404,11 +406,11 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
     public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
-        try{
+        try {
             BigInteger id = sessionScopeBean.getCustomerProject().getIdProject();
             //Project project = healthMonitorProjectDAOImpl.getProjectById(BigInteger.valueOf(478L));
             Project project = healthMonitorProjectDAOImpl.getProjectById(id);
-            if(project != null) {
+            if (project != null) {
                 model.addAttribute("project", project);
                 User author = userDAO.getUserById(project.getAuthor());
                 model.addAttribute("author", author);
@@ -416,15 +418,15 @@ public class ProjectController {
                 LOGGER.error("Project open error. ID project - " + id + " is wrong.");
                 model.addAttribute("errorProject", "<strong>Project open error.</strong> ID project - " + id + " is wrong.");
             }
-        }catch (SelectorCreateException e) {
+        } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not fetched for project. ", e);
-            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> "+e.getLocalizedMessage());
-        }catch (HMGraphException e){
+            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> " + e.getLocalizedMessage());
+        } catch (HMGraphException e) {
             LOGGER.error("Graph not selected. ", e);
             model.addAttribute("errorGraphic", "<strong>Graphic error.</strong> " + e.getLocalizedMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Project open error. ", e);
-            model.addAttribute("errorProject", "<strong>Project open error.</strong> "+e.getLocalizedMessage());
+            model.addAttribute("errorProject", "<strong>Project open error.</strong> " + e.getLocalizedMessage());
         }
         /*if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")) {
             return "projectHM";

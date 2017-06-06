@@ -103,9 +103,9 @@
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success:   function (response) {
-                    console.log(response.responseText);
-                }
+                success:  setTimeout(function () {
+                window.location.href='/project/project-dv'
+            }, 1500),
             });
         });
 

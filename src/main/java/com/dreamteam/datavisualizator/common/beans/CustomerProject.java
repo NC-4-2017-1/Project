@@ -3,6 +3,7 @@ package com.dreamteam.datavisualizator.common.beans;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
+import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 
 import java.io.File;
 import java.io.Serializable;
@@ -28,6 +29,17 @@ public class CustomerProject implements Serializable {
     private File file;
     private String fileType;
     private DateFormat dateFormat;
+
+
+    private DataVisualizationProject savedProject;
+
+    public DataVisualizationProject getSavedProject() {
+        return savedProject;
+    }
+
+    public void setSavedProject(DataVisualizationProject savedProject) {
+        this.savedProject = savedProject;
+    }
 
     public DateFormat getDateFormat() {
         return dateFormat;
