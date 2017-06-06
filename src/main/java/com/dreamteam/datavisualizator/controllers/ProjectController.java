@@ -258,6 +258,30 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
+    public String projectView(Model model, RedirectAttributes redirectAttributes/*, @RequestParam("projDvId") BigInteger id*/) {
+       // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
+        DataVisualizationProject pr = (DataVisualizationProject) model.asMap().get("savedProject");
+        LOGGER.info(pr + " !saved!");
+        model.addAttribute("project", pr);
+
+        User author = userDAO.getUserById(pr.getAuthor());
+        model.addAttribute("author", author);
+
+        //add to model dv graphics
+        List<Graphic> graphics = pr.getGraphics();
+        List<GraphicDVImpl> graphicsDV = new ArrayList<>(graphics.size());
+        for (Graphic graphic : graphics) {
+            graphicsDV.add((GraphicDVImpl) graphic);
+        }
+        model.addAttribute("graphics", graphicsDV);
+
+
+        return "projectDV";
+    }
+
+
+    @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
     public String healthMonitorSetup(Model model) {
         return "healthMonitorSetup";
@@ -422,29 +446,6 @@ public class ProjectController {
             }
         }
         return false;
-    }
-
-    @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model, RedirectAttributes redirectAttributes/*, @RequestParam("projDvId") BigInteger id*/) {
-        DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
-        Project pr = (Project) model.asMap().get("savedProject");
-        LOGGER.info(pr + " !saved!");
-        model.addAttribute("project", dvProject);
-
-        User author = userDAO.getUserById(dvProject.getAuthor());
-        model.addAttribute("author", author);
-
-        //add to model dv graphics
-        List<Graphic> graphics = dvProject.getGraphics();
-        List<GraphicDVImpl> graphicsDV = new ArrayList<>(graphics.size());
-        for (Graphic graphic : graphics) {
-            graphicsDV.add((GraphicDVImpl) graphic);
-        }
-        model.addAttribute("graphics", graphicsDV);
-
-
-        return "projectDV";
     }
 
     @Secured("ROLE_REGULAR_USER")
