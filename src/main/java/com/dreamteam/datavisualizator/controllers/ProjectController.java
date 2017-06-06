@@ -256,24 +256,35 @@ public class ProjectController {
                 .buildProject();
         Project projectFromDb = projectDAO.saveProject(project);
         LOGGER.info(project.getName() + " " + project.getDescription() + " " + project.getAuthor() + " " + project.getType() + " passed further");
-        sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) project);
+        sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
 
         return "successful";
     }
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model/*, @RequestParam("projDvId") BigInteger id*/) {
+    public String projectView(Model model, @RequestParam(value = "projDvId", required = false) BigInteger id) {
         // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
-        DataVisualizationProject pr = sessionScopeBean.getCustomerProject().getSavedProject();
-        LOGGER.info(pr + " !saved!");
-        model.addAttribute("project", pr);
+        DataVisualizationProject projectToShow = null;
 
-        User author = userDAO.getUserById(pr.getAuthor());
+        if (sessionScopeBean.getCustomerProject().getSavedProject() != null) {
+            projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
+        } else if (id != null) {
+            projectToShow = (DataVisualizationProject) projectDAO.getProjectById(id);
+        } else {
+            LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
+                    + "\nId we got from request: " + id);
+            return "index";
+        }
+
+        LOGGER.info(projectToShow + " is what we got.");
+        model.addAttribute("project", projectToShow);
+
+        User author = userDAO.getUserById(projectToShow.getAuthor());
         model.addAttribute("author", author);
 
         //add to model dv graphics
-        List<Graphic> graphics = pr.getGraphics();
+        List<Graphic> graphics = projectToShow.getGraphics();
         List<GraphicDVImpl> graphicsDV = new ArrayList<>(graphics.size());
         for (Graphic graphic : graphics) {
             graphicsDV.add((GraphicDVImpl) graphic);
