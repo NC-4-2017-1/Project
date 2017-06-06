@@ -3,6 +3,7 @@ package com.dreamteam.datavisualizator.dao.impl;
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
+import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.common.selectors.impl.*;
@@ -91,14 +92,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 return null;
             }
         }catch (EmptyResultDataAccessException e){
-            LOGGER.warn("Graph is absent for project", e);
+            //LOGGER.error("Graph is absent for project with id - " + project.getId(), e);
             return null;
         }catch (DataAccessException e) {
             LOGGER.error("Graph not selected for project with id - " + project.getId(), e);
-            return null;
+            throw new HMGraphException("Graph not selected for project with id - " + project.getId() +". Error: " + e.getLocalizedMessage());
         }catch (Exception e) {
             LOGGER.error("Graph not selected", e);
-            return null;
+            throw new HMGraphException("Graph not selected. Something is wrong....");
         }
     }
 
@@ -108,23 +109,29 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 BigInteger projectId = project.getId();
                 List<BigInteger> arraySelectorTypes = generalTemplate.queryForList(SELECT_SELECTORS_TYPE_BY_PROJECTID, new Object[]{projectId}, BigInteger.class);
                 Map<BigInteger, Selector> mapSelectors = new HashMap<>();
-                for (BigInteger type : arraySelectorTypes) {
-                    mapSelectors.put(type, generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
+                    for (BigInteger type : arraySelectorTypes) {
+                        mapSelectors.put(type, generalTemplate.queryForObject(mapSelectorsSql.get(type), new Object[]{type, projectId}, mapSelectorsRowMapper.get(type)));
+                    }
+                if (!mapSelectors.isEmpty()) {
+                    return mapSelectors;
                 }
-                return mapSelectors;
+                LOGGER.error("Selectors is absent for project");
+                throw new SelectorCreateException("Selectors is absent for project");
             }else {
                 LOGGER.error("List of selectors not selected because project is null");
-                return null;
+                throw new SelectorCreateException("List of selectors not selected because project is null");
             }
+        } catch (SelectorCreateException e){
+            throw e;
         } catch (EmptyResultDataAccessException e){
-            LOGGER.warn("Selectors is absent for project", e);
-            return null;
+            LOGGER.error("Selectors is absent for project", e);
+            throw new SelectorCreateException("List of selectors is absent for project");
         }catch (DataAccessException e) {
             LOGGER.error("Selectors not fetched for project with id - " + project.getId(), e);
-            return null;
+            throw new SelectorCreateException("Selectors not fetched for project with id - " + project.getId());
         }catch (Exception e) {
             LOGGER.error("Selectors not fetched", e);
-            return null;
+            throw new SelectorCreateException("Selectors not fetched. Something is wrong....");
         }
     }
 
@@ -143,21 +150,20 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             ResultSet results = resultsRow.getResultSet();
             if (results.next()) {
                 JsonObject valueG = HmGraphSerializer.serialiseHmGraph(resultsRow);
-                //System.out.println(HmGraphSerializer.serialiseHmGraph(resultsRow));
-                //JsonObject valueG = null;
                 builderGraph.buildGraphicJson(valueG);
             }else{
                 JsonObject noData = new JsonObject();
-                noData.addProperty("data", "empty");
+                noData.addProperty("data", "<div class=\"alert alert-info graphic-info-mess\"><strong>Info!</strong> No data in database for graph by last "+hourCount+" hour(s).</div>");
                 builderGraph.buildGraphicJson(noData);
             }
             return builderGraph.buildGraphic();
         } catch (DataAccessException e) {
-            LOGGER.error("Graph not created from HM data base", e);
-            return null;
-        }catch (Exception e) {
-            LOGGER.error("Graph not created", e);
-            return null;
+            LOGGER.error("Graph not created from HM data base. ", e);
+            throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Graph not created from HM data base.", e);
+            throw new HMGraphException("Graph not created from HM data base. Something is wrong....");
         }
     }
 
@@ -182,7 +188,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
         catch (Exception e) {
             LOGGER.error("List of buildSelectors not created", e);
-            throw new SelectorCreateException("List of buildSelectors not created");
+            throw new SelectorCreateException("List of buildSelectors not created. Something is wrong....");
         }
     }
 
@@ -191,10 +197,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new CompleteHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
             LOGGER.error("Project not fetched by id " + id, e);
-            return null;
+            throw e;
         }catch (Exception e) {
             LOGGER.error("Project not fetched by id " + id, e);
-            return null;
+            throw e;
         }
     }
 
@@ -551,7 +557,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             HealthMonitorProject.Builder builder =  mapCuttedProject(rs, rownum);
             HealthMonitorProject project = builder.buildProject();
             builder.buildGraphic(getProjectGraph(project));
-            builder.buildSelectors(getProjectSelectors(project));
+            Map<BigInteger, Selector> selectors = getProjectSelectors(project);
+            builder.buildSelectors(selectors);
             return builder.buildProject();
         }
     }

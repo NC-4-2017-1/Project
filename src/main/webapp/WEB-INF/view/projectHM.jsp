@@ -30,44 +30,54 @@
 <body>
 
 <jsp:include page="header.jsp"/>
-<div class="projtype"><h1><c:out value="${project.type}"/></h1></div>
-<div class="projname"><h2><c:out value="${project.name}"/></h2></div>
-
-<div class="buttons">
-    <a class="btn btn-danger btn-lg" href="#">
-        <i class="fa fa-trash-o fa-lg"></i> Delete</a>
-    <a class="btn btn-primary btn-lg" href="#">
-        <i class="fa fa-share-alt"></i> Share</a>
-</div>
-
-<div class="projdescription jumbotron">
-    <h4>Author:</h4>
-    <pre class="text-success"><c:out value="${author.fullName}"/></pre>
-    <h4>Connection details:</h4>
-    <pre class="text-primary">Server - <c:out value="${project.serverName}"/>;   Port - <c:out value="${project.port}"/>;  SID - <c:out value="${project.sid}"/>;  User name - <c:out value="${project.userName}"/>;  Password  - <c:out value="${project.password}"/>;</pre>
-    <h4>Description:</h4>
-    <pre class="text-muted"><c:out value="${project.description}"/></pre>
-
-</div>
-<ul class="nav nav-tabs" id="myTab">
-    <c:forEach items="${project.selectors}" var="entry">
-        <li><a data-target="#${entry.key}" data-toggle="tab">${entry.value.name}</a></li>
-    </c:forEach>
-    <c:if test = "${not empty project.graphic}">
-        <li><a data-target="#graphic" data-toggle="tab">${project.graphic.name}</a></li>
-    </c:if>
-</ul>
-
-<div class="tab-content">
-    <c:forEach items="${project.selectors}" var="entry">
-        <div class="tab-pane" id="${entry.key}">${entry.value.value}</div>
-    </c:forEach>
-    <c:if test = "${not empty project.graphic}">
-        <div class="tab-pane" id="graphic">
-            <div id="containerGraphic" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="row col-sm-12">
+    <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
+        <div class="alert alert-danger col-sm-12" role="alert">
+            <div>${errorProject}</div>
+            <div>${errorSelector}</div>
+            <div>${errorGraphic}</div>
         </div>
     </c:if>
 </div>
+<c:if test = "${not empty project}">
+    <div class="projtype"><h1><c:out value="${project.type}"/></h1></div>
+    <div class="projname"><h2><c:out value="${project.name}"/></h2></div>
+
+    <div class="buttons">
+        <a class="btn btn-danger btn-lg" href="#">
+            <i class="fa fa-trash-o fa-lg"></i> Delete</a>
+        <a class="btn btn-primary btn-lg" href="#">
+            <i class="fa fa-share-alt"></i> Share</a>
+    </div>
+
+    <div class="projdescription jumbotron">
+        <h4>Author:</h4>
+        <pre class="text-success"><c:out value="${author.fullName}"/></pre>
+        <h4>Connection details:</h4>
+        <pre class="text-primary">Server - <c:out value="${project.serverName}"/>;   Port - <c:out value="${project.port}"/>;  SID - <c:out value="${project.sid}"/>;  User name - <c:out value="${project.userName}"/>;  Password  - <c:out value="${project.password}"/>;</pre>
+        <h4>Description:</h4>
+        <pre class="text-muted"><c:out value="${project.description}"/></pre>
+    </div>
+    <ul class="nav nav-tabs" id="myTab">
+        <c:forEach items="${project.selectors}" var="entry">
+            <li><a data-target="#${entry.key}" data-toggle="tab">${entry.value.name}</a></li>
+        </c:forEach>
+        <c:if test = "${not empty project.graphic}">
+            <li><a data-target="#graphic" data-toggle="tab">${project.graphic.name}</a></li>
+        </c:if>
+    </ul>
+
+    <div class="tab-content">
+        <c:forEach items="${project.selectors}" var="entry">
+            <div class="tab-pane" id="${entry.key}">${entry.value.value}</div>
+        </c:forEach>
+        <c:if test = "${not empty project.graphic}">
+            <div class="tab-pane" id="graphic">
+                <div id="containerGraphic" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            </div>
+        </c:if>
+    </div>
+</c:if>
 
 
 
@@ -77,7 +87,11 @@
         $('.nav-tabs a:first').tab('show');
         <c:if test = "${not empty project.graphic}">
              var t = ${project.graphic.graphicJSON};
-            eval(t.jsCodeForGraph);
+             if(t.jsCodeForGraph) {
+                 eval(t.jsCodeForGraph);
+             }else{
+                 $('#containerGraphic').html(t.data);
+             }
         </c:if>
     });
 </script>

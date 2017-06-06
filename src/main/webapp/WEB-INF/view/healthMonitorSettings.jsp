@@ -30,16 +30,16 @@
                     <div class="row col-sm-12">
                         <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
                             <div class="alert alert-danger col-sm-6" role="alert">
-                                    ${errorProject} <br>
-                                    ${errorSelector}<br>
-                                    ${errorGraphic}
+                                <div>${errorProject} </div>
+                                <div>${errorSelector}</div>
+                                <div>${errorGraphic}</div>
                             </div>
                         </c:if>
                     </div>
                     <div class="row col-sm-12">
                         <div class="form-group row col-sm-4">
                             <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
-                           <!-- <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>-->
+                            <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
                             <label for="instshow" class="custom-control custom-checkbox">Instance information</label>
                         </div>
 

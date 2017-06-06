@@ -24,10 +24,8 @@
 
 <jsp:include page="header.jsp"/>
 
-
-<div class="container">
-
-    <div class="modal-content" style="margin-top: 20px;">
+<div class = "modal-content" style="margin-top: 20px;">
+    <div class="container">
         <h1>datavisualization.com</h1>
         <p class="lead">
             MODULE1&2 LLC

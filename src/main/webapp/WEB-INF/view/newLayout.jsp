@@ -46,8 +46,12 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
+                    <textarea class="form-control" rows="5" id="description"></textarea>
                 </div>
+                <!--<label class="control-label col-sm-2 col-sm-offset-3" for="description"></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
+                </div>-->
             </div>
             <div class="form-group">
                 <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next</button>
