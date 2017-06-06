@@ -64,6 +64,12 @@
             </div>
         </div>
         <br>
+        <c:if test="${errorMessage!=null}">
+            <div class="alert alert-danger center-block" style="padding: 5px;" role="alert">
+                <p>${errorMessage}</p>
+            </div>
+        </c:if>
+        <br>
 
         <div class="control-group">
             <!-- Button -->

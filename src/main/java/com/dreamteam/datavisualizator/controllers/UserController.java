@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -35,13 +36,23 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create-user", method = RequestMethod.GET)
-    public String createUser(@ModelAttribute("user") UserRequest userRequest) {
+    public String createUser(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request, Model model) {
+        Object errorMessage = request.getSession().getAttribute("errorMessage");
+        if (errorMessage!=null){
+            model.addAttribute("errorMessage", errorMessage.toString());
+            request.getSession().removeAttribute("errorMessage");
+        }
         return "userCreation";
     }
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute("user") UserRequest userRequest) {
+    public String createUserInDB(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request) {
+        User user = userDAO.getUserByEmail(userRequest.getEmail());
+        if (user != null) {
+            request.getSession().setAttribute("errorMessage", "User with email '"+userRequest.getEmail()+"' already exists");
+            return "redirect:/user/create-user";
+        }
         userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),
                 userRequest.getEmail(), userRequest.getPassword(), UserTypes.REGULAR_USER);
         return "redirect:/user/admin-panel";
