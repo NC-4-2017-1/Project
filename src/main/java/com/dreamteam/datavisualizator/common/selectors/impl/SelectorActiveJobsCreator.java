@@ -56,5 +56,11 @@ public class SelectorActiveJobsCreator extends AbstactSelectorCreator implements
         return Integer.toString(hourCount);
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        String hourCount = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'Active jobs' have attribute Last Hour Count = " + hourCount + ".</pre>";
+    }
+
     private static final String QUERY_FOR_ACTIVE_JOBS = "active_jobs";
 }

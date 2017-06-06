@@ -55,5 +55,11 @@ public class SelectorActiveSessionsCreator extends AbstactSelectorCreator implem
         return Integer.toString(top);
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        String top = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'Active sessions' have attribute Top = " + top + ".</pre>";
+    }
+
     private static final String QUERY_FOR_ACTIVE_SESSIONS = "active_sessions";
 }

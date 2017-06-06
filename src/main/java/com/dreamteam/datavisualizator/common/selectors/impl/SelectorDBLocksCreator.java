@@ -49,5 +49,10 @@ public class SelectorDBLocksCreator extends AbstactSelectorCreator implements Se
         return null;
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        return null;
+    }
+
     private static final String QUERY_FOR_DB_LOCKS = "db_locks";
 }

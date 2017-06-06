@@ -49,5 +49,10 @@ public class SelectorLastErrorsCreator extends AbstactSelectorCreator implements
         return null;
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        return null;
+    }
+
     private static final String QUERY_FOR_LAST_ERRORS = "last_errors";
 }

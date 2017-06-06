@@ -18,6 +18,7 @@
     <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
     <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 </head>
 
 <body>
@@ -28,10 +29,16 @@
                 <form action="${loginUrl}" method="post">
                     <h2 class="form-signin-heading">Please sign in</h2>
                     <div class="form-group">
-                       <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
+                        </div>
                     </div>
                     <div class="form-group">
-                       <input type="password" class="form-control" name="j_password" placeholder="Password" required>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" name="j_password" placeholder="Password" required>
+                        </div>
                     </div>
                     <div class="form-group">
                        <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>

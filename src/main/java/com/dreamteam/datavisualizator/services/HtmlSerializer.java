@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.services;
 
+import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.support.rowset.ResultSetWrappingSqlRowSet;
@@ -44,7 +45,7 @@ public class HtmlSerializer {
             return htmlTable.toString();
         } catch (InvalidResultSetAccessException e) {
             LOGGER.error("Serialize selector error", e);
-            throw e;
+            throw new SelectorCreateException("Serialize selector error" + e.getLocalizedMessage());
         }
     }
 
@@ -79,7 +80,7 @@ public class HtmlSerializer {
             throw e;
         } catch (SQLException e) {
             LOGGER.error("Serialize selector with clob error", e);
-            throw e;
+            throw new SelectorCreateException("Serialize selector error" + e.getLocalizedMessage());
         }
     }
 

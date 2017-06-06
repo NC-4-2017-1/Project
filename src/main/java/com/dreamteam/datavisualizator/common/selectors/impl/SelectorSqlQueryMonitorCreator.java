@@ -63,6 +63,12 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
         return Integer.toString(top);
     }
 
+    @Override
+    public String getValueForShow(Selector selector){
+        String top = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'SQL queries monitor' have attribute Top = " + top + ".</pre>";
+    }
+
     private static final String QUERY_FOR_SQL_MONITOR = "sql_query_monitor";
     private static final String QUERY_FOR_SQL_PLAN = "sql_x_plan";
 }

@@ -6,6 +6,8 @@ import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
+import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
+import com.dreamteam.datavisualizator.common.selectors.impl.*;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
@@ -335,7 +337,7 @@ public class ProjectController {
                                             @RequestParam(value = "activequeries", defaultValue = "10") String activeQueriesTop,
                                             @RequestParam(value = "queriesres", defaultValue = "10") String queriesResultsTop,
                                             @RequestParam(value = "sqlmonitor", defaultValue = "10") String queriesMonitorTop,
-                                            @RequestParam(value = "activejobscheck", defaultValue = "24") String activeJobsPastHours,
+                                            @RequestParam(value = "activejobs", defaultValue = "24") String activeJobsPastHours,
                                             @RequestParam(value = "graph", defaultValue = "24") int graphHourcount,
                                             @RequestParam(value = "selectors[]", defaultValue = "") String[] selectors,
                                             Model model
@@ -357,48 +359,51 @@ public class ProjectController {
                 customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
                 customerProject.getPassword());
         projectBuilder.buildProject();
-        healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
-                customerProject.getUserName(), customerProject.getPassword());
-        Map<BigInteger, String> selectorsType = new HashMap<>();
-        selectorsType.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
-        for (int i = 0; i < selectors.length; i++) {
-            if (Integer.parseInt(selectors[i]) != 0) {
-                BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
-                selectorsType.put(key, selectorsParam.get(key));
-            } else {
-                try {
-                    Graphic graph = healthMonitorProjectDAOImpl.createGraph(graphHourcount);
-                    if (graph != null) {
-                        projectBuilder.buildGraphic(graph);
-                    } else {
-                        model.addAttribute("errorGraphic", "Graph not created for project.");
+        try {
+            healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
+                    customerProject.getUserName(), customerProject.getPassword());
+            Map<BigInteger, String> selectorsType = new HashMap<>();
+            selectorsType.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
+            for (int i = 0; i < selectors.length; i++) {
+                if (Integer.parseInt(selectors[i]) != 0) {
+                    BigInteger key = BigInteger.valueOf(Long.parseLong(selectors[i]));
+                    selectorsType.put(key, selectorsParam.get(key));
+                } else {
+                    try {
+                        Graphic graph = healthMonitorProjectDAOImpl.createGraph(graphHourcount);
+                        if (graph != null) {
+                            projectBuilder.buildGraphic(graph);
+                        } else {
+                            LOGGER.error("HM DAO return null graphic after create");
+                            model.addAttribute("errorGraphic", "Graph not created for project.");
+                        }
+                    }catch (Exception e) {
+                        LOGGER.error("HM DAO return null graphic after create", e);
+                        throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
                     }
-                } catch (Exception e) {
-                    LOGGER.error("Graph not created", e);
-                    model.addAttribute("errorGraphic", "Graph not created for project." + e.getLocalizedMessage());
                 }
             }
-        }
-        try {
-            if (selectorsType != null) {
-                Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
-                projectBuilder.buildSelectors(mapSelectors);
-            } else {
-                model.addAttribute("errorSelector", "Selectors not created for project.");
+            Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
+            projectBuilder.buildSelectors(mapSelectors);
+            Project p = projectBuilder.buildProject();
+            Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
+            if (projectNew == null) {
+                LOGGER.error("HM DAO return null project after saving");
+                model.addAttribute("errorProject", "Project not created and saved!!!");
             }
+            if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")) {
+                return "healthMonitorSettings";
+            }
+            customerProject.setIdProject(projectNew.getId());
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not created", e);
-            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> " + e.getLocalizedMessage());
-        }
-        Project p = projectBuilder.buildProject();
-        Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
-        if (projectNew == null) {
-            model.addAttribute("errorProject", "Project not created!!!");
-        }
-        if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")) {
+            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> "+e.getLocalizedMessage());
+            return "healthMonitorSettings";
+        } catch (HMGraphException e) {
+            LOGGER.error("Graph not created from HM data base. ", e);
+            model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>"+e.getLocalizedMessage());
             return "healthMonitorSettings";
         }
-        customerProject.setIdProject(projectNew.getId());
         return "redirect:/project/project-hm";
     }
 
@@ -408,30 +413,46 @@ public class ProjectController {
     public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
         try {
             BigInteger id = sessionScopeBean.getCustomerProject().getIdProject();
-            //Project project = healthMonitorProjectDAOImpl.getProjectById(BigInteger.valueOf(478L));
             Project project = healthMonitorProjectDAOImpl.getProjectById(id);
-            if (project != null) {
-                model.addAttribute("project", project);
-                User author = userDAO.getUserById(project.getAuthor());
-                model.addAttribute("author", author);
-            } else {
-                LOGGER.error("Project open error. ID project - " + id + " is wrong.");
-                model.addAttribute("errorProject", "<strong>Project open error.</strong> ID project - " + id + " is wrong.");
+
+            Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
+            mapSelectorCreators.put(S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
+            mapSelectorCreators.put(S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
+            mapSelectorCreators.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
+            mapSelectorCreators.put(S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
+            mapSelectorCreators.put(S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
+            mapSelectorCreators.put(S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
+            mapSelectorCreators.put(S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
+            mapSelectorCreators.put(S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
+            mapSelectorCreators.put(S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
+            mapSelectorCreators.put(S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
+
+            Map<BigInteger, String> mapSelectorAttr = new HashMap<>();
+            model.addAttribute("project", project);
+            Map<BigInteger, Selector> projectSelectors = ((HealthMonitorProject) project).getSelectors();
+            for (Map.Entry<BigInteger, Selector> entry : projectSelectors.entrySet()) {
+                BigInteger key = entry.getKey();
+                Selector selector = entry.getValue();
+                mapSelectorAttr.put(key, mapSelectorCreators.get(key).getValueForShow(selector));
             }
+            model.addAttribute("attrSelectors", mapSelectorAttr);
+
+            User author = userDAO.getUserById(project.getAuthor());
+            model.addAttribute("author", author);
+            return "projectHM";
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not fetched for project. ", e);
-            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> " + e.getLocalizedMessage());
-        } catch (HMGraphException e) {
+            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> "+e.getLocalizedMessage());
+            return "projectHM";
+        } catch (HMGraphException e){
             LOGGER.error("Graph not selected. ", e);
             model.addAttribute("errorGraphic", "<strong>Graphic error.</strong> " + e.getLocalizedMessage());
+            return "projectHM";
         } catch (Exception e) {
             LOGGER.error("Project open error. ", e);
-            model.addAttribute("errorProject", "<strong>Project open error.</strong> " + e.getLocalizedMessage());
-        }
-        /*if (model.containsAttribute("errorGraphic") || model.containsAttribute("errorSelector") || model.containsAttribute("errorProject")) {
+            model.addAttribute("errorProject", "<strong>Project open error.</strong> "+e.getLocalizedMessage());
             return "projectHM";
-        }*/
-        return "projectHM";
+        }
     }
 
     @Secured("ROLE_REGULAR_USER")

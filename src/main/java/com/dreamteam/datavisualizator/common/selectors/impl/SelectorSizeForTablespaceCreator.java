@@ -49,5 +49,10 @@ public class SelectorSizeForTablespaceCreator extends AbstactSelectorCreator imp
         return null;
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        return null;
+    }
+
     private static final String QUERY_FOR_SIZE_TABLESPACE = "size_for_tablespace";
 }

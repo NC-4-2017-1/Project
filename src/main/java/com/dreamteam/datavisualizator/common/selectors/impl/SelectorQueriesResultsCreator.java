@@ -56,5 +56,11 @@ public class SelectorQueriesResultsCreator extends AbstactSelectorCreator implem
         return Integer.toString(top);
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        String top = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'Queries results' have attribute Top = " + top + ".</pre>";
+    }
+
     private static final String QUERY_FOR_QUERIES_RESULTS = "queries_results";
 }

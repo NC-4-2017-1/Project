@@ -69,11 +69,17 @@
 
     <div class="tab-content">
         <c:forEach items="${project.selectors}" var="entry">
-            <div class="tab-pane" id="${entry.key}">${entry.value.value}</div>
+            <div class="tab-pane" id="${entry.key}">
+                <c:if test = "${not empty attrSelectors[entry.key]}">
+                    ${attrSelectors[entry.key]}
+                </c:if>
+            ${entry.value.value}
+            </div>
         </c:forEach>
         <c:if test = "${not empty project.graphic}">
             <div class="tab-pane" id="graphic">
-                <div id="containerGraphic" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                <pre class="text-primary graphic-info-mess">Last hours for graph:  ${project.graphic.hourCount}.</pre>
+                <div id="containerGraphic" style="min-width: 310px; height: 100%; margin: 0 auto"></div>
             </div>
         </c:if>
     </div>

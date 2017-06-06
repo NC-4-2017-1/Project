@@ -55,5 +55,11 @@ public class SelectorActiveQueriesCreator extends AbstactSelectorCreator impleme
         return Integer.toString(top);
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        String top = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'Active queries' have attribute Top = " + top + ".</pre>";
+    }
+
     private static final String QUERY_FOR_ACTIVE_QUERIES = "active_queries";
 }

@@ -53,5 +53,10 @@ public class SelectorInstanceInfoCreator extends AbstactSelectorCreator implemen
         return null;
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        return null;
+    }
+
     private static final String QUERY_FOR_INSTANCE_INFO = "instance_info";
 }

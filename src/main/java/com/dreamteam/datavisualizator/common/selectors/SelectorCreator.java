@@ -10,4 +10,5 @@ import java.util.Map;
 public interface SelectorCreator {
     void addSelector(Map<BigInteger, Selector> mapSelectors, JdbcTemplate generalTemplate, JdbcTemplate templateHM, String whereSql);
     String getAttrValue(Selector selector);
+    String getValueForShow(Selector selector);
 }

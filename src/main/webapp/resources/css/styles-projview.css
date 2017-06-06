@@ -48,6 +48,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     width:100%;
+    min-height: 500px;
 }
 
 .selector-info-mess, .graphic-info-mess{

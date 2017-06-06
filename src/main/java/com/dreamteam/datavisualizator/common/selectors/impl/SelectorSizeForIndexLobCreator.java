@@ -54,5 +54,11 @@ public class SelectorSizeForIndexLobCreator extends AbstactSelectorCreator imple
         return ((SelectorSizeForIndexLob)selector).getSegment();
     }
 
+    @Override
+    public String getValueForShow(Selector selector) {
+        String segment = getAttrValue(selector);
+        return "<pre class=\"text-primary selector-info-mess\">Selector 'Size for table-index-lob' have attribute Segment = " + segment + ".</pre>";
+    }
+
     private static final String QUERY_FOR_SIZE_INDEX_LOB = "size_for_index_lob";
 }
