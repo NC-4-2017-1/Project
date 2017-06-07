@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
+import com.dreamteam.datavisualizator.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -40,6 +42,14 @@ public class IndexController {
         model.addAttribute("datasource", dataSource);
         model.addAttribute("userdao", userdao);
         model.addAttribute("projectdao", projectdao);
+        try {
+            List<User> users = userdao.getAllUsersList();
+            model.addAttribute("users", users);
+        } catch (Exception e) {
+            model.addAttribute("exception", e);
+        }
+
+
         return "herokutest";
     }
 
