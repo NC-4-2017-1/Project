@@ -10,12 +10,15 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.TimeZone;
 
 @Configuration
 public class ApplicationContext {
 
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
+        TimeZone timeZone = TimeZone.getTimeZone("Europe/Helsinki");
+        TimeZone.setDefault(timeZone);
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl(System.getenv("SQL_JDBC_URL"));

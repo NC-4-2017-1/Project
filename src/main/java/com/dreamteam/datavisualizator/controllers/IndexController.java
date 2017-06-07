@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Controller
 public class IndexController {
@@ -56,7 +57,7 @@ public class IndexController {
         sdf = new SimpleDateFormat("dd MMM yyyy hh:mm:ss zzz");
         System.out.println();
         model.addAttribute("time", sdf.format(date));
-
+        model.addAttribute("timezone", TimeZone.getDefault().toString() + " " + TimeZone.getDefault().getDisplayName());
         return "herokutest";
     }
 

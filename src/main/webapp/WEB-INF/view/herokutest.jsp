@@ -21,6 +21,7 @@ stack trace: <c:out value="${exception.message}"/>
 <br><br><br><br>
 
 
-<c:out value="${time}"/>
+<c:out value="${time}"/><br>
+<c:out value="${timezone}"/><br>
 </body>
 </html>
