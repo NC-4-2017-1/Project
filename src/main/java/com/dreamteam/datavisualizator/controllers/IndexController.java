@@ -8,12 +8,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.sql.DataSource;
+
 @Controller
 public class IndexController {
     @Autowired
     UserDAO userdao;
     @Autowired
     DataVisualizationProjectDAO projectdao;
+
+    @Autowired
+    DataSource dataSource;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String getHello(Model model) {
@@ -26,5 +31,17 @@ public class IndexController {
     public String tryToLogIn(Model model) {
         return "authorization";
     }
+
+    @RequestMapping(path = "/herokutest", method = RequestMethod.GET)
+    public String testHeroku(Model model) {
+        model.addAttribute("sysvar1", System.getenv("SQL_JDBC_URL"));
+        model.addAttribute("sysvar2", System.getenv("SQL_LOGIN"));
+        model.addAttribute("sysvar3", System.getenv("SQL_PASSWORD"));
+        model.addAttribute("datasource", dataSource);
+        model.addAttribute("userdao", userdao);
+        model.addAttribute("projectdao", projectdao);
+        return "herokutest";
+    }
+
 
 }
