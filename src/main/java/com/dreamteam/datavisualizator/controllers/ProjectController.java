@@ -483,8 +483,17 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share", method = RequestMethod.GET)
-    public String shareProject(Model model) {
+    @RequestMapping(path = "/share/{id}", method = RequestMethod.GET)
+    public String shareProject(Model model, @PathVariable BigInteger id) {
+        List<User> users = userDAO.getAllUsersList();
+        model.addAttribute("users", users);
+        model.addAttribute("project_id", id);
+        return "shareProject";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/share/{id}/{user_id}", method = RequestMethod.GET)
+    public String shareProject(Model model, @PathVariable BigInteger id, @PathVariable BigInteger user_id) {
         return "shareProject";
     }
 
