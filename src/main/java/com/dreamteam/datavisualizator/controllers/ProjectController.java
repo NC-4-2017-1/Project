@@ -267,7 +267,7 @@ public class ProjectController {
         // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
         DataVisualizationProject projectToShow = null;
 
-        if (sessionScopeBean.getCustomerProject().getSavedProject() != null) {
+        if (sessionScopeBean.getCustomerProject().getSavedProject() != null && id == null) {
             projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
         } else if (id != null) {
             projectToShow = (DataVisualizationProject) projectDAO.getProjectById(id);
@@ -388,7 +388,7 @@ public class ProjectController {
                             LOGGER.error("HM DAO return null graphic after create");
                             model.addAttribute("errorGraphic", "Graph not created for project.");
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         LOGGER.error("HM DAO return null graphic after create", e);
                         throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
                     }
@@ -408,11 +408,11 @@ public class ProjectController {
             customerProject.setIdProject(projectNew.getId());
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not created", e);
-            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> "+e.getLocalizedMessage());
+            model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> " + e.getLocalizedMessage());
             return "healthMonitorSettings";
         } catch (HMGraphException e) {
             LOGGER.error("Graph not created from HM data base. ", e);
-            model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>"+e.getLocalizedMessage());
+            model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>" + e.getLocalizedMessage());
             return "healthMonitorSettings";
         }
         return "redirect:/project/project-hm";
@@ -453,15 +453,15 @@ public class ProjectController {
             return "projectHM";
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not fetched for project. ", e);
-            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> "+e.getLocalizedMessage());
+            model.addAttribute("errorSelector", "<strong>Selectors error.</strong> " + e.getLocalizedMessage());
             return "projectHM";
-        } catch (HMGraphException e){
+        } catch (HMGraphException e) {
             LOGGER.error("Graph not selected. ", e);
             model.addAttribute("errorGraphic", "<strong>Graphic error.</strong> " + e.getLocalizedMessage());
             return "projectHM";
         } catch (Exception e) {
             LOGGER.error("Project open error. ", e);
-            model.addAttribute("errorProject", "<strong>Project open error.</strong> "+e.getLocalizedMessage());
+            model.addAttribute("errorProject", "<strong>Project open error.</strong> " + e.getLocalizedMessage());
             return "projectHM";
         }
     }
@@ -495,12 +495,12 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/share/{id}/{type}/{user_id}", method = RequestMethod.GET)
     public boolean shareProject(Model model, @PathVariable BigInteger id,
-                               @PathVariable BigInteger user_id, @PathVariable String type) {
+                                @PathVariable BigInteger user_id, @PathVariable String type) {
         User user = userDAO.getUserById(user_id);
-        if(type.compareTo("DATA_VISUALIZATION") == 0){
+        if (type.compareTo("DATA_VISUALIZATION") == 0) {
             Project project = projectDAO.getProjectById(id);
             return userDAO.giveUserAccessToProject(user, project);
-        } else if(type.compareTo("HEALTH_MONITORING")== 0){
+        } else if (type.compareTo("HEALTH_MONITORING") == 0) {
             Project project = healthMonitorProjectDAOImpl.getProjectById(id);
             return userDAO.giveUserAccessToProject(user, project);
         }

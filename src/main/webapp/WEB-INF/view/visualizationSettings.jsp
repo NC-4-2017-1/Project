@@ -28,22 +28,31 @@
 
 <div>Visualization Settings</div>
 <div class="well"><c:out value="${table}" escapeXml="false"></c:out></div>
+<div class="form-group row">
+    <div class="offset-sm-2 col-sm-10">
+        <button onclick="addGraphRadioButtons()" class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button"
+                id="addgraph">Add graph
+        </button>
+    </div>
+</div>
 <form method="POST" role="form" action="/project/save-visualization">
-    <c:forEach begin="1" end="3" varStatus="loop">
-        <div>
-            <c:forEach items="${tableKeys}" var="entry">
-                <label class="radio-inline"><input class="xAxis" type="radio" name="x${loop.index}"
-                                                   value="${entry}">${entry}</label>
-            </c:forEach>
+    <div class="keyRadios">
+        <div class="keyRadio">
+            <div class="radiosDivX">
+                <c:forEach items="${tableKeys}" var="entry">
+                    <label class="radio-inline"><input class="xAxis" type="radio" name="x"
+                                                       value="${entry}">${entry}</label>
+                </c:forEach>
+            </div>
+            <div class="radiosDivY">
+                <c:forEach items="${tableKeys}" var="entry">
+                    <label class="radio-inline"><input class="yAxis" type="radio" name="y"
+                                                       value="${entry}">${entry}</label>
+                </c:forEach>
+            </div>
+            <hr>
         </div>
-        <div>
-            <c:forEach items="${tableKeys}" var="entry">
-                <label class="radio-inline"><input class="yAxis" type="radio" name="y${loop.index}"
-                                                   value="${entry}">${entry}</label>
-            </c:forEach>
-        </div>
-        <hr>
-    </c:forEach>
+    </div>
 
 
     <div class="form-group row">
@@ -54,6 +63,25 @@
     </div>
 
     <script>
+        var i = 1;
+
+        function addGraphRadioButtons() {
+            var cloneOfKeyRadio = $(".keyRadio:first").clone();
+
+            $("div.radiosDivX").each(function() {
+                $(this).find('input').attr('name', 'x' + i);
+                i++;
+            });
+
+            $("div.radiosDivY").each(function() {
+                $(this).find('input').attr('name', 'y' + i);
+                i++;
+            });
+
+
+            cloneOfKeyRadio.appendTo(".keyRadios");
+            i++;
+        }
 
         function isData() {
 
@@ -65,31 +93,27 @@
 
             $.each(xAxis, function (index, value) {
 
-                if( $(value).is(":checked") ){ // check if the radio is checked
+                if ($(value).is(":checked")) { // check if the radio is checked
                     var val = $(this).val(); // retrieve the value
                     xAxisArray.push(val);
                 }
             });
 
             $.each(yAxis, function (index, value) {
-                if( $(value).is(":checked") ){ // check if the radio is checked
+                if ($(value).is(":checked")) { // check if the radio is checked
                     var val = $(this).val(); // retrieve the value
                     yAxisArray.push(val);
                 }
             });
 
-
             var data = {
                 xAxis: xAxisArray,
                 yAxis: yAxisArray
             };
-/*            console.log(xAxisArray);
-            console.log(yAxisArray);
-
-            console.log('data =' + JSON.stringify(data));*/
             return data;
 
-        };
+        }
+        ;
 
 
         $("#submit").click(function () {
@@ -103,9 +127,11 @@
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success:  setTimeout(function () {
-                window.location.href='/project/project-dv'
-            }, 1500),
+                error: function (response) {
+                    if (response.responseText == "successful") {
+                        window.location.assign("/project/project-dv");
+                    }
+                }
             });
         });
 

@@ -78,12 +78,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
-            //return null;
-            throw e;
+            return null;
         } catch (Exception e) {
             LOGGER.debug("List of all users not fetched", e);
-           // return null;
-            throw e;
+            return null;
         }
     }
 

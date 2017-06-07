@@ -8,17 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.sql.DataSource;
-
 @Controller
 public class IndexController {
     @Autowired
     UserDAO userdao;
     @Autowired
     DataVisualizationProjectDAO projectdao;
-
-    @Autowired
-    DataSource dataSource;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String getHello(Model model) {
