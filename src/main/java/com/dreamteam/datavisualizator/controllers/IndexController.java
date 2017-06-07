@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.sql.DataSource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -49,6 +51,11 @@ public class IndexController {
             model.addAttribute("exception", e);
         }
 
+        Date date = new Date();
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("dd MMM yyyy hh:mm:ss zzz");
+        System.out.println();
+        model.addAttribute("time", sdf.format(date));
 
         return "herokutest";
     }
