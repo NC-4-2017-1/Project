@@ -3,9 +3,11 @@ package com.dreamteam.datavisualizator.controllers;
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
 import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -106,5 +108,28 @@ public class UserControllerTest {
                 .andExpect(model().attributeExists("errorMessage"));
 
         assertNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
+    }
+
+
+    @Ignore
+    @Test
+    public void createUserInDB_shouldGetUserRequestWhichExistsInDBAndRedirectToAnotherController(){
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("test@email");
+        userRequest.setFirstName("firstName");
+        userRequest.setLastName("lastName");
+        userRequest.setPassword("password");
+
+        User user = new UserImpl.Builder(userRequest.getEmail(), null)
+                .buildId(BigInteger.valueOf(1L))
+                .buildFirstName(userRequest.getFirstName())
+                .buildLastName(userRequest.getLastName())
+                .buildType(UserTypes.REGULAR_USER)
+                .buildUser();
+
+        when(userDaoMock.getUserByEmail(userRequest.getEmail())).thenReturn(user);
+
+        //TODO create test
     }
 }
