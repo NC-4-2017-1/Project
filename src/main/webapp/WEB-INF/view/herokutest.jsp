@@ -17,7 +17,7 @@ users: <c:forEach  items="${users}" var="user">
     <c:out value="${user.fullName}"/> <br>
 </c:forEach>
 <br><br><br><br>
-stack trace: <c:out value="${exception.message}">
+stack trace: <c:out value="${exception.message}"/>
 <br><br><br><br>
 </body>
 </html>
