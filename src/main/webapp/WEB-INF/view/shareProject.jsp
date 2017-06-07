@@ -59,9 +59,9 @@
 <script>
     function shareObj(id) {
         var x = new XMLHttpRequest();
-        x.open("GET", "/project/share/${project_id}/" + id + "");
+        x.open("GET", "/project/share/${project_id}/${project_type}/" + id + "");
         x.onreadystatechange = function () {
-            window.location.replace("/project/share/${project_id}/");
+            window.location.replace("/project/share/${project_id}/${project_type}/");
         }
         x.send();
     }

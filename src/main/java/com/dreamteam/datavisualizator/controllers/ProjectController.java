@@ -483,18 +483,30 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}", method = RequestMethod.GET)
-    public String shareProject(Model model, @PathVariable BigInteger id) {
+    @RequestMapping(path = "/share/{id}/{type}", method = RequestMethod.GET)
+    public String shareProject(Model model, @PathVariable BigInteger id, @PathVariable String type) {
         List<User> users = userDAO.getAllUsersList();
         model.addAttribute("users", users);
         model.addAttribute("project_id", id);
+        model.addAttribute("project_type", type);
         return "shareProject";
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}/{user_id}", method = RequestMethod.GET)
-    public String shareProject(Model model, @PathVariable BigInteger id, @PathVariable BigInteger user_id) {
-        return "shareProject";
+    @RequestMapping(path = "/share/{id}/{type}/{user_id}", method = RequestMethod.GET)
+    public boolean shareProject(Model model, @PathVariable BigInteger id,
+                               @PathVariable BigInteger user_id, @PathVariable String type) {
+        User user = userDAO.getUserById(user_id);
+        if(type.compareTo("DATA_VISUALIZATION") == 0){
+            Project project = projectDAO.getProjectById(id);
+            return userDAO.giveUserAccessToProject(user, project);
+        } else if(type.compareTo("HEALTH_MONITORING")== 0){
+            Project project = healthMonitorProjectDAOImpl.getProjectById(id);
+            return userDAO.giveUserAccessToProject(user, project);
+        }
+
+        return false;
+//        return "shareProject";
     }
 
 }
