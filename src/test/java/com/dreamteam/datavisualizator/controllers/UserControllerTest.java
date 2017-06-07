@@ -15,12 +15,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -91,5 +93,18 @@ public class UserControllerTest {
                 )));
         verify(userDaoMock, times(1)).getAllUsersList();
         verifyNoMoreInteractions(userDaoMock);
+    }
+
+    @Test
+    public void createUser_shouldGetErrorMessageFromSessionAndRenderEmptyModelAttributeOnViewForBinding() throws Exception {
+
+        ResultActions actions = mockMvc.perform(get("/user/create-user").sessionAttr("errorMessage", "test error message"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("userCreation"))
+                .andExpect(model().size(2))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("errorMessage"));
+
+        assertNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
     }
 }

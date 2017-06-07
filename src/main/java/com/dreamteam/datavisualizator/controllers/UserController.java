@@ -64,15 +64,6 @@ public class UserController {
         User user = userDAO.getUserById(id);
         userDAO.deleteUser(user);
     }
-
-    @Secured("ROLE_ADMIN")
-    @RequestMapping(path = "/update-user", method = RequestMethod.GET)
-    public User updateUser(@RequestParam("firstName") String firstName,
-                           @RequestParam("lastName") String lastName,
-                           @RequestParam("email") String email) {
-        return null;
-    }
-
 }
 
 
