@@ -13,16 +13,18 @@
 
     <title>Admin dashboard</title>
 
-    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet">
+    <link href="<c:url value="/resources/css/customstyles.css"/>" rel="stylesheet">
+    <link href="<c:url value="/resources/js/bootstrap.min.js"/>">
+    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js"/>">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 </head>
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container" id="container-middle">
+
+<input class="btn btn-default" id="add-button" type="button" onclick="createUser()" value="Add user"/>
+<br>
     <div class="panel panel-default">
         <table class="table">
             <thead>
@@ -35,20 +37,22 @@
             </thead>
             <tbody>
             <c:forEach items="${users}" var="user">
-            <tr>
-                <td><p>${user.firstName}</p></td>
-                <td><p>${user.lastName}</p></td>
-                <td><p>${user.email}</p></td>
-                <td>
-                    <input class="btn btn-default btn-sm" type="button" value="delete"
-                           onclick="deleteObj(${user.id});"/>
-                </td>
-            </tr>
+                <tr>
+                    <td><p>${user.firstName}</p></td>
+                    <td><p>${user.lastName}</p></td>
+                    <td><p>${user.email}</p></td>
+                    <td>
+                        <input class="btn btn-default btn-sm" type="button" value="delete"
+                               onclick="deleteObj(${user.id});"/>
+                    </td>
+                </tr>
             </c:forEach>
             </tbody>
         </table>
     </div>
-</div>
+
+
+
 <jsp:include page="footer.jsp"/>
 
 
@@ -61,6 +65,9 @@
             window.location.replace("/user/admin-panel");
         }
         x.send();
+    }
+    function createUser() {
+        window.location.href = "/user/create-user";
     }
 </script>
 </html>
