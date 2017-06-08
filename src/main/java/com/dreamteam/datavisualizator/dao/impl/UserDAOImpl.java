@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import static com.dreamteam.datavisualizator.common.IdList.*;
@@ -239,6 +240,23 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    public List<Project> getAllProjectsUser(User user) {
+        try {
+            if (user != null) {
+                return generalTemplate.query(SELECT_ALL_USERS_PROJECT, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+            } else {
+                LOGGER.error("Projects for user wasn't selected because of user " + user);
+                return null;
+            }
+        } catch (DataAccessException e) {
+            LOGGER.error("Accessible to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Accessible to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        }
+    }
+
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             String email = rs.getString(UserColumnName.email.toString());
@@ -274,6 +292,27 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    private class ProjectSimpleRowMapper implements RowMapper<Project> {
+        @Override
+        public Project mapRow(ResultSet resultSet, int rownum) throws SQLException {
+            BigInteger id = resultSet.getBigDecimal(ProjectColumnName.id.toString()).toBigInteger();
+            String name = resultSet.getString(ProjectColumnName.name.toString());
+            BigInteger type_id = resultSet.getBigDecimal(ProjectColumnName.typeId.toString()).toBigInteger();
+            Date creationDate = resultSet.getDate(ProjectColumnName.creationDate.toString());
+            BigInteger author = resultSet.getBigDecimal(ProjectColumnName.author.toString()).toBigInteger();
+            String description = resultSet.getString(ProjectColumnName.description.toString());
+            if (type_id.equals(BigInteger.valueOf(3L))) {
+                HealthMonitorProject.Builder hmbuilder = new HealthMonitorProject.Builder(id, name, creationDate, description, author);
+                return hmbuilder.buildProject();
+            } else {
+                DataVisualizationProject.Builder dvbuilder = new DataVisualizationProject.Builder(name, creationDate, author);
+                dvbuilder.buildId(id);
+                dvbuilder.buildDescription(description);
+                return dvbuilder.buildProject();
+            }
+        }
+    }
+
     private enum UserColumnName {
         id("id"),
         firstName("first_name"),
@@ -293,6 +332,55 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             return columnName;
         }
     }
+    private enum ProjectColumnName {
+        id("id"),
+        name("name"),
+        typeId("type_id"),
+        creationDate("creation_date"),
+        author("author"),
+        description("description");
+
+        private final String columnName;
+
+        ProjectColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        @Override
+        public String toString() {
+            return columnName;
+        }
+    }
+
+    private static final String SELECT_ALL_USERS_PROJECT = "select id, name, type_id, creation_date, author, description from (" +
+            " select project.object_id id, project.name name, project.object_type_id type_id, " +
+            " creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects project, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where project.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and project.object_id = description.object_id" +
+            " and description.attr_id = 7 " +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = project.object_id" +
+            " and ref.reference = author.object_id" +
+            " and author.object_id=?" +
+            " union" +
+            " select project.object_id id, project.name name, project.object_type_id type_id," +
+            " creation_date.date_value creation_date, author.object_id author, description.value description" +
+            " from objects project, attributes creation_date, objects have_access, attributes description, " +
+            " objects author, objreference ref_author, objreference ref_access" +
+            " where project.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and project.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref_author.attr_id = 17" +
+            " and ref_author.object_id = project.object_id" +
+            " and ref_author.reference = author.object_id" +
+            " and ref_access.attr_id = 18" +
+            " and ref_access.object_id = project.object_id" +
+            " and ref_access.reference = have_access.object_id" +
+            " and have_access.object_id = ?" +
+            " )order by creation_date desc";
 
     private static final String UPDATE_USER_NAME = "update objects" +
             " set objects.name=?" +
