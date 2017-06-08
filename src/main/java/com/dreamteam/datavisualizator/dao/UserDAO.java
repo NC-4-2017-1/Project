@@ -31,4 +31,6 @@ public interface UserDAO {
     boolean removeAccessToProjectFromUser(User user, Project project);
 
     List<User> getUsersThatHaveAccessToProject(Project project);
+
+    List<Project> getAllUserProjects(User user);
 }

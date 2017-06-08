@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>HM Project</title>
+    <title>HM ${project.name}</title>
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
@@ -44,7 +44,7 @@
     <div class="projname"><h2><c:out value="${project.name}"/></h2></div>
 
     <div class="buttons">
-        <a class="btn btn-danger btn-lg" href="#">
+        <a class="btn btn-danger btn-lg" href="<c:url value="/project/delete/${project.id}" />">
             <i class="fa fa-trash-o fa-lg"></i> Delete</a>
         <a class="btn btn-primary btn-lg"  href="<c:url value="/project/share/${project.id}/${project.type}" />">
             <i class="fa fa-share-alt"></i> Share</a>

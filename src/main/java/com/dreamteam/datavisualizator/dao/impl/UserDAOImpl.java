@@ -36,6 +36,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Autowired
     private DataVisualizationProjectDAO dataVisualizationProjectDAO;
 
+    @Override
     public User getUserById(BigInteger id) {
         try {
             return generalTemplate.queryForObject(SELECT_USER_BY_ID, new Object[]{id}, new UserRowMapperWithoutPassword());
@@ -49,6 +50,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     }
 
+    @Override
     public User getUserByFullName(String fullName) {
         try {
             return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapperWithoutPassword());
@@ -61,6 +63,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    @Override
     public User getUserByEmail(String email) {
         try {
             return generalTemplate.queryForObject(SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
@@ -71,9 +74,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             LOGGER.debug("User not fetched by email for authorization " + email, e);
             return null;
         }
-        //!TODO deliver error message to user when catch exception (not stack trace) (front end)
     }
 
+    @Override
     public List<User> getAllUsersList() {
         try {
             return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapperWithoutPassword());
@@ -86,6 +89,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean deleteUser(User user) {
         try {
@@ -108,6 +112,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User updateUsersEmail(User user, String email) {
         try {
@@ -123,6 +128,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return user;
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User updateUsersName(User user, String firstName, String lastName) {
         try {
@@ -140,6 +146,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return user;
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User updateUsersPassword(User user, String password) {
         try {
@@ -155,6 +162,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return user;
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean giveUserAccessToProject(User user, Project project) {
         try {
@@ -176,6 +184,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return true;
     }
 
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean removeAccessToProjectFromUser(User user, Project project) {
         try {
@@ -196,7 +205,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return true;
     }
 
-
+    @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
         //!TODO check if email exists and don't let to create account if so
@@ -240,7 +249,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
-    public List<Project> getAllProjectsUser(User user) {
+    @Override
+    public List<Project> getAllUserProjects(User user) {
         try {
             if (user != null) {
                 return generalTemplate.query(SELECT_ALL_USERS_PROJECT, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
@@ -332,6 +342,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             return columnName;
         }
     }
+
     private enum ProjectColumnName {
         id("id"),
         name("name"),

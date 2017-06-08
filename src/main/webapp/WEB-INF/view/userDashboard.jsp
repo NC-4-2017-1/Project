@@ -15,23 +15,68 @@
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
+    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="script">
+    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="script">
+    <link href="<c:url value="/resources/css/styles-dashboard.css" />" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 </head>
 
 <body>
 
 <jsp:include page="header.jsp"/>
+<div class="modal-content container-userdash">
+    <div class="center-block" style="width: 140px; height: 45px; margin-top: 20px; margin-bottom: 30px;">
+        <button class="btn btn-primary btn-lg new-proj" onclick="myFunction()">New Project</button>
+    </div>
 
-﻿<button onclick="myFunction()">New Project</button>
-<script>
-    function myFunction() {
-        window.location.assign("/project/new-layout");
-    }
-</script>
+    <c:forEach items="${userProjects}" var="project">
+        <div class="project-item">
+
+            <div class="open-button">
+                <c:choose>
+                    <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
+                        <form role="form" method="GET" action="/project/project-dv">
+                            <button type="submit" class="btn btn-default btn-lg" name="projDvId" value="${project.id}">Open
+                            </button>
+                        </form>
+                    </c:when>
+                    <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
+                        <form role="form" method="GET" action="/project/project-hm">
+                                <%--         <input type="submit" name="projHmId" value="${project.id}">--%>
+                            <button type="submit" class="btn btn-default" name="projHmId" value="${project.id}">Open
+                            </button>
+                        </form>
+                    </c:when>
+                </c:choose>
+            </div>
 
 
+            <div class="pr-name">
+                Project <strong>${project.name}</strong>
+            </div>
+            <div class="pr-type">
+                Type <strong>
+                <mark>${project.type.toString()}</mark>
+            </strong>
+            </div>
+            <div class="pr-date">
+                Created <strong>
+                <u>${project.creationDate}</u>
+            </strong>
+            </div>
+            <hr>
+        </div>
+
+    </c:forEach>
+
+
+    <script>
+        function myFunction() {
+            window.location.assign("/project/new-layout");
+        }
+    </script>
+
+</div>
 <jsp:include page="footer.jsp"/>
 
 </body>

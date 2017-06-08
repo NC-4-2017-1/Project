@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.dao.UserDAO;
+import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.models.UserTypes;
@@ -30,7 +31,12 @@ public class UserController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
-    public String userDashboard() {
+    public String userDashboard(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("userObject");
+        List<Project> userProjects = userDAO.getAllUserProjects(user);
+        model.addAttribute("userProjects", userProjects);
+        model.addAttribute("userObject", user);
+
         return "userDashboard";
     }
 
@@ -38,7 +44,7 @@ public class UserController {
     @RequestMapping(path = "/create-user", method = RequestMethod.GET)
     public String createUser(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request, Model model) {
         Object errorMessage = request.getSession().getAttribute("errorMessage");
-        if (errorMessage!=null){
+        if (errorMessage != null) {
             model.addAttribute("errorMessage", errorMessage.toString());
             request.getSession().removeAttribute("errorMessage");
         }
@@ -50,7 +56,7 @@ public class UserController {
     public String createUserInDB(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request) {
         User user = userDAO.getUserByEmail(userRequest.getEmail());
         if (user != null) {
-            request.getSession().setAttribute("errorMessage", "User with email '"+userRequest.getEmail()+"' already exists");
+            request.getSession().setAttribute("errorMessage", "User with email '" + userRequest.getEmail() + "' already exists");
             return "redirect:/user/create-user";
         }
         userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),

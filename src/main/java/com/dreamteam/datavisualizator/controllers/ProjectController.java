@@ -1,6 +1,5 @@
 package com.dreamteam.datavisualizator.controllers;
 
-import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.beans.CustomerProject;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
@@ -210,6 +209,9 @@ public class ProjectController {
     public String saveVisualizationProject(@RequestBody DataVisualizationGraphicCreationRequest dvGraphicCreationRequest,
                                            Model model) {
 
+        LOGGER.info("Got x axis from client: " + Arrays.toString(dvGraphicCreationRequest.getxAxis()));
+        LOGGER.info("Got y axis from client: " + Arrays.toString(dvGraphicCreationRequest.getyAxis()));
+
         List<Map<String, Object>> result = null;
         if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
             try {
@@ -264,11 +266,13 @@ public class ProjectController {
         // DataVisualizationProject dvProject = (DataVisualizationProject) projectDAO.getProjectById(BigInteger.valueOf(55L));
         DataVisualizationProject projectToShow = null;
 
-        if (sessionScopeBean.getCustomerProject().getSavedProject() != null && id == null) {
-            projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
-        } else if (id != null) {
+        if (id != null) {
             projectToShow = (DataVisualizationProject) projectDAO.getProjectById(id);
         } else {
+            projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
+        }
+
+        if (projectToShow == null) {
             LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
                     + "\nId we got from request: " + id);
             return "index";
@@ -418,10 +422,23 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
-    public String openHealthMonitorProject(Model model, RedirectAttributes redirectAttributes) {
+    public String openHealthMonitorProject(Model model, @RequestParam(value = "projHmId", required = false) BigInteger id) {
         try {
-            BigInteger id = sessionScopeBean.getCustomerProject().getIdProject();
-            Project project = healthMonitorProjectDAOImpl.getProjectById(id);
+            BigInteger finalProjId = null;
+            Project project = null;
+            if (id != null) {
+                finalProjId = id;
+            } else {
+                finalProjId = sessionScopeBean.getCustomerProject().getIdProject();
+            }
+
+            if (finalProjId == null) {
+                LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
+                        + "\nId we got from request: " + id);
+                return "index";
+            }
+
+            project = healthMonitorProjectDAOImpl.getProjectById(finalProjId);
 
             Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
             mapSelectorCreators.put(S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
@@ -464,15 +481,18 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/delete", method = RequestMethod.GET)
+    @RequestMapping(path = "/delete/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public boolean deleteProject(Project project,
+    public boolean deleteProject(@PathVariable BigInteger id,
                                  Model model) {
+        Project project = projectDAO.getProjectById(id);
+        LOGGER.info("Project we got " + project);
         if (project != null) {
-            ProjectTypes projectTypes = project.getType();
-            if (projectTypes != null && projectTypes.equals(IdList.DATA_VISUALIZATION_PROJECT_OBJTYPE_ID)) {
+            ProjectTypes projectType = project.getType();
+            LOGGER.info("Project type " + projectType);
+            if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
                 return projectDAO.deleteProject(project);
-            } else if (projectTypes != null && projectTypes.equals(IdList.HEALTH_MONITOR_PROJECT_OBJTYPE_ID)) {
+            } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
                 return healthMonitorProjectDAOImpl.deleteProject(project);
             }
         }
