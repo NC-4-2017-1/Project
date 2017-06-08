@@ -92,6 +92,11 @@
     $(document).ready(function () {
         $('.nav-tabs a:first').tab('show');
         <c:if test = "${not empty project.graphic}">
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
              var t = ${project.graphic.graphicJSON};
              if(t.jsCodeForGraph) {
                  eval(t.jsCodeForGraph);

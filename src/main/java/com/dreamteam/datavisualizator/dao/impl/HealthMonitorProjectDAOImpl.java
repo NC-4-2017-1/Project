@@ -4,6 +4,7 @@ import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
 import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
+import com.dreamteam.datavisualizator.common.exceptions.HMGraphSerializerException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.common.selectors.impl.*;
@@ -148,7 +149,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet resultsRow = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             ResultSet results = resultsRow.getResultSet();
-            if (results.next()) {
+            if (results.isBeforeFirst()) {
                 JsonObject valueG = HmGraphSerializer.serialiseHmGraph(resultsRow);
                 builderGraph.buildGraphicJson(valueG);
             }else{
@@ -157,7 +158,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
                 builderGraph.buildGraphicJson(noData);
             }
             return builderGraph.buildGraphic();
-        } catch (DataAccessException e) {
+        } catch (HMGraphSerializerException e) {
+            LOGGER.error("Graph not created from HM data base. ", e);
+            throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
+
+        }catch (DataAccessException e) {
             LOGGER.error("Graph not created from HM data base. ", e);
             throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
 
@@ -516,6 +521,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             put(S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
             put(S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
         }};
+
     private enum HWProjectColumnName {
         id("id"),
         name("name"),

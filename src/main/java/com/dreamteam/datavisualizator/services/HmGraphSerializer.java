@@ -3,6 +3,8 @@ package com.dreamteam.datavisualizator.services;
 
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.common.dateconverter.StringToDateConverter;
+import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
+import com.dreamteam.datavisualizator.common.exceptions.HMGraphSerializerException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
@@ -20,65 +22,77 @@ public class HmGraphSerializer {
     private static final Logger LOGGER = Logger.getLogger(HmGraphSerializer.class);
     private static String jsStringForHmGraph;
 
-    public static JsonObject serialiseHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {
-        JsonArray arrayDataForHm = serializeDataForHmGraph(graphResultSet);
+    public static JsonObject serialiseHmGraph(ResultSetWrappingSqlRowSet graphResultSet) throws HMGraphSerializerException {
+        try {
+            JsonArray arrayDataForHm = serializeDataForHmGraph(graphResultSet);
 
-        String stringJsCode = "var chart = new Highcharts.chart('containerGraphic', {" +
-                "    chart: {" +
-                "        type: 'columnrange'," +
-                "        inverted: true" +
-                "    }," +
-                "" +
-                "    title: {" +
-                "        text: 'Task by Date-Time'" +
-                "    }," +
-                "" +
-                "    xAxis: {" +
-                "        categories: " + arrayDataForHm.get(0) + "" +
-                "    }," +
-                "" +
-                "    yAxis: {" +
-                "       type: 'datetime',"+
-                "        title:{ " +
-                "            text: 'Date-Time'" +
-                "        }" +
-                "    }," +
-                "" +
-                "    plotOptions: {" +
-                "        columnrange: {" +
-                "            dataLabels: {" +
-                "                enabled: true," +
-                "                formatter: function () {" +
-                "                    return new Date(this.y).toLocaleString();" +
-                "                }" +
-                "            }" +
-                "        }" +
-                "    }," +
-                "" +
-                "    legend: {" +
-                "        enabled: false" +
-                "    }," +
-                "" +
-                "    series: [{" +
-                "        name: 'Time'," +
+            String stringJsCode = "var chart = new Highcharts.chart('containerGraphic', {" +
+                    "    chart: {" +
+                    "        type: 'columnrange'," +
+                    "        inverted: true," +
+                    "        zoomType: 'xy'" +
+                    "    }," +
+                    "    tooltip: {" +
+                    "        backgroundColor: '#FCFFC5'," +
+                    "        formatter: function () {" +
+                    "            return '<b>' + this.x + '</b><br>'+'<b>Start: </b>'+new Date(this.point.low).toLocaleString()+' <b>End:</b> '+new Date(this.point.high).toLocaleString() + ' ' + this.point.name;" +
+                    "        }" +
+                    "    }," +
+                    "" +
+                    "    title: {" +
+                    "        text: 'Tasks by Date-Time'" +
+                    "    }," +
+                    "" +
+                    "    xAxis: {" +
+                    "        categories: " + arrayDataForHm.get(0) + "" +
+                    "    }," +
+                    "" +
+                    "    yAxis: {" +
+                    "       type: 'datetime'," +
+                    "        title:{ " +
+                    "            text: 'Date-Time'" +
+                    "        }" +
+                    "    }," +
+                    "" +
+                    "    plotOptions: {" +
+                    "        columnrange: {" +
+                    "            dataLabels: {" +
+                    "                enabled: true," +
+                    "                formatter: function () {" +
+                    "                    return new Date(this.y).toLocaleString();" +
+                    "                }" +
+                    "            }" +
+                    "        }" +
+                    "    }," +
+                    "" +
+                    "    legend: {" +
+                    "        enabled: false" +
+                    "    }," +
+                    "" +
+                    "    series: [{" +
+                    "        name: 'Time'," +
 
-                "        data: " + arrayDataForHm.get(1) + " " +
-                "    }]" +
-                "" +
-                "});";
+                    "        data: " + arrayDataForHm.get(1) + " " +
+                    "    }]" +
+                    "" +
+                    "});";
 
 
-        jsStringForHmGraph = String.format("%s", stringJsCode);
+            jsStringForHmGraph = String.format("%s", stringJsCode);
 
-        JsonObject jsonGraph = new JsonObject();
-        jsonGraph.addProperty("jsCodeForGraph", jsStringForHmGraph);
+            JsonObject jsonGraph = new JsonObject();
+            jsonGraph.addProperty("jsCodeForGraph", jsStringForHmGraph);
 
-        return jsonGraph;
+            return jsonGraph;
+        }catch (Exception e){
+            LOGGER.error("HM graph serialize exception. ", e);
+            throw new HMGraphSerializerException("HM graph can not be serialized." + e.getMessage());
+        }
     }
 
     public static JsonArray serializeDataForHmGraph(ResultSetWrappingSqlRowSet graphResultSet) {
         SqlRowSetMetaData setMetaData = graphResultSet.getMetaData();
-        int rowCount = setMetaData.getColumnCount();
+        int rowCount = 0;
         ArrayList<String> xNameTask = new ArrayList<>();
         ArrayList<Date> startDate = new ArrayList<>();
         ArrayList<Date> endDate = new ArrayList<>();
@@ -94,8 +108,10 @@ public class HmGraphSerializer {
                 endDate.add(new StringToDateConverter(dateFormat).convertDateFromString(graphSet.getString(rowNames.end.toString())));
                 //startDate.add(graphSet.getString(rowNames.start.toString()));
               //  endDate.add(graphSet.getDate(rowNames.end.toString()));
-                informationTask.add(graphSet.getString(rowNames.status.toString()) + " " + graphSet.getString(rowNames.errorC.toString()) + " "
-                        + graphSet.getString(rowNames.errorM.toString()) + " " + ClobToStringService.clobToString(graphSet.getClob(rowNames.sqlText.toString())));
+                informationTask.add("<br><b>Status:</b> " + (graphSet.getString(rowNames.status.toString()) == null?" - ":graphSet.getString(rowNames.status.toString()))
+                        + "; <br><b>Error code:</b> " + (graphSet.getString(rowNames.errorC.toString()) == null ?" - ":graphSet.getString(rowNames.errorC.toString()))
+                        + "; <br><b>Error message: </b>"  + (graphSet.getString(rowNames.errorM.toString()) == null?" - ":graphSet.getString(rowNames.errorM.toString()))
+                        + "; <br><b>SQL:</b> " + ClobToStringService.clobToString(graphSet.getClob(rowNames.sqlText.toString())));
 
             }
         } catch (SQLException e) {
@@ -106,22 +122,19 @@ public class HmGraphSerializer {
         JsonArray serizlizeData = new JsonArray();
         JsonArray nameArray = new JsonArray();
         JsonArray dateArray = new JsonArray();
-        JsonArray informationArray = new JsonArray();
 
         for (int i = 0; i < xNameTask.size(); i++) {
             JsonArray temporaryDateArray = new JsonArray();
 
             nameArray.add(xNameTask.get(i));
+            temporaryDateArray.add(informationTask.get(i));
             temporaryDateArray.add(startDate.get(i).getTime());
             temporaryDateArray.add(endDate.get(i).getTime());
             dateArray.add(temporaryDateArray);
-            informationArray.add(informationTask.get(i));
         }
 
         serizlizeData.add(nameArray);
         serizlizeData.add(dateArray);
-        serizlizeData.add(informationArray);
-
         return serizlizeData;
     }
 

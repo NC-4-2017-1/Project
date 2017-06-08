@@ -114,7 +114,7 @@
                             <label for="activejobscheck" class="custom-control custom-checkbox">Active jobs</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="activejobs" name="activejobs" placeholder="Hour count (max: 48h)">
+                            <input type="text" class="form-control" id="activejobs" name="activejobs" placeholder="Hour count">
                         </div>
                     </div>
 
@@ -124,7 +124,7 @@
                             <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="graph" name="graph" placeholder="Hour count (max: 48h)">
+                            <input type="text" class="form-control" id="graph" name="graph" placeholder="Hour count">
                         </div>
                     </div>
 
