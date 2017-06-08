@@ -55,9 +55,10 @@
     <c:forEach items="${graphics}" var="graph">
         <div class="graphitem">
             <div class="graphname"><h3><c:out value="${graph.name}"/></h3></div>
-            <div id="container"
+            <div id="${graph.id}"
                  style="min-width: 310px; height: 400px; margin: 0 auto; background-color: #5BE870"></div>
             <script>
+                var container_name = "${graph.id}";
                 var t = ${graph.graphicJSON};
                 eval(t.jsCodeForGraph);
             </script>

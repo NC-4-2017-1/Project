@@ -30,7 +30,7 @@ public class JsonSerializer {
         JsonArray arrayForGraph = serializeTableData(dataForSerialize,columnNameAxisX,columnNameAxisY);
         String typeOfAxisX = columnNameAxisX.compareTo("Date")==0 ? "datetime" : "linear";
 
-        String jsStringForGraph = ("var chart = new Highcharts.chart('container', {" +
+        String jsStringForGraph = ("var chart = new Highcharts.chart(container_name, {" +
                 "        chart: {" +
                 "            zoomType: 'x'" +
                 "        }," +
