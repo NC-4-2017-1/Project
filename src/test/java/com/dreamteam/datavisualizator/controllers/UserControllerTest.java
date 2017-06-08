@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -24,9 +25,11 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -111,9 +114,8 @@ public class UserControllerTest {
     }
 
 
-    @Ignore
     @Test
-    public void createUserInDB_shouldGetUserRequestWhichExistsInDBAndRedirectToAnotherController(){
+    public void createUserInDB_shouldGetUserRequestWhichExistsInDBAndRedirectToAnotherController() throws Exception {
 
         UserRequest userRequest = new UserRequest();
         userRequest.setEmail("test@email");
@@ -130,6 +132,48 @@ public class UserControllerTest {
 
         when(userDaoMock.getUserByEmail(userRequest.getEmail())).thenReturn(user);
 
-        //TODO create test
+        ResultActions actions = mockMvc.perform(post("/user/create")
+                .param("firstName", userRequest.getFirstName())
+                .param("lastName", userRequest.getLastName())
+                .param("email", userRequest.getEmail())
+                .param("password", userRequest.getPassword()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/create-user"))
+                .andExpect(model().size(1));
+
+        assertNotNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
+        verify(userDaoMock, times(1)).getUserByEmail(userRequest.getEmail());
+        verifyNoMoreInteractions(userDaoMock);
+
+    }
+
+    @Ignore
+    @Test
+    public void createUserInDB_shouldGetUserRequestAndStoreInDBAndRedirectToAnotherController() throws Exception {
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("test@email2");
+        userRequest.setFirstName("firstName");
+        userRequest.setLastName("lastName");
+        userRequest.setPassword("password");
+
+        User user = new UserImpl.Builder(userRequest.getEmail(), null)
+                .buildId(BigInteger.valueOf(2L))
+                .buildFirstName(userRequest.getFirstName())
+                .buildLastName(userRequest.getLastName())
+                .buildType(UserTypes.REGULAR_USER)
+                .buildUser();
+
+        when(userDaoMock.getUserByEmail(userRequest.getEmail())).thenReturn(user);
+
+        MvcResult mvcResult = mockMvc.perform(post("/user/create")
+                .param("firstName", userRequest.getFirstName())
+                .param("lastName", userRequest.getLastName())
+                .param("email", userRequest.getEmail())
+                .param("password", userRequest.getPassword()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/create-user"))
+                .andExpect(model().size(1))
+                .andReturn();
     }
 }
