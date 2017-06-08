@@ -2,12 +2,12 @@ package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
 import com.dreamteam.datavisualizator.dao.UserDAO;
+import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
-import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.models.UserTypes;
+import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,19 +17,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,7 +45,7 @@ public class UserControllerTest {
     private UserController controller;
 
     @Before
-    public void init(){
+    public void init() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
@@ -113,67 +112,156 @@ public class UserControllerTest {
         assertNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
     }
 
-
     @Test
     public void createUserInDB_shouldGetUserRequestWhichExistsInDBAndRedirectToAnotherController() throws Exception {
 
-        UserRequest userRequest = new UserRequest();
-        userRequest.setEmail("test@email");
-        userRequest.setFirstName("firstName");
-        userRequest.setLastName("lastName");
-        userRequest.setPassword("password");
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String password = "password";
+        UserTypes type = UserTypes.REGULAR_USER;
 
-        User user = new UserImpl.Builder(userRequest.getEmail(), null)
-                .buildId(BigInteger.valueOf(1L))
-                .buildFirstName(userRequest.getFirstName())
-                .buildLastName(userRequest.getLastName())
-                .buildType(UserTypes.REGULAR_USER)
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
                 .buildUser();
 
-        when(userDaoMock.getUserByEmail(userRequest.getEmail())).thenReturn(user);
+        when(userDaoMock.getUserByEmail(email)).thenReturn(user);
 
         ResultActions actions = mockMvc.perform(post("/user/create")
-                .param("firstName", userRequest.getFirstName())
-                .param("lastName", userRequest.getLastName())
-                .param("email", userRequest.getEmail())
-                .param("password", userRequest.getPassword()))
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("email", email)
+                .param("password", password))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/create-user"))
                 .andExpect(model().size(1));
 
         assertNotNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
-        verify(userDaoMock, times(1)).getUserByEmail(userRequest.getEmail());
+        verify(userDaoMock, times(1)).getUserByEmail(email);
         verifyNoMoreInteractions(userDaoMock);
 
     }
 
-    @Ignore
     @Test
     public void createUserInDB_shouldGetUserRequestAndStoreInDBAndRedirectToAnotherController() throws Exception {
 
-        UserRequest userRequest = new UserRequest();
-        userRequest.setEmail("test@email2");
-        userRequest.setFirstName("firstName");
-        userRequest.setLastName("lastName");
-        userRequest.setPassword("password");
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String password = "password";
+        UserTypes type = UserTypes.REGULAR_USER;
 
-        User user = new UserImpl.Builder(userRequest.getEmail(), null)
-                .buildId(BigInteger.valueOf(2L))
-                .buildFirstName(userRequest.getFirstName())
-                .buildLastName(userRequest.getLastName())
-                .buildType(UserTypes.REGULAR_USER)
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
                 .buildUser();
 
-        when(userDaoMock.getUserByEmail(userRequest.getEmail())).thenReturn(user);
+        when(userDaoMock.getUserByEmail(email)).thenReturn(null);
+        when(userDaoMock.createUser(
+                firstName,
+                lastName,
+                email,
+                password,
+                type))
+                .thenReturn(user);
 
-        MvcResult mvcResult = mockMvc.perform(post("/user/create")
-                .param("firstName", userRequest.getFirstName())
-                .param("lastName", userRequest.getLastName())
-                .param("email", userRequest.getEmail())
-                .param("password", userRequest.getPassword()))
+        ResultActions actions = mockMvc.perform(post("/user/create")
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("email", email)
+                .param("password", password))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/create-user"))
-                .andExpect(model().size(1))
+                .andExpect(redirectedUrl("/user/admin-panel"))
+                .andExpect(model().size(1));
+
+        assertNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
+        verify(userDaoMock, times(1)).getUserByEmail(email);
+        verify(userDaoMock, times(1)).createUser(firstName, lastName, email, password, type);
+        verifyNoMoreInteractions(userDaoMock);
+    }
+
+    @Test
+    public void deleteUser_shouldGetUserIdAndDeleteUserWithThisIdFromDB() throws Exception {
+
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        UserTypes type = UserTypes.REGULAR_USER;
+
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
+                .buildUser();
+
+        when(userDaoMock.getUserById(id)).thenReturn(user);
+        when(userDaoMock.deleteUser(user)).thenReturn(true);
+
+        mockMvc.perform(delete("/user/delete/{id}", id))
+                .andExpect(status().isOk())
                 .andReturn();
+
+        verify(userDaoMock, times(1)).getUserById(id);
+        verify(userDaoMock, times(1)).deleteUser(user);
+        verifyNoMoreInteractions(userDaoMock);
+    }
+
+    @Test
+    public void getUserDashboard_shouldGetUserObjectFromSessionThenGetAllItsProjectsAndRenderToView() throws Exception {
+
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        UserTypes type = UserTypes.REGULAR_USER;
+
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
+                .buildUser();
+
+        String name1 = "firstProject";
+        String name2 = "secondProject";
+        Date date1 = new Date();
+        Date date2 = new Date();
+        Project project1 = new DataVisualizationProject.Builder(name1, date1, id).buildProject();
+        Project project2 = new DataVisualizationProject.Builder(name2, date2, id).buildProject();
+
+        when(userDaoMock.getAllUserProjects(user)).thenReturn(Arrays.asList(project1, project2));
+
+        ResultActions actions = mockMvc.perform(get("/user/dashboard").sessionAttr("userObject", user))
+                .andExpect(status().isOk())
+                .andExpect(view().name("userDashboard"))
+                .andExpect(model().size(2))
+                .andExpect(model().attribute("userProjects", hasSize(2)))
+                .andExpect(model().attribute("userProjects", hasItem(
+                        allOf(
+                                hasProperty("name", is(name1)),
+                                hasProperty("creationDate", is(date1)),
+                                hasProperty("author", is(id))
+                        )
+                )))
+                .andExpect(model().attribute("userProjects", hasItem(
+                        allOf(
+                                hasProperty("name", is(name2)),
+                                hasProperty("creationDate", is(date2)),
+                                hasProperty("author", is(id))
+                        )
+                )))
+                .andExpect(model().attributeExists("userObject"));
+
+        verify(userDaoMock, times(1)).getAllUserProjects(user);
+        verifyNoMoreInteractions(userDaoMock);
     }
 }

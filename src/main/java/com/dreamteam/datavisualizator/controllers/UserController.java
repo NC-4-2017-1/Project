@@ -31,12 +31,11 @@ public class UserController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
-    public String userDashboard(Model model, HttpServletRequest request) {
+    public String getUserDashboard(Model model, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("userObject");
         List<Project> userProjects = userDAO.getAllUserProjects(user);
         model.addAttribute("userProjects", userProjects);
         model.addAttribute("userObject", user);
-
         return "userDashboard";
     }
 
