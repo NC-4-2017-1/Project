@@ -49,6 +49,9 @@
                 <input class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="submit" value="Next"/>
             </div>
         </form>
+        <div style="text-align: center; color: red" >
+            ${message}
+        </div>
     </div>
 </div>
 </body>

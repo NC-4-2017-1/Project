@@ -141,8 +141,6 @@ public class ProjectController {
             DateFormat dateFormatById = DateFormat.getDateFormatById(new BigInteger(dateFormat));
             String fileType = file.getOriginalFilename().split("\\.")[1];
             File fileFromTomcat = new File(Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename()).toUri());
-
-
             boolean checkFormatDate = checkDateFormat(fileFromTomcat, dateFormatById, fileType);
             if (checkFormatDate) {
                 sessionScopeBean.getCustomerProject().setDateFormat(dateFormatById);
@@ -150,7 +148,6 @@ public class ProjectController {
                 sessionScopeBean.getCustomerProject().setFile(fileFromTomcat);
             } else {
                 redirectAttributes.addFlashAttribute("message", "Please select a correct FormatDate");
-                model.addAttribute("errorDateFormat", "Please select a correct FormatDate");
                 return "redirect:/project/visualization-setup";
             }
         } catch (IOException e) {
