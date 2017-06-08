@@ -10,26 +10,41 @@ import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 
 public class CalculationService {
     private static final Logger LOGGER = Logger.getLogger(CalculationService.class);
 
-    public static BigDecimal calculateAverage(ArrayList<BigDecimal> dataForCalculate){
-        try{
+    public static BigDecimal calculateAverage(List<Map<String, Object>> parseDate, String header) {
+        ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseDate, header);
+        try {
             double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
             BigDecimal result = new BigDecimal((new Mean()).evaluate(arrayForCalculate));
-
             return result;
-        }
-        catch(NullArgumentException e){
+        } catch (NullArgumentException e) {
             LOGGER.error("No data for Calculate", e);
+            return null;
+        } catch (NullPointerException e) {
+            LOGGER.error("Wrong date format for Calculate", e);
             return null;
         }
     }
 
-    public static BigDecimal calculateOlympicAverage(ArrayList<BigDecimal> dataForCalculate){
+    private static ArrayList<BigDecimal> convertParseDate(List<Map<String, Object>> date, String header) {
+        if (!(date.get(1).get(header) instanceof BigDecimal)) {
+            return null;
+        }
+        ArrayList<BigDecimal> dataForCalculate = new ArrayList<>();
+        for (Map<String, Object> map : date) {
+            dataForCalculate.add((BigDecimal) map.get(header));
+        }
+        return dataForCalculate;
+    }
+
+    public static BigDecimal calculateOlympicAverage(List<Map<String, Object>> parseDate, String header) {
+        ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseDate, header);
         ArrayList<BigDecimal> newDataForCalculate = new ArrayList<>(dataForCalculate);
         Collections.sort(newDataForCalculate, new Comparator<BigDecimal>() {
             public int compare(BigDecimal o1, BigDecimal o2) {
@@ -40,82 +55,101 @@ public class CalculationService {
         BigDecimal maxElement = newDataForCalculate.get(newDataForCalculate.size() - 1);
         BigDecimal minElement = newDataForCalculate.get(0);
 
-        for(int i=newDataForCalculate.size()-1; i!=0; i--){
-            if(maxElement == newDataForCalculate.get(i)){
+        for (int i = newDataForCalculate.size() - 1; i != 0; i--) {
+            if (maxElement == newDataForCalculate.get(i)) {
                 newDataForCalculate.remove(i);
-            }
-            else{
+            } else {
                 break;
             }
         }
 
-        for(int i=0; i<newDataForCalculate.size(); i++){
-            if(minElement == newDataForCalculate.get(i)){
+        for (int i = 0; i < newDataForCalculate.size(); i++) {
+            if (minElement == newDataForCalculate.get(i)) {
                 newDataForCalculate.remove(i);
                 i--;
-            }
-            else{
+            } else {
                 break;
             }
         }
 
-        BigDecimal result = calculateAverage(newDataForCalculate);
+        BigDecimal result = calculateAverage(parseDate, header);
 
         return result;
     }
 
-    public static BigDecimal calculateCorrelation(ArrayList<BigDecimal> listOfFirstGraph, ArrayList<BigDecimal> listOfSecondGraph){
-        try{
+    public static BigDecimal calculateCorrelation(List<Map<String, Object>> parseDate, String headerOfFirstColumn, String headerOfSecondColumn) {
+        ArrayList<BigDecimal> listOfFirstGraph = convertParseDate(parseDate, headerOfFirstColumn);
+        ArrayList<BigDecimal> listOfSecondGraph = convertParseDate(parseDate, headerOfSecondColumn);
+        try {
             double[] arrayOfFirstGraph = new CalculationService().arrayListToDouble(listOfFirstGraph);
             double[] arrayOfSecondGraph = new CalculationService().arrayListToDouble(listOfSecondGraph);
 
             double correlation = new PearsonsCorrelation().correlation(arrayOfFirstGraph, arrayOfSecondGraph);
 
             return new BigDecimal(correlation);
-        }
-        catch(DimensionMismatchException e){
+        } catch (DimensionMismatchException e) {
             LOGGER.error("Different sets of lists values", e);
             return null;
-        }
-        catch(MathIllegalArgumentException e){
+        } catch (MathIllegalArgumentException e) {
             LOGGER.error("", e);
             return null;
         }
     }
 
-    public static BigDecimal calculateDispersion(ArrayList<BigDecimal> dataForCalculate){
+    public static BigDecimal calculateDispersion(List<Map<String, Object>> parseDate, String header) {
+        ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseDate, header);
         try {
             double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
             BigDecimal result = new BigDecimal((new Variance()).evaluate(arrayForCalculate));
             return result;
-        }
-        catch(NullArgumentException e){
+        } catch (NullArgumentException e) {
             LOGGER.error("No data for Calculate", e);
             return null;
         }
     }
 
-    public static BigDecimal calculationMathExpectation(ArrayList<BigDecimal> dataForCalculate){
+    public static BigDecimal calculationMathExpectation(List<Map<String, Object>> parseDate, String header) {
+        ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseDate, header);
         double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
-        double probability = 1.0/arrayForCalculate.length;
+        double probability = 1.0 / arrayForCalculate.length;
         double expectedValue = 0;
 
-        for(double elementOfArray : arrayForCalculate){
-            expectedValue = expectedValue + (elementOfArray*probability);
+        for (double elementOfArray : arrayForCalculate) {
+            expectedValue = expectedValue + (elementOfArray * probability);
         }
 
         return new BigDecimal(expectedValue);
     }
 
-    private double[] arrayListToDouble(ArrayList<BigDecimal> listToCalculate){
+    private double[] arrayListToDouble(ArrayList<BigDecimal> listToCalculate) {
         double[] arrayOfValues = new double[listToCalculate.size()];
 
-        int i=0;
-        for(BigDecimal oneValue : listToCalculate){
+        int i = 0;
+        for (BigDecimal oneValue : listToCalculate) {
             arrayOfValues[i] = oneValue.doubleValue();
             i++;
         }
 
         return arrayOfValues;
+    }
+
+    public static Map<String, BigDecimal> getAllCorreletion(List<Map<String, Object>> parsedate) {
+        List<String> headerWichClassTypeBigDecimal = new ArrayList<>();
+        Map<String, BigDecimal> resultCorrelationMap = new LinkedHashMap<>();
+        for (String header : parsedate.get(0).keySet()) {
+            for (Object typeOfDate : parsedate.get(1).values()) {
+                if (parsedate.get(1).get(header) instanceof BigDecimal) {
+                    headerWichClassTypeBigDecimal.add(header);
+                }
+            }
+        }
+        for (int i = 0; i < headerWichClassTypeBigDecimal.size() - 1; i++) {
+            for (int j = i + 1; j < headerWichClassTypeBigDecimal.size(); j++) {
+                if (!headerWichClassTypeBigDecimal.get(i).equals(headerWichClassTypeBigDecimal.get(j)))
+                    resultCorrelationMap.put(headerWichClassTypeBigDecimal.get(i) + " " + headerWichClassTypeBigDecimal.get(j),
+                            calculateCorrelation(parsedate, headerWichClassTypeBigDecimal.get(i), headerWichClassTypeBigDecimal.get(j)));
+            }
+        }
+        return resultCorrelationMap;
     }
 }
