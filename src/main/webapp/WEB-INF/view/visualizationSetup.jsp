@@ -17,15 +17,21 @@
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
     <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="/resources/js/bootstrap.file-input.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input[type=file]').bootstrapFileInput();
+        });
+    </script>
 </head>
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class="container bg-white">
-    <div class="content">
+<div class = "modal-content">
+    <div class="container">
         <h2 class="col-sm-offset-3"> Visualization Setup</h2>
         <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/upload"
               enctype="multipart/form-data">
@@ -41,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
-                <div class="col-sm-3">
+                <div class="col-sm-7">
                     <input type="file" accept=".xml, .csv" name="file"/><br/>
                 </div>
             </div>
