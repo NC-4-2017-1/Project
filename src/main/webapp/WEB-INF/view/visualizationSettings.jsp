@@ -39,12 +39,14 @@
     <div class="keyRadios">
         <div class="keyRadio">
             <div class="radiosDivX">
+                X:
                 <c:forEach items="${tableKeys}" var="entry">
                     <label class="radio-inline"><input class="xAxis" type="radio" name="x"
                                                        value="${entry}">${entry}</label>
                 </c:forEach>
             </div>
             <div class="radiosDivY">
+                Y:
                 <c:forEach items="${tableKeys}" var="entry">
                     <label class="radio-inline"><input class="yAxis" type="radio" name="y"
                                                        value="${entry}">${entry}</label>

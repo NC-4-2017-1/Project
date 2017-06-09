@@ -14,7 +14,6 @@ import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
-import com.dreamteam.datavisualizator.services.CalculationService;
 import com.dreamteam.datavisualizator.services.HtmlSerializer;
 import com.dreamteam.datavisualizator.services.JsonSerializer;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
@@ -32,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -236,10 +236,10 @@ public class ProjectController {
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
                     .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size() + 2)
                     .buildGraphicJSON(jsonObj)
-                    .buildAverage(CalculationService.calculateAverage(result, dvGraphicCreationRequest.getxAxis()[i]))
-                    .buildDispersion(CalculationService.calculateDispersion(result, dvGraphicCreationRequest.getxAxis()[i]))
-                    .buildMathExpectation(CalculationService.calculationMathExpectation(result, dvGraphicCreationRequest.getxAxis()[i]))
-                    .buildOlympicAverage(CalculationService.calculateOlympicAverage(result, dvGraphicCreationRequest.getxAxis()[i]))
+                    .buildAverage(BigDecimal.ONE)
+                    .buildDispersion(BigDecimal.ONE)
+                    .buildMathExpectation(BigDecimal.ONE)
+                    .buildOlympicAverage(BigDecimal.ONE)
                     .buildGraphic();
             LOGGER.info(graphic + " added");
             graphicList.add(graphic);
