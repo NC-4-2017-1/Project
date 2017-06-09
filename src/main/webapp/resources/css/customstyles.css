@@ -1,3 +1,9 @@
+.adminPanel{
+    overflow-x: auto;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
 .bg-whole {
     background-color: #5BE870;
 }
@@ -118,9 +124,9 @@ footer {
 }
 
 #add-button {
-    color: #080808;
-    right: 3%;
-    bottom: 3.5em;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
 }
 
 @media (max-width: 767px) {

@@ -22,35 +22,45 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-
-<input class="btn btn-default" id="add-button" type="button" onclick="createUser()" value="Add user"/>
-<br>
-    <div class="panel panel-default">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>first name</th>
-                <th>last name</th>
-                <th>email</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach items="${users}" var="user">
-                <tr>
-                    <td><p>${user.firstName}</p></td>
-                    <td><p>${user.lastName}</p></td>
-                    <td><p>${user.email}</p></td>
-                    <td>
-                        <input class="btn btn-default btn-sm" type="button" value="delete"
-                               onclick="deleteObj(${user.id});"/>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+<div class = "modal-content">
+    <div class="content">
+        <div class="form-group">
+            <input class="btn btn-md" id="add-button" type="button" onclick="createUser()" value="Add user"/>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <b class="text-muted">User list</b>
+                </h4>
+            </div>
+            <div class="panel-body adminPanel">
+                <table class="table table-striped table-sm">
+                    <thead class="text-info">
+                    <tr>
+                        <th>FIRST NAME</th>
+                        <th>LAST NAME</th>
+                        <th>EMAIL</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${users}" var="user">
+                        <tr class = "text-muted">
+                            <td><p>${user.firstName}</p></td>
+                            <td><p>${user.lastName}</p></td>
+                            <td><p>${user.email}</p></td>
+                            <td>
+                                <input class="btn btn-primary btn-sm" type="button" value="delete"
+                                       onclick="deleteObj(${user.id});"/>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+            </div>
     </div>
-
+</div>
 
 
 <jsp:include page="footer.jsp"/>
