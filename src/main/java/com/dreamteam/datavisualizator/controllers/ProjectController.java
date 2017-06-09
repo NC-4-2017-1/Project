@@ -482,21 +482,19 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean deleteProject(@PathVariable BigInteger id,
-                                 Model model) {
+    public String deleteProject(@PathVariable BigInteger id) {
         Project project = projectDAO.getProjectById(id);
         LOGGER.info("Project we got " + project);
         if (project != null) {
             ProjectTypes projectType = project.getType();
             LOGGER.info("Project type " + projectType);
             if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
-                return projectDAO.deleteProject(project);
+                projectDAO.deleteProject(project);
             } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
-                return healthMonitorProjectDAOImpl.deleteProject(project);
+                healthMonitorProjectDAOImpl.deleteProject(project);
             }
         }
-        return false;
+        return "redirect:/user/dashboard";
     }
 
     @Secured("ROLE_REGULAR_USER")
