@@ -17,7 +17,7 @@
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
+    <script src="/resources/js/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 </head>
 
@@ -27,6 +27,10 @@
 
 <div class="container" id="container-middle">
     <div class="panel panel-default">
+        <span>
+            <input id="SearchUser" type="text" placeholder="Search User" class="search-in-list">
+        </span>
+
         <table class="table">
             <thead>
             <tr>
@@ -36,9 +40,9 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="allElements">
             <c:forEach items="${users}" var="user">
-                <tr>
+                <tr data-select="user" data-firstname="${user.firstName}" data-lastname="${user.lastName}" data-email="${user.email}" class="user-in-list">
                     <td><p>${user.firstName}</p></td>
                     <td><p>${user.lastName}</p></td>
                     <td><p>${user.email}</p></td>
@@ -65,5 +69,87 @@
         }
         x.send();
     }
+
+    var searchField;
+    var searchFieldData  = "";
+    searchField = $("#SearchUser");
+    searchField.on("keydown", OnSearchKeyDown);
+
+    function OnSearchKeyDown(event)
+    {
+        var currentElement;
+        var key;
+        var keyCode;
+
+        currentElement = $(event.currentTarget);
+        key = event.key;
+        keyCode = event.keyCode;
+
+        console.debug(keyCode);
+        searchFieldData = currentElement.val();
+        if(keyCode >= 65 && keyCode <= 90) {
+            searchFieldData += key;
+        }
+        else if(keyCode == 46) {
+            searchFieldData = "";
+        }
+        else if(keyCode == 8) {
+            var length;
+            length = searchFieldData.length;
+            if(length > 0) {
+                searchFieldData = searchFieldData.substring(0, length - 1);
+            }
+            else {
+                searchFieldData = "";
+            }
+        }
+        else if(keyCode == 46) {
+            var length;
+            length = searchFieldData.length;
+            if(length > 0) {
+                searchFieldData = searchFieldData.substring(0, length - 1);
+            }
+            else {
+                searchFieldData = "";
+            }
+        }
+        BuildSearchBody(searchFieldData);
+    }
+
+
+    function BuildSearchBody(searchFieldData)
+    {
+        var allUsersParent;
+        var allUserTr;
+
+        allUsersParent = $("#allElements");
+        allUserTr = allUsersParent.find("[data-select=user]");
+
+        $.each(allUserTr, function(key, value)
+        {
+            var currentElement;
+            var currentName;
+            var currentLastName;
+            var currentPhone;
+
+            currentElement = $(value);
+            currentName = currentElement.attr("data-firstname");
+            currentLastName = currentElement.attr("data-lastname");
+            currentPhone = currentElement.attr("data-email");
+
+            currentName = currentName.toLowerCase();
+            currentLastName = currentLastName.toLowerCase();
+            currentPhone = currentPhone.toLowerCase();
+            searchFieldData = searchFieldData.toLowerCase();
+
+            if((currentName.indexOf(searchFieldData) +1) || (currentPhone.indexOf(searchFieldData)+1) || (currentLastName.indexOf(searchFieldData) +1)) {
+                currentElement.show();
+            }
+            else {
+                currentElement.hide();
+            }
+        });
+    }
+
 </script>
 </html>
