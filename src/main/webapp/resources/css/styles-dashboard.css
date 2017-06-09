@@ -1,7 +1,5 @@
 .project-item {
     margin: 20px;
-    padding-left: 20%;
-    padding-right: 20%;
 }
 
 .new-proj {
@@ -12,8 +10,8 @@
 
 }
 
-.pr-type {
-
+.pr-type, .pr-date {
+    margin: 5px 5px;
 }
 
 .pr-date {
@@ -21,7 +19,8 @@
 }
 
 .open-button {
-    float: right;
+
 }
+
 
 

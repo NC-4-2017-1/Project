@@ -2,6 +2,7 @@ package com.dreamteam.datavisualizator.models.impl;
 
 
 import com.dreamteam.datavisualizator.models.Graphic;
+import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.Selector;
 import com.dreamteam.datavisualizator.models.User;
 
@@ -33,6 +34,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.setUsersProjectAccessible(builder.usersProjectAccessible);
         this.selectors = builder.selectors;
         this.graphic = builder.graphic;
+        this.setType(ProjectTypes.HEALTH_MONITORING);
     }
 
     public void setSid(String sid) {

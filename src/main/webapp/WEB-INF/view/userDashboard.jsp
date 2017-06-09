@@ -19,6 +19,7 @@
     <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="script">
     <link href="<c:url value="/resources/css/styles-dashboard.css" />" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 </head>
 
 <body>
@@ -29,45 +30,50 @@
         <button class="btn btn-primary btn-lg new-proj" onclick="myFunction()">New Project</button>
     </div>
 
+
     <c:forEach items="${userProjects}" var="project">
         <div class="project-item">
 
-            <div class="open-button">
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">Project: <strong>${project.name}</strong></h1>
+                </div>
+                <div class="panel-body">
+
+                    <div class="pr-type">
+                        Type: <strong>
+                        ${project.type.toString()}
+                    </strong>
+                    </div>
+                    <div class="pr-date">
+                        Created: <strong>
+                        <u>${project.creationDate}</u>
+                    </strong>
+                    </div>
+                    <pre>${project.description}</pre>
+
+                </div>
+                <div class="panel-footer">
                 <c:choose>
                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
                         <form role="form" method="GET" action="/project/project-dv">
-                            <button type="submit" class="btn btn-default btn-lg" name="projDvId" value="${project.id}">Open
-                            </button>
+                                <button type="submit" class="btn btn-default btn-md glyphicon glyphicon-eye-open" name="projDvId" value="${project.id}"></button>
+
                         </form>
                     </c:when>
                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
                         <form role="form" method="GET" action="/project/project-hm">
                                 <%--         <input type="submit" name="projHmId" value="${project.id}">--%>
-                            <button type="submit" class="btn btn-default" name="projHmId" value="${project.id}">Open
-                            </button>
+                            <button type="submit" class="btn btn-default btn-md glyphicon glyphicon-eye-open" name="projHmId" value="${project.id}"></button>
                         </form>
                     </c:when>
                 </c:choose>
+                </div>
             </div>
-
-
-            <div class="pr-name">
-                Project <strong>${project.name}</strong>
-            </div>
-            <div class="pr-type">
-                Type <strong>
-                <mark>${project.type.toString()}</mark>
-            </strong>
-            </div>
-            <div class="pr-date">
-                Created <strong>
-                <u>${project.creationDate}</u>
-            </strong>
-            </div>
-            <hr>
         </div>
-
     </c:forEach>
+
 
 
     <script>
