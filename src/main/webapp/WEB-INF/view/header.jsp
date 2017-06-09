@@ -7,8 +7,8 @@
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="<c:url value="/" />" class="navbar-brand">
-                        Brand placeholder
+                    <a href="<c:url value="/"/>" class="navbar-brand">
+                        Data visualizer
                     </a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#respinsive-menu">
                         <span class="sr-only">Open navigation</span>

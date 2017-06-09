@@ -6,15 +6,18 @@
 </div>
 </div>
 <!--Footer-->
-
-<div class="container">
+<br>
+<br>
+<br>
+<br>
+<div class="container" style="position: fixed; bottom: 0; width: 100%;">
     <div class="row">
         <div class="page-wrap">
 
         </div>
         <footer class="site-footer bg-white">
             <div class="col-md-12">
-                <div class="padding-text-footer">Copyright © DREAMTEAM 2017. All rights reserved.</div>
+                <div class="padding-text-footer" style="text-align: right">Copyright © DREAMTEAM 2017. All rights reserved.</div>
             </div>
             <div class="padding-text-footer">
             </div>
