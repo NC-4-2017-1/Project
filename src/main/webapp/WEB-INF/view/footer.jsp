@@ -21,8 +21,6 @@
             </div>
             <div class="padding-text-footer">
             </div>
-
-
         </footer>
     </div>
 </div>
