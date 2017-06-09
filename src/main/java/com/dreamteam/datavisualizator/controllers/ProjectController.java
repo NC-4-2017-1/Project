@@ -518,19 +518,23 @@ public class ProjectController {
         User user = userDAO.getUserById(user_id);
         Project project = projectDAO.getProjectById(id);
         if (project != null) {
-            ProjectTypes projectType = project.getType();
-            LOGGER.info("Project type " + projectType);
-            if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
-                project = projectDAO.getProjectById(id);
-                return userDAO.giveUserAccessToProject(user, project);
-            } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
-                project = healthMonitorProjectDAOImpl.getProjectById(id);
-                return userDAO.giveUserAccessToProject(user, project);
+            if(!(user_id.equals(project.getAuthor()))){
+                ProjectTypes projectType = project.getType();
+                LOGGER.info("Project type " + projectType);
+                if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
+                    project = projectDAO.getProjectById(id);
+                    return userDAO.giveUserAccessToProject(user, project);
+                } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
+                    project = healthMonitorProjectDAOImpl.getProjectById(id);
+                    return userDAO.giveUserAccessToProject(user, project);
+                }
+            }
+            else{
+                return false;
             }
         }
 
         return false;
-//        return "shareProject";
     }
 
     @Secured("ROLE_REGULAR_USER")
@@ -552,7 +556,6 @@ public class ProjectController {
         }
 
         return false;
-//        return "shareProject";
     }
 
 }
