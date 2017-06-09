@@ -36,7 +36,7 @@
 <div class="buttons">
     <a class="btn btn-danger btn-lg" href="<c:url value="/project/delete/${project.id}" />">
         <i class="fa fa-trash-o fa-lg"></i> Delete</a>
-    <a class="btn btn-primary btn-lg" href="<c:url value="/project/share/${project.id}/${project.type}" />">
+    <a class="btn btn-primary btn-lg" href="<c:url value="/project/share/${project.id}" />">
         <i class="fa fa-share-alt"></i> Share</a>
 </div>
 

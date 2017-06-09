@@ -46,9 +46,21 @@
                     <td><p>${user.firstName}</p></td>
                     <td><p>${user.lastName}</p></td>
                     <td><p>${user.email}</p></td>
-                    <td>
-                        <input class="btn btn-default btn-sm" type="button" value="share"
-                               onclick="shareObj(${user.id});"/>
+                    <td id="${user.id}">
+                        <script>var i=0;</script>
+                        <c:forEach items="${users_with_access}" var="user_with_access">
+                            <c:if test="${user.email == user_with_access.email}">
+                                <script>i++;</script>
+                            </c:if>
+                        </c:forEach>
+                        <script>
+                            if(i==0){
+                                $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="share" onclick="shareObj(${user.id});"/>');
+                            }
+                            else {
+                                $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
+                            }
+                        </script>
                     </td>
                 </tr>
             </c:forEach>
@@ -63,9 +75,18 @@
 <script>
     function shareObj(id) {
         var x = new XMLHttpRequest();
-        x.open("GET", "/project/share/${project_id}/${project_type}/" + id + "");
+        x.open("GET", "/project/share/${project_id}/" + id + "");
         x.onreadystatechange = function () {
-            window.location.replace("/project/share/${project_id}/${project_type}/");
+            window.location.replace("/project/share/${project_id}/");
+        }
+        x.send();
+    }
+
+    function UnShareObj(id) {
+        var x = new XMLHttpRequest();
+        x.open("GET", "/project/unshare/${project_id}/" + id + "");
+        x.onreadystatechange = function () {
+            window.location.replace("/project/share/${project_id}/");
         }
         x.send();
     }
