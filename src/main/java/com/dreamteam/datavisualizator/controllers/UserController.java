@@ -9,11 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
+
+import static com.dreamteam.datavisualizator.common.util.UserRequestValidator.isUserRequestValid;
 
 @Controller
 @RequestMapping("/user")
@@ -52,7 +57,11 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public String createUserInDB(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request) {
+    public String createUserInDB(@ModelAttribute("user") UserRequest userRequest, HttpServletRequest request, Model model) {
+        if (!isUserRequestValid(userRequest)){
+            request.getSession().setAttribute("errorMessage", "Please, fill in all the fields correct");
+            return "redirect:/user/create-user";
+        }
         User user = userDAO.getUserByEmail(userRequest.getEmail());
         if (user != null) {
             request.getSession().setAttribute("errorMessage", "User with email '" + userRequest.getEmail() + "' already exists");

@@ -116,7 +116,7 @@ public class UserControllerTest {
     public void createUserInDB_shouldGetUserRequestWhichExistsInDBAndRedirectToAnotherController() throws Exception {
 
         BigInteger id = BigInteger.valueOf(1L);
-        String email = "test@email";
+        String email = "test@email.test";
         String firstName = "firstName";
         String lastName = "lastName";
         String password = "password";
@@ -150,7 +150,7 @@ public class UserControllerTest {
     public void createUserInDB_shouldGetUserRequestAndStoreInDBAndRedirectToAnotherController() throws Exception {
 
         BigInteger id = BigInteger.valueOf(1L);
-        String email = "test@email";
+        String email = "test@email.test";
         String firstName = "firstName";
         String lastName = "lastName";
         String password = "password";
@@ -185,6 +185,29 @@ public class UserControllerTest {
         verify(userDaoMock, times(1)).getUserByEmail(email);
         verify(userDaoMock, times(1)).createUser(firstName, lastName, email, password, type);
         verifyNoMoreInteractions(userDaoMock);
+    }
+
+    @Test
+    public void createUserInDB_shouldGetUserRequestWhichHaveIncorrectDataAndRedirectToAnotherController() throws Exception {
+
+        String email = "incorrect@email";
+
+        User user = new UserImpl.Builder(email, null)
+                .buildUser();
+
+        when(userDaoMock.getUserByEmail(email)).thenReturn(user);
+
+        ResultActions actions = mockMvc.perform(post("/user/create")
+                .param("firstName", "")
+                .param("lastName", "")
+                .param("email", email)
+                .param("password", ""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/create-user"))
+                .andExpect(model().size(1));
+
+        assertNotNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));
+
     }
 
     @Test

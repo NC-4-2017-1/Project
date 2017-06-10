@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
 
     @RequestMapping(path = {"/login", "/"}, method = RequestMethod.GET)
-    public String tryToLogIn(Model model, HttpServletRequest request) {
+    public String tryToLogIn(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("userObject");
         if (user!=null) {
             if (user.getUserType().equals(UserTypes.ADMIN)) {
