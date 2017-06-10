@@ -42,12 +42,16 @@
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
                     </select>
+                    <span  style="color: red"> ${messageFormat}</span>
+                    <br>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
                 <div class="col-sm-7">
                     <input class="btn-sm" type="file" accept=".xml, .csv" name="file"/><br/>
+                    <span  style="color: red"> ${messageFile}</span>
+                    <br/>
                 </div>
             </div>
             <!--<div class="form-group">
@@ -63,9 +67,9 @@
                 </div>
             </div>
         </form>
-        <div style="text-align: center; color: red" >
-            ${message}
-        </div>
+        <%--<div style="text-align: center; color: red" >--%>
+            <%--${message}--%>
+        <%--</div>--%>
     </div>
 
 <jsp:include page="footer.jsp"/>
