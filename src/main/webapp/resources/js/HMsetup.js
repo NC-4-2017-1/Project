@@ -1,68 +1,77 @@
 $(document).ready(function () {
+   /* $(".conn-field").click(function () {
+        $("#right_conn").addClass('hide');
+        $("#error_conn").addClass('hide');
+    });*/
     $("#submit").click(function () {
         var data = isData();
-        if (data == false) {
-            return false;
+       if (data == false) {
+            $("#error_conn").html("Connection fields can not be empty!");
+            $("#right_conn").addClass('hide');
+            $("#error_conn").removeClass('hide');
+        }  else {
+            $.ajax({
+                url: "/project/health-monitor-setup-test-conn",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                error: function (responce) {
+                    if (responce.responseText == "successful") {
+                       $("#right_conn").html("Connect successful.");
+                        $("#error_conn").addClass('hide');
+                        $("#right_conn").removeClass('hide');
+                    } else {
+                        $("#error_conn").html(responce.responseText);
+                        $("#right_conn").addClass('hide');
+                        $("#error_conn").removeClass('hide');
+                    }
+                }
+            });
         }
-        $.ajax({
-            url: "/project/health-monitor-setup-test-conn",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-                if (responce.responseText == "successful") {
-                    $("#right_conn").text("Connect successful");
-                    $("#error_conn").addClass('hide');
-                    $("#right_conn").removeClass('hide');
-                }
-                else {
-                    $("#error_conn").text(responce.responseText);
-                    $("#right_conn").addClass('hide');
-                    $("#error_conn").removeClass('hide');
-                }
-            }
-        });
     });
 
     $("#next").click(function () {
         var data = isData();
         if (data == false) {
-            return false;
-        }
-        $.ajax({
-            url: "/project/health-monitor-setup-test-conn",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-                if (responce.responseText == "successful") {
-                    $.ajax({
-                        url: "/project/health-monitor-setup-save",
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json",
-                        data: JSON.stringify(data),
-                        error: function (responce) {
-                            if (responce.responseText == "successful") {
-                                window.location.assign("/project/health-monitor-settings");
-                            }
-                            else {
-                                $("#error_conn").text(responce.responseText);
-                                $("#right_conn").addClass('hide');
-                                $("#error_conn").removeClass('hide');
-                            }
+            $("#error_conn").html("Connection fields can not be empty!");
+            $("#right_conn").addClass('hide');
+            $("#error_conn").removeClass('hide');
+        } else {
+            $.ajax({
+                    url: "/project/health-monitor-setup-test-conn",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    error: function (responce) {
+                        if (responce.responseText == "successful") {
+                            $.ajax({
+                                url: "/project/health-monitor-setup-save",
+                                type: "POST",
+                                dataType: "json",
+                                contentType: "application/json",
+                                data: JSON.stringify(data),
+                                error: function (responce) {
+                                    if (responce.responseText == "successful") {
+                                        window.location.assign("/project/health-monitor-settings");
+                                    }
+                                    else {
+                                        $("#error_conn").html(responce.responseText);
+                                        $("#right_conn").addClass('hide');
+                                        $("#error_conn").removeClass('hide');
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
-                else {
-                    $("#error_conn").text(responce.responseText);
-                    $("#right_conn").addClass('hide');
-                    $("#error_conn").removeClass('hide');
-                }
+                        else {
+                            $("#error_conn").html(responce.responseText);
+                            $("#right_conn").addClass('hide');
+                            $("#error_conn").removeClass('hide');
+                        }
+                    }
+                });
             }
-        });
     });
 
     function isData() {
@@ -86,7 +95,9 @@ $(document).ready(function () {
 
     $( "#connform" ).validate( {
         rules: {
-            serverName: "required",
+            serverName: {
+                required: true
+            },
             port: {
                 required: true,
                 number: true,
@@ -106,10 +117,12 @@ $(document).ready(function () {
             }
         },
         messages: {
-            serverName: "Please enter server name",
+            serverName: {
+                required: "Please enter server name"
+            },
             port: {
                 required: "Please enter port",
-                number: "Enter digit",
+                number: "Enter number",
                 min: "Port value must be between 0 and 65000",
                 max: "Port value must be between 0 and 65000"
             },

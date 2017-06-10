@@ -13,6 +13,7 @@
     <title>HM Setup</title>
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="    crossorigin="anonymous"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
@@ -20,48 +21,57 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
-        <h2 class="col-sm-offset-4"> HM project Connection:</h2>
+<div class = "container-hm-setup">
+        <h3 class="pageName"> HM project Connection:</h3>
         <form id="connform" class="form-horizontal" role="form">
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="serverName">Server name:</label>
+                <label class="control-label col-sm-5" for="serverName">Server name:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="serverName" name="serverName" placeholder="Server name" required autofocus>
+                    <input type="text" class="form-control conn-field input-sm" id="serverName" name="serverName" placeholder="Server name" required autofocus>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="port">Port:</label>
+                <label class="control-label col-sm-5" for="port">Port:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="port" name="port" placeholder="Port" required>
+                    <input type="text" class="form-control conn-field input-sm" id="port" name="port" placeholder="Port" required>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="sid">SID:</label>
+                <label class="control-label col-sm-5" for="sid">SID:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="sid" name="sid" placeholder="SID" required>
+                    <input type="text" class="form-control conn-field input-sm" id="sid" name="sid" placeholder="SID" required>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="username">User name:</label>
+                <label class="control-label col-sm-5" for="username">User name:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="User name" required>
+                    <input type="text" class="form-control conn-field input-sm" id="username" name="username" placeholder="User name" required>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="password">Password:</label>
+                <label class="control-label col-sm-5" for="password">Password:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <input type="text" class="form-control conn-field input-sm" id="password" name="password" placeholder="Password" required>
                 </div>
             </div>
-            <div class="form-group row">
-                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-3" type="button" id="submit">Test</button>
-                <button class="btn btn-lg btn-primary col-sm-2 col-md-offset-1" type="button" id="next">Next</button>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-5 col-sm-offset-3 alert alert-danger hide" id = "error_conn"></div>
-                <div class="col-sm-5 col-sm-offset-3 alert alert-success hide" id = "right_conn"></div>
+            <div>
+                <div class="col-sm-5">
+                <button class="btn btn-sm btn-primary col-sm-3 col-sm-offset-9" type="button" id="submit">
+                    <i class="fa fa-cog" aria-hidden="true"></i><b>&nbsp;Test</b>
+                </button>
+                </div>
+
+                <div class="col-sm-5">
+                <button class="btn btn-sm btn-primary col-sm-3" type="button" id="next">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                </button>
+                </div>
             </div>
         </form>
+    <div class="hm-setup-error">
+        <div class="col-sm-5 col-sm-offset-3 alert alert-danger hide" id = "error_conn"></div>
+        <div class="col-sm-5 col-sm-offset-3 alert alert-success hide" id = "right_conn"></div>
+    </div>
 </div>
 <jsp:include page="footer.jsp"/>
 </body>

@@ -23,25 +23,24 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
     <div class="container" style="width: 300px;">
                 <c:url value="/j_spring_security_check" var="loginUrl"/>
                 <form action="${loginUrl}" method="post">
-                    <h2 class="form-signin-heading">Please sign in</h2>
+                    <h3 class="form-signin-heading pageName">Please sign in</h3>
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="j_username" placeholder="Email" required autofocus>
+                            <input type="text" class="form-control input-sm" name="j_username" placeholder="Email" required autofocus>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="j_password" placeholder="Password" required>
+                            <input type="password" class="form-control input-sm" name="j_password" placeholder="Password" required>
                         </div>
                     </div>
                     <div class="form-group">
-                       <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+                       <button class="btn btn-sm btn-primary btn-block" type="submit">Log in</button>
                     </div>
 
                     <c:if test = "${param.error != null}">
@@ -51,7 +50,6 @@
                     </c:if>
 
                 </form>
-    </div>
 </div>
 
 <jsp:include page="footer.jsp"/>

@@ -30,15 +30,14 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
     <div class="container">
-        <h2 class="col-sm-offset-3"> Visualization Setup</h2>
+        <h3 class="pageName"> Visualization Setup</h3>
         <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/upload"
               enctype="multipart/form-data">
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select date format:</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="dateFormat" name="dateFormat">
+                    <select class="form-control input-sm" id="dateFormat" name="dateFormat">
                         <c:forEach items="${dateFormat}" var="entry">
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
@@ -48,18 +47,27 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
                 <div class="col-sm-7">
-                    <input type="file" accept=".xml, .csv" name="file"/><br/>
+                    <input class="btn-sm" type="file" accept=".xml, .csv" name="file"/><br/>
                 </div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <input class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="submit" value="Next"/>
+            </div>-->
+
+            <div>
+                <div class="col-sm-2 col-sm-offset-3" ></div>
+                <div class="col-sm-3">
+                    <button class="btn btn-sm btn-primary col-sm-6" type="submit" value="Next">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                    </button>
+                </div>
             </div>
         </form>
         <div style="text-align: center; color: red" >
             ${message}
         </div>
     </div>
-</div>
+
 <jsp:include page="footer.jsp"/>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.dreamteam.datavisualizator.controllers;
 import com.dreamteam.datavisualizator.common.beans.CustomerProject;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
+import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
@@ -308,11 +309,24 @@ public class ProjectController {
     @ResponseBody
     public String healthMonitorSetupTestConn(@RequestBody DataSourceRequest request, Model model) {
         try {
-            healthMonitorProjectDAOImpl.setDataSourceTemplate(request.getServerName(),
-                    request.getPort(), request.getSid(), request.getUsername(), request.getPassword());
-            return "successful";
-        } catch (Exception e) {
-            LOGGER.error("healthMonitorSetupTestConn" + e.getMessage());
+            String serverName = request.getServerName();
+            String port = request.getPort();
+            String sid = request.getSid();
+            String userName = request.getUsername();
+            String password = request.getPassword();
+            if(serverName != null && port != null && sid != null && userName != null && password != null) {
+                int testPort = Integer.parseInt(port.trim());
+                if (testPort >= 1 && testPort <= 65000) {
+                    healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
+                    return "successful";
+                }
+                return "Port value must be between 0 and000 65000.";
+            }
+            return "Connection fields can not be empty!";
+        } catch (NumberFormatException e) {
+            return "Enter number for port.";
+        } catch (HMConnectionException e) {
+            LOGGER.error("Hm connection error." + e.getMessage());
             return e.getMessage();
         }
     }
@@ -322,16 +336,29 @@ public class ProjectController {
     @ResponseBody
     public String healthMonitorSetupNext(@RequestBody DataSourceRequest request, Model model) {
         try {
-            healthMonitorProjectDAOImpl.setDataSourceTemplate(request.getServerName(),
-                    request.getPort(), request.getSid(), request.getUsername(), request.getPassword());
-            sessionScopeBean.getCustomerProject().setServerName(request.getServerName());
-            sessionScopeBean.getCustomerProject().setPort(request.getPort());
-            sessionScopeBean.getCustomerProject().setSid(request.getSid());
-            sessionScopeBean.getCustomerProject().setUserName(request.getUsername());
-            sessionScopeBean.getCustomerProject().setPassword(request.getPassword());
-            return "successful";
-        } catch (Exception e) {
-            LOGGER.error("healthMonitorSetupNext" + e.getMessage());
+            String serverName = request.getServerName();
+            String port = request.getPort();
+            String sid = request.getSid();
+            String userName = request.getUsername();
+            String password = request.getPassword();
+            if(serverName != null && port != null && sid != null && userName != null && password != null) {
+                int testPort = Integer.parseInt(port.trim());
+                if (testPort >= 1 && testPort <= 65000) {
+                    healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
+                    sessionScopeBean.getCustomerProject().setServerName(request.getServerName());
+                    sessionScopeBean.getCustomerProject().setPort(request.getPort());
+                    sessionScopeBean.getCustomerProject().setSid(request.getSid());
+                    sessionScopeBean.getCustomerProject().setUserName(request.getUsername());
+                    sessionScopeBean.getCustomerProject().setPassword(request.getPassword());
+                    return "successful";
+                }
+                return "Port value must be between 0 and 65000.";
+            }
+            return "Connection fields can not be empty!";
+        } catch (NumberFormatException e) {
+            return "Enter number for port";
+        } catch (HMConnectionException e) {
+            LOGGER.error("Hm connection error" + e.getMessage());
             return e.getMessage();
         }
     }

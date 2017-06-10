@@ -2,6 +2,9 @@
     text-align: center;
     color: #5bc0de;
 }
+.hm-setup-error {
+    margin-top: 50px;
+}
 
 .adminPanel{
     overflow-x: auto;

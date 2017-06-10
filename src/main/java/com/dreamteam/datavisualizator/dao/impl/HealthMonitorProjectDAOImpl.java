@@ -80,7 +80,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }catch (Exception e) {
             LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
-            throw e;
+            throw new HMConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
+                    + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ".");
         }
     }
 

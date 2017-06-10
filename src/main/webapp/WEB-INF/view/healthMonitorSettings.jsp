@@ -22,11 +22,12 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
     <div class="container">
+
         <div class="col-sm-offset-3">
-            <h2> Select parameters:</h2>
+
                 <form method="POST"  role="form" action="/project/health-monitor-settings-post">
+
                     <div class="row col-sm-12">
                         <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
                             <div class="alert alert-danger col-sm-6" role="alert">
@@ -37,6 +38,9 @@
                         </c:if>
                     </div>
                     <div class="row col-sm-12">
+                        <div class="row col-sm-12">
+                            <h3 class="pageName col-sm-6"> Select parameters:</h3>
+                        </div>
                         <div class="form-group row col-sm-4">
                             <input type="checkbox" name="instshow"  id="instshow" class="custom-control-input" value="0" checked disabled>
                             <input type="checkbox" name="selectors[]"  id="checkinstance" class="custom-control-input" value="8" checked hidden>
@@ -64,7 +68,7 @@
                             <label for="sizetablelobCheck" class="custom-control custom-checkbox">Size for table-index-lob</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="tableindexlob" name="tableindexlob" placeholder="Segment name">
+                            <input type="text" class="form-control input-sm" id="tableindexlob" name="tableindexlob" placeholder="Segment name">
                         </div>
                     </div>
 
@@ -74,7 +78,7 @@
                             <label for="activesessioncheck" class="custom-control custom-checkbox">Active sessions</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="activesession" name="activesession" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="activesession" name="activesession" placeholder="Top value">
                         </div>
                     </div>
 
@@ -84,7 +88,7 @@
                             <label for="activequeriescheck" class="custom-control custom-checkbox">Active queries</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="activequeries" name="activequeries" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="activequeries" name="activequeries" placeholder="Top value">
                         </div>
                     </div>
 
@@ -94,7 +98,7 @@
                             <label for="queriesrescheck" class="custom-control custom-checkbox">Queries results</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="queriesres" name="queriesres" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="queriesres" name="queriesres" placeholder="Top value">
                         </div>
                     </div>
 
@@ -104,7 +108,7 @@
                             <label for="sqlmonitorcheck" class="custom-control custom-checkbox">SQL queries monitor</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="sqlmonitor" name="sqlmonitor" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="sqlmonitor" name="sqlmonitor" placeholder="Top value">
                         </div>
                     </div>
 
@@ -114,7 +118,7 @@
                             <label for="activejobscheck" class="custom-control custom-checkbox">Active jobs</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="activejobs" name="activejobs" placeholder="Hour count">
+                            <input type="text" class="form-control input-sm" id="activejobs" name="activejobs" placeholder="Hour count">
                         </div>
                     </div>
 
@@ -124,19 +128,23 @@
                             <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="graph" name="graph" placeholder="Hour count">
+                            <input type="text" class="form-control input-sm" id="graph" name="graph" placeholder="Hour count">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary">Create</button>
+                           <!-- <button type="submit" class="btn btn-primary">Create</button>-->
+                            <button class="btn btn-sm btn-primary" type="submit" id="next">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                        </button>
                         </div>
                     </div>
+
                 </form>
         </div>
     </div>
-</div>
+
 <jsp:include page="footer.jsp"/>
 </body>
 </html>

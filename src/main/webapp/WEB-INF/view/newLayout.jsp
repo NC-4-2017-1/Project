@@ -23,14 +23,13 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
     <div class="container">
-        <h2 class="col-sm-offset-4"> Please select project Type:</h2>
+        <h3 class="pageName"> Please select project type:</h3>
         <form data-toggle="validator" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Type:</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="type" name="type">
+                    <select class="form-control input-sm" id="type" name="type">
                         <c:forEach items="${projectTypes}" var="entry">
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
@@ -40,25 +39,36 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="name">Name:</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="name" required>
+                    <input type="text" class="form-control input-sm" id="name" name="name" placeholder="name" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
-                <div class="col-sm-3">
-                    <textarea class="form-control" rows="5" id="description"></textarea>
+                <div class="col-sm-3 ">
+                    <textarea class="form-control input-sm" rows="5" id="description"></textarea>
                 </div>
+            </div>
                 <!--<label class="control-label col-sm-2 col-sm-offset-3" for="description"></label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" id="description" name="description" placeholder="Description" required>
-                </div>-->
+                </div>
             </div>
             <div class="form-group">
-                <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next</button>
+                <button class="btn btn-sm btn-success col-sm-2 col-sm-offset-5" type="button" id="submit">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                </button>
+            </div>-->
+
+            <div>
+                <div class="col-sm-2 col-sm-offset-3" ></div>
+                <div class="col-sm-3">
+                    <button class="btn btn-sm btn-primary col-sm-6" type="button" id="submit">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                    </button>
+                </div>
             </div>
         </form>
-    </div>
-</div>
+ </div>
 
 <script>
 

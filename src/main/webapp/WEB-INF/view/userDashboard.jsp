@@ -35,7 +35,7 @@
 
 <jsp:include page="header.jsp"/>
 <div class="container-userdash">
-    <h1 class="pageName">PROJECT LIST</h1>
+    <h3 class="pageName">PROJECT LIST</h3>
     <div class="newPblock">
         <button class="btn btn-sm btn-success btn-lg new-proj" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add Project</b></i>
