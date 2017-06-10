@@ -17,6 +17,7 @@ public abstract class AbstractProject implements Project {
     private String description;
     private ProjectTypes type;
     private List<User> usersProjectAccessible;
+    private String authorFullName;
 
 
     public void setId(BigInteger id) {
@@ -74,4 +75,8 @@ public abstract class AbstractProject implements Project {
     public List<User> getUsersProjectAccessibleTo() {
         return usersProjectAccessible;
     }
+
+    public String getAuthorFullName(){return authorFullName;}
+
+    public void setAuthorFullName(String authorFullName){ this.authorFullName = authorFullName;}
 }

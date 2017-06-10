@@ -10,7 +10,7 @@
 <br>
 <br>
 <br>
-<div class="container" style="position: fixed; bottom: 0; width: 100%;">
+<div class="container" style=" bottom: 0;">
     <div class="row">
         <div class="page-wrap">
 

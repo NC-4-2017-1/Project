@@ -249,7 +249,7 @@ public class ProjectController {
 
         CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         Project project = new DataVisualizationProject
-                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId())
+                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId(),sessionScopeBean.getUser().getFullName())
                 .buildDescription(customerProject.getDescription())
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
@@ -367,7 +367,8 @@ public class ProjectController {
 
         CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         HealthMonitorProject.Builder projectBuilder = new HealthMonitorProject.Builder(null, customerProject.getName(),
-                null, customerProject.getDescription(), customerProject.getAuthor(), customerProject.getSid(),
+                null, customerProject.getDescription(), customerProject.getAuthor(), sessionScopeBean.getUser().getFullName(),
+                customerProject.getSid(),
                 customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
                 customerProject.getPassword());
         projectBuilder.buildProject();

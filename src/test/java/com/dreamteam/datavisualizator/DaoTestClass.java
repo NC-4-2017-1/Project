@@ -148,7 +148,8 @@ public class DaoTestClass {
         * */
 
         DataVisualizationProject prFromDb = (DataVisualizationProject) dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(57l));
-        DataVisualizationProject prGenerated = new DataVisualizationProject.Builder("lasd213", new Date(), prFromDb.getAuthor()).buildGraphics(prFromDb.getGraphics()).buildProject();
+        DataVisualizationProject prGenerated = new DataVisualizationProject.Builder("lasd213", new Date(),
+                prFromDb.getAuthor(),  prFromDb.getAuthorFullName()).buildGraphics(prFromDb.getGraphics()).buildProject();
 
         Project project = dataVisualizationProjectDAO.saveProject(prGenerated);
 

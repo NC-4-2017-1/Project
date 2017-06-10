@@ -108,9 +108,9 @@ public class HmGraphSerializer {
                 endDate.add(new StringToDateConverter(dateFormat).convertDateFromString(graphSet.getString(rowNames.end.toString())));
                 //startDate.add(graphSet.getString(rowNames.start.toString()));
               //  endDate.add(graphSet.getDate(rowNames.end.toString()));
-                informationTask.add("<br><b>Status:</b> " + (graphSet.getString(rowNames.status.toString()) == null?" - ":graphSet.getString(rowNames.status.toString()))
-                        + "; <br><b>Error code:</b> " + (graphSet.getString(rowNames.errorC.toString()) == null ?" - ":graphSet.getString(rowNames.errorC.toString()))
-                        + "; <br><b>Error message: </b>"  + (graphSet.getString(rowNames.errorM.toString()) == null?" - ":graphSet.getString(rowNames.errorM.toString()))
+                informationTask.add("<br><b>Status:</b> " + (graphSet.getString(rowNames.status.toString()) == null?" not defined":graphSet.getString(rowNames.status.toString()))
+                        + "; <br><b>Error code:</b> " + (graphSet.getString(rowNames.errorC.toString()) == null ?" not defined":graphSet.getString(rowNames.errorC.toString()))
+                        + "; <br><b>Error message: </b>"  + (graphSet.getString(rowNames.errorM.toString()) == null?" not defined":graphSet.getString(rowNames.errorM.toString()))
                         + "; <br><b>SQL:</b> " + ClobToStringService.clobToString(graphSet.getClob(rowNames.sqlText.toString())));
 
             }

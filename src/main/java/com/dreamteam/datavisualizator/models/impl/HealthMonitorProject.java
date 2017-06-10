@@ -19,6 +19,7 @@ public class HealthMonitorProject extends AbstractProject {
     private String serverName;
     private String userName;
     private String password;
+    private String authorFullName;
 
     private HealthMonitorProject(Builder builder) {
         this.setId(builder.id);
@@ -26,6 +27,7 @@ public class HealthMonitorProject extends AbstractProject {
         this.setCreationDate(builder.creationDate);
         this.setDescription(builder.description);
         this.setAuthor(builder.author);
+        this.setAuthorFullName(builder.authorFullName);
         this.setSid(builder.sid);
         this.setPort(builder.port);
         this.setServerName(builder.serverName);
@@ -93,6 +95,10 @@ public class HealthMonitorProject extends AbstractProject {
         this.graphic = graphic;
     }
 
+    public String getAuthorFullName() {      return authorFullName;   }
+
+    public void setAuthorFullName(String authorFullName) {      this.authorFullName = authorFullName;   }
+
     public static class Builder {
         private BigInteger id;
         private String name;
@@ -104,20 +110,22 @@ public class HealthMonitorProject extends AbstractProject {
         private String serverName;
         private String userName;
         private String password;
+        private String authorFullName;
 
         private List<User> usersProjectAccessible;
         private Map<BigInteger, Selector> selectors;
         private Graphic graphic;
 
-        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author){
+        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author, String authorFullName){
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
             this.description = description;
             this.author = author;
+            this.authorFullName = authorFullName;
         }
 
-        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author,
+        public Builder(BigInteger id, String name, Date creationDate, String description, BigInteger author, String authorFullName,
                        String sid, String port, String serverName, String userName, String password) {
             this.id = id;
             this.name = name;
@@ -129,6 +137,7 @@ public class HealthMonitorProject extends AbstractProject {
             this.userName = userName;
             this.password = password;
             this.author = author;
+            this.authorFullName = authorFullName;
         }
 
         public Builder buildDescription(String val) {

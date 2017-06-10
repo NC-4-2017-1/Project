@@ -235,8 +235,8 @@ public class UserControllerTest {
         String name2 = "secondProject";
         Date date1 = new Date();
         Date date2 = new Date();
-        Project project1 = new DataVisualizationProject.Builder(name1, date1, id).buildProject();
-        Project project2 = new DataVisualizationProject.Builder(name2, date2, id).buildProject();
+        Project project1 = new DataVisualizationProject.Builder(name1, date1, id, userDaoMock.getUserById(id).getFullName()).buildProject();
+        Project project2 = new DataVisualizationProject.Builder(name2, date2, id, userDaoMock.getUserById(id).getFullName()).buildProject();
 
         when(userDaoMock.getAllUserProjects(user)).thenReturn(Arrays.asList(project1, project2));
 

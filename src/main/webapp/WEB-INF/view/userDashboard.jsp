@@ -15,72 +15,86 @@
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="script">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="script">
     <link href="<c:url value="/resources/css/styles-dashboard.css" />" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-</head>
 
+    <script src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script src="/resources/js/bootstrap.min.js"></script>
+</head>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function myFunction() {
+        window.location.assign("/project/new-layout");
+    }
+</script>
 <body>
 
 <jsp:include page="header.jsp"/>
-<div class="modal-content container-userdash">
-    <div class="center-block" style="width: 140px; height: 45px; margin-top: 20px; margin-bottom: 30px;">
-        <button class="btn btn-primary btn-lg new-proj" onclick="myFunction()">New Project</button>
+<div class="container-userdash">
+    <h1 class="pageName">PROJECT LIST</h1>
+    <div class="newPblock">
+        <button class="btn btn-sm btn-success btn-lg new-proj" onclick="myFunction()">
+        <i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add Project</b></i>
+        </button>
     </div>
-
-
+    <div>
     <c:forEach items="${userProjects}" var="project">
         <div class="project-item">
-
-
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h1 class="panel-title">Project: <strong>${project.name}</strong></h1>
-                </div>
-                <div class="panel-body">
-
-                    <div class="pr-type">
-                        Type: <strong>
-                        ${project.type.toString()}
-                    </strong>
+           <!-- <div class="row pr-info">
+                    <div class="pr-type col-sm-3">
+                        Type: <strong>${project.type.toString()}</strong>
                     </div>
-                    <div class="pr-date">
-                        Created: <strong>
-                        <u>${project.creationDate}</u>
-                    </strong>
+                    <div class="pr-date col-sm-3">
+                        Created: <strong><u>${project.creationDate}</u></strong>
                     </div>
-                    <pre>${project.description}</pre>
-
-                </div>
-                <div class="panel-footer">
-                <c:choose>
-                    <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
-                        <form role="form" method="GET" action="/project/project-dv">
-                                <button type="submit" class="btn btn-default btn-md glyphicon glyphicon-eye-open" name="projDvId" value="${project.id}"></button>
-
-                        </form>
-                    </c:when>
-                    <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
-                        <form role="form" method="GET" action="/project/project-hm">
-                                <%--         <input type="submit" name="projHmId" value="${project.id}">--%>
-                            <button type="submit" class="btn btn-default btn-md glyphicon glyphicon-eye-open" name="projHmId" value="${project.id}"></button>
-                        </form>
-                    </c:when>
-                </c:choose>
-                </div>
-            </div>
+                    <div class="pr-autor col-sm-3">
+                        Autor: <strong><u>_________________</u></strong>
+                    </div>
+            </div>-->
+            <table class="table project-list">
+                <thead>
+                    <tr>
+                        <th colspan="3">
+                            <c:choose>
+                                <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
+                                    <form role="form" method="GET" action="/project/project-dv">
+                                        <b><u>Project:</u> </b><button type="submit" class="btn btn-secondary btn-sm pr-name" data-toggle="tooltip" title="${project.description}" data-placement="right"
+                                                                name="projDvId" value="${project.id}">${project.name}</button>
+                                    </form>
+                                </c:when>
+                                <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
+                                    <!--<b>Project: </b><a href="/project/project-hm" data-toggle="tooltip" title="${project.description}" data-placement="right" name="projHmId" value="${project.id}">${project.name}</a>                    -->
+                                    <form role="form" method="GET" action="/project/project-hm">
+                                        <b><u>Project:</u> </b><button type="submit" class="btn btn-secondary btn-sm pr-name" data-toggle="tooltip" title="${project.description}" data-placement="right"
+                                                                name="projHmId" value="${project.id}">${project.name}</button>
+                                            <%--  <button type="submit" class="btn btn-default btn-md glyphicon glyphicon-eye-open" name="projHmId" value="${project.id}"></button>--%>
+                                    </form>
+                                </c:when>
+                            </c:choose>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr class="active">
+                <td class="pr-date">
+                    Created: <strong>${project.creationDate}</strong>
+                </td>
+                <td class="pr-type">
+                        Type: <strong>${project.type.toString()}</strong>
+                </td>
+                <td class="pr-autor">
+                    Autor: <strong>${project.authorFullName}</strong>
+                </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </c:forEach>
-
-
-
-    <script>
-        function myFunction() {
-            window.location.assign("/project/new-layout");
-        }
-    </script>
+    </div>
 
 </div>
 <jsp:include page="footer.jsp"/>

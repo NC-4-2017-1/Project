@@ -1,13 +1,17 @@
 .project-item {
-    margin: 20px;
+    margin-top: 15px;
+}
+.newPblock{
+    margin-bottom: 50px;
 }
 
 .new-proj {
-
+    position: absolute;
+    right: 20px;
 }
 
-.pr-name {
-
+.pr-name:hover {
+    border: 1px solid #18b4ff;
 }
 
 .pr-type, .pr-date {
@@ -18,9 +22,10 @@
 
 }
 
-.open-button {
-
+.project-list{
+    margin: 0px;
 }
+
 
 
 

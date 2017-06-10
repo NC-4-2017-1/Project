@@ -352,7 +352,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         }
     }
 
-    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description, sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
+    private static final String SELECT_HMPROJECTS_BY_AUTHOR = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author,author.name author_name, description.value description, sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " FROM objects hmproject, attributes creation_date, objects author, attributes description, objreference ref, attributes sid, attributes port, attributes server_name, attributes user_name, attributes password" +
             " WHERE hmproject.object_type_id = 3" +
             " AND hmproject.object_id = creation_date.object_id" +
@@ -374,7 +374,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " AND ref.reference = author.object_id" +
             " AND author.object_id=?" +
             " ORDER BY creation_date.date_value";
-    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, author.name author_name,description.value description" +
             " FROM objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
             " WHERE hmproject.object_type_id = 3" +
             " AND hmproject.object_id = creation_date.object_id" +
@@ -399,7 +399,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " AND reference.reference = graph.object_id" +
             " AND reference.object_id = project.object_id" +
             " AND project.object_id = ?";
-    private static final String SELECT_HMPROJECT_BY_ID = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+    private static final String SELECT_HMPROJECT_BY_ID = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,author.name author_name,description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " FROM objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
             " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
@@ -422,7 +422,8 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " AND ref.object_id = hmproject.object_id" +
             " AND ref.reference = author.object_id" +
             " AND hmproject.object_id = ? ";
-    private static final String SELECT_HMPROJECT_BY_NAME = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date,author.object_id author,description.value description," +
+    private static final String SELECT_HMPROJECT_BY_NAME = "SELECT hmproject.object_id id, hmproject.name name," +
+            " creation_date.date_value creation_date,author.object_id author, author.name author_name, description.value description," +
             " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
             " FROM objects hmproject, attributes creation_date,objects author, attributes description, attributes sid," +
             " attributes port, attributes server_name, attributes user_name, attributes password, objreference ref " +
@@ -527,6 +528,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         name("name"),
         createDate("creation_date"),
         author("author"),
+        authorName("author_name"),
         description("description"),
         sid("sid"),
         port("port"),
@@ -575,13 +577,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         Date creationDate = rs.getDate(HWProjectColumnName.createDate.toString());
         String description = rs.getString(HWProjectColumnName.description.toString());
         BigInteger author = BigInteger.valueOf(rs.getLong(HWProjectColumnName.author.toString()));
+        String authorName = rs.getString(HWProjectColumnName.authorName.toString());
         String sid = rs.getString(HWProjectColumnName.sid.toString());
         String port = rs.getString(HWProjectColumnName.port.toString());
         String serverName = rs.getString(HWProjectColumnName.serverName.toString());
         String userName = rs.getString(HWProjectColumnName.userName.toString());
         String password = rs.getString(HWProjectColumnName.password.toString());
         HealthMonitorProject.Builder builder = new HealthMonitorProject.Builder(id, name, creationDate,
-                description, author, sid, port, serverName, userName, password);
+                description, author, authorName, sid, port, serverName, userName, password);
         return builder;
     }
 

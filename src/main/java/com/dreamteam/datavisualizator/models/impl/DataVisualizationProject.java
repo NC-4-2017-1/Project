@@ -11,12 +11,14 @@ import java.util.List;
 
 public class DataVisualizationProject extends AbstractProject {
     private List<Graphic> graphics;
+    private String authorFullName;
 
     private DataVisualizationProject(Builder builder) {
         this.setId(builder.id);
         this.setName(builder.name);
         this.setCreationDate(builder.creationDate);
         this.setAuthor(builder.author);
+        this.setAuthorFullName(builder.authorFullName);
         this.setDescription(builder.description);
         this.setUsersProjectAccessible(builder.usersProjectAccessible);
         this.setGraphics(builder.graphics);
@@ -31,19 +33,25 @@ public class DataVisualizationProject extends AbstractProject {
         this.graphics = graphics;
     }
 
+    public String getAuthorFullName() {       return this.authorFullName;   }
+
+    public void setAuthorFullName(String authorFullName) {      this.authorFullName = authorFullName;   }
+
     public static class Builder {
         private BigInteger id;
         private String name;
         private Date creationDate;
         private BigInteger author;
+        private String authorFullName;
         private String description;
         private List<User> usersProjectAccessible;
         private List<Graphic> graphics;
 
-        public Builder(String name, Date creationDate, BigInteger author) {
+        public Builder(String name, Date creationDate, BigInteger author, String authorFullName) {
             this.name = name;
             this.creationDate = creationDate;
             this.author = author;
+            this.authorFullName = authorFullName;
         }
 
         public Builder buildId(BigInteger id) {

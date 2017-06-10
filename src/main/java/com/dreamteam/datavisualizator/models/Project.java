@@ -16,6 +16,8 @@ public interface Project {
 
     BigInteger getAuthor();
 
+    String getAuthorFullName();
+
     List<User> getUsersProjectAccessibleTo();
 
     String getDescription();

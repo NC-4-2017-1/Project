@@ -237,7 +237,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     }
 
 
-    private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description " +
+    private static final String SELECT_DVPROJECT_BY_ID = "select dvpoject.object_id id, dvpoject.name name, " +
+            "creation_date.date_value creation_date, author.object_id author, author.name author_name, description.value description " +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref " +
             " where dvpoject.object_type_id = 4 " +
             " and dvpoject.object_id = creation_date.object_id " +
@@ -248,7 +249,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.object_id = dvpoject.object_id " +
             " and ref.reference = author.object_id " +
             " and dvpoject.object_id = ?";
-    private static final String SELECT_DVPROJECT_BY_NAME = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+    private static final String SELECT_DVPROJECT_BY_NAME = "select dvpoject.object_id id, dvpoject.name name," +
+            " creation_date.date_value creation_date, author.object_id author, author.name author_name,description.value description" +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
             " where dvpoject.object_type_id = 4" +
             " and dvpoject.object_id = creation_date.object_id" +
@@ -259,7 +261,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.object_id = dvpoject.object_id" +
             " and ref.reference = author.object_id" +
             " and dvpoject.name = ?";
-    private static final String SELECT_DV_PROJECTS_BY_AUTHOR = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+    private static final String SELECT_DV_PROJECTS_BY_AUTHOR = "select dvpoject.object_id id, dvpoject.name name," +
+            " creation_date.date_value creation_date, author.object_id author, author.name author_name,description.value description" +
             " from objects dvpoject, attributes creation_date, objects author, attributes description, objreference ref" +
             " where dvpoject.object_type_id = 4" +
             " and dvpoject.object_id = creation_date.object_id" +
@@ -271,7 +274,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and ref.reference = author.object_id" +
             " and author.object_id=?" +
             " order by creation_date.date_value";
-    private static final String SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO = "select dvpoject.object_id id, dvpoject.name name, creation_date.date_value creation_date, author.object_id author, description.value description" +
+    private static final String SELECT_DV_PROJECTS_USER_HAVE_ACCESS_TO = "select dvpoject.object_id id, dvpoject.name name," +
+            " creation_date.date_value creation_date, author.object_id author,author.name author_name, description.value description" +
             " from objects dvpoject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
             " where dvpoject.object_type_id = 4" +
             " and dvpoject.object_id = creation_date.object_id" +
@@ -325,6 +329,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         name("name"),
         createDate("creation_date"),
         author("author"),
+        authorName("author_name"),
         description("description"),
         json("json"),
         average("average"),
@@ -348,10 +353,11 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             String name = rs.getString(DVProjectColumnName.name.toString());
             Date creationDate = rs.getDate(DVProjectColumnName.createDate.toString());
             BigInteger author = BigInteger.valueOf(rs.getLong(DVProjectColumnName.author.toString()));
+            String authorName = rs.getString(DVProjectColumnName.authorName.toString());
             BigInteger id = BigInteger.valueOf(rs.getLong(DVProjectColumnName.id.toString()));
             String description = rs.getString(DVProjectColumnName.description.toString());
 
-            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(name, creationDate, author);
+            DataVisualizationProject.Builder builder = new DataVisualizationProject.Builder(name, creationDate, author, authorName);
             builder.buildId(id);
             builder.buildDescription(description);
             return builder.buildProject();
