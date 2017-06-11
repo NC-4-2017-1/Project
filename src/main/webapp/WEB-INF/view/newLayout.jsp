@@ -63,7 +63,7 @@
                 <div class="col-sm-2 col-sm-offset-3" ></div>
                 <div class="col-sm-3">
                     <button class="btn btn-sm btn-primary col-sm-6" type="button" id="submit">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                        <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>

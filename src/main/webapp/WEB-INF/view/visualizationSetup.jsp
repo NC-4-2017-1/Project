@@ -42,16 +42,14 @@
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
                     </select>
-                    <span  style="color: red"> ${messageFormat}</span>
-                    <br>
+                   <!-- <span  style="color: red"> ${messageFormat}</span>-->
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
                 <div class="col-sm-7">
-                    <input class="btn-sm" type="file" accept=".xml, .csv" name="file"/><br/>
-                    <span  style="color: red"> ${messageFile}</span>
-                    <br/>
+                    <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file"/><br/>
+                    <!--<span  style="color: red"> ${messageFile}</span>-->
                 </div>
             </div>
             <!--<div class="form-group">
@@ -62,11 +60,21 @@
                 <div class="col-sm-2 col-sm-offset-3" ></div>
                 <div class="col-sm-3">
                     <button class="btn btn-sm btn-primary col-sm-6" type="submit" value="Next">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                       <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
         </form>
+        <c:if test = "${not empty messageFile}">
+            <div class="setup-error">
+             <div class="col-sm-5 col-sm-offset-3 alert alert-danger">${messageFile}</div>
+            </div>
+        </c:if>
+        <c:if test = "${not empty messageFormat}">
+            <div class="setup-error">
+                <div class="col-sm-5 col-sm-offset-3 alert alert-danger">${messageFormat}</div>
+            </div>
+        </c:if>
         <%--<div style="text-align: center; color: red" >--%>
             <%--${message}--%>
         <%--</div>--%>

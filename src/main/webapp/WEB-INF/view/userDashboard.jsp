@@ -34,13 +34,15 @@
 <body>
 
 <jsp:include page="header.jsp"/>
-<div class="container-userdash">
+
     <h3 class="pageName">PROJECT LIST</h3>
-    <div class="newPblock">
-        <button class="btn btn-sm btn-success btn-lg new-proj" onclick="myFunction()">
-        <i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add Project</b></i>
+<div class="row col-sm-12">
+    <div class="col-sm-1 col-sm-offset-11">
+        <button class="btn btn-sm btn-success btn-lg" onclick="myFunction()">
+            <i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add Project</b></i>
         </button>
     </div>
+</div>
     <div>
     <c:forEach items="${userProjects}" var="project">
         <div class="project-item">
@@ -96,7 +98,6 @@
     </c:forEach>
     </div>
 
-</div>
 <jsp:include page="footer.jsp"/>
 
 </body>

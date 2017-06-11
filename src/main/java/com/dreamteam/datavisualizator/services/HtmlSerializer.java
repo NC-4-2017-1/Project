@@ -86,7 +86,7 @@ public class HtmlSerializer {
 
     public static String createHtmlTableForParsingFile(List<Map<String, Object>> resultPrepareParsing, String cssId) {
         StringBuffer htmlTable = new StringBuffer();
-        htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
+        htmlTable.append("<table class=\"table table-responsive table-condensed\" id=\"" + cssId + "\">");
         htmlTable.append("<thead><tr>");
         Set<String> headers = resultPrepareParsing.get(0).keySet();
         for (String header : headers) {

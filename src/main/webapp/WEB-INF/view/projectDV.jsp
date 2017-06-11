@@ -16,13 +16,14 @@
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/styles-projview.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script src="/resources/js/bootstrap.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 </head>
 
 <body>
@@ -30,31 +31,47 @@
 <jsp:include page="header.jsp"/>
 
 
-<div class="projtype"><h1><c:out value="${project.type}"/></h1></div>
-<div class="projname"><h2><c:out value="${project.name}"/></h2></div>
-
-<div class="buttons">
-    <a class="btn btn-danger btn-lg" href="<c:url value="/project/delete/${project.id}" />">
+<div class="projtype"><h3 class="pageName"><c:out value="${project.type}"/></h3></div>
+<div class="projname"><h4><c:out value="${project.name}"/></h4></div>
+<div class="row col-sm-12">
+    <div class="btn-group col-sm-1 col-sm-offset-11">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            Actions <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">
+                <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
+            <li><a href="<c:url value="/project/share/${project.id}" />">
+                <i class="fa fa-share-alt"></i> Share</a></li>
+        </ul>
+    </div>
+</div>
+<!--<div class="buttons">
+    <a class="btn btn-danger btn-sm" href="<c:url value="/project/delete/${project.id}" />">
         <i class="fa fa-trash-o fa-lg"></i> Delete</a>
-    <a class="btn btn-primary btn-lg" href="<c:url value="/project/share/${project.id}" />">
+    <a class="btn btn-primary btn-sm" href="<c:url value="/project/share/${project.id}" />">
         <i class="fa fa-share-alt"></i> Share</a>
+</div>-->
+<div class="row">
+    <h5><b>Author:</b><u><c:out value="${author.fullName}"/></u></h5>
+    <h5><b>Description:</b></h5>
+    <p class="text-muted"><c:out value="${project.description}"/></p>
 </div>
 
-<div class="author"><h4>Author: <c:out value="${author.fullName}"/></h4></div>
+<!--<div class="author"><h4>Author: <c:out value="${author.fullName}"/></h4></div>
 <div class="projdescription">
     <h4>Description:
         <p>
             <c:out value="${project.description}"/>
         </p>
     </h4>
-</div>
+</div>-->
 
 
 <div class="graphs">
 
     <c:forEach items="${graphics}" var="graph">
         <div class="graphitem">
-            <div class="graphname"><h3><c:out value="${graph.name}"/></h3></div>
+            <div class="graphname"><h4><c:out value="${graph.name}"/></h4></div>
             <div id="${graph.id}"
                  style="min-width: 310px; height: 400px; margin: 0 auto; background-color: #5BE870"></div>
             <script>

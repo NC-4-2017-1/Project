@@ -509,19 +509,22 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteProject(@PathVariable BigInteger id) {
-        Project project = projectDAO.getProjectById(id);
-        LOGGER.info("Project we got " + project);
-        if (project != null) {
-            ProjectTypes projectType = project.getType();
-            LOGGER.info("Project type " + projectType);
-            if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
+    @RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
+    public String deleteProject(@PathVariable BigInteger id,@PathVariable ProjectTypes project_type) {
+        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
+            Project project = projectDAO.getProjectById(id);
+            //LOGGER.info("Project DV we got " + project);
+            if (project != null) {
                 projectDAO.deleteProject(project);
-            } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
+            }
+        } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
+            Project project = healthMonitorProjectDAOImpl.getProjectById(id);
+            //LOGGER.info("Project HM we got " + project);
+            if (project != null) {
                 healthMonitorProjectDAOImpl.deleteProject(project);
             }
         }
+        //TODO show errors
         return "redirect:/user/dashboard";
     }
 

@@ -15,9 +15,10 @@
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+    <script src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script src="/resources/js/bootstrap.min.js"></script>
 </head>
 
 <body>

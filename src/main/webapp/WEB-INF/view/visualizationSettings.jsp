@@ -15,23 +15,22 @@
 
     <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="script">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="script">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.js"
-            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+
+    <script src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script src="/resources/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 
 <jsp:include page="header.jsp"/>
 
-<div>Visualization Settings</div>
-<div class="well"><c:out value="${table}" escapeXml="false"></c:out></div>
+<h3 class="pageName"> Visualization Settings</h3>
+<c:out value="${table}" escapeXml="false"></c:out>
 <div class="form-group row">
-    <div class="offset-sm-2 col-sm-10">
-        <button onclick="addGraphRadioButtons()" class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button"
-                id="addgraph">Add graph
+    <div class="col-sm-12">
+        <button onclick="addGraphRadioButtons()" class="btn btn-sm btn-success col-sm-2 col-sm-offset-5" type="button"
+                id="addgraph"><i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add graph</b></i>
         </button>
     </div>
 </div>
@@ -58,8 +57,9 @@
 
 
     <div class="form-group row">
-        <div class="offset-sm-2 col-sm-10">
-            <button class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">Next
+        <div class="col-sm-12">
+            <button class="btn btn-sm btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">
+                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
             </button>
         </div>
     </div>

@@ -63,12 +63,12 @@
 
                 <div class="col-sm-5">
                 <button class="btn btn-sm btn-primary col-sm-3" type="button" id="next">
-                    <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                    <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
                 </div>
             </div>
         </form>
-    <div class="hm-setup-error">
+    <div class="setup-error">
         <div class="col-sm-5 col-sm-offset-3 alert alert-danger hide" id = "error_conn"></div>
         <div class="col-sm-5 col-sm-offset-3 alert alert-success hide" id = "right_conn"></div>
     </div>

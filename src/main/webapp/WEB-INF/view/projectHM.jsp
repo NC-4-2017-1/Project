@@ -40,24 +40,32 @@
     </c:if>
 </div>
 <c:if test = "${not empty project}">
-    <div class="projtype"><h1><c:out value="${project.type}"/></h1></div>
-    <div class="projname"><h2><c:out value="${project.name}"/></h2></div>
+    <div class="projtype"><h3 class="pageName"><c:out value="${project.type}"/></h3></div>
+    <div class="projname"><h4><c:out value="${project.name}"/></h4></div>
 
-    <div class="buttons">
-        <a class="btn btn-danger btn-lg" href="<c:url value="/project/delete/${project.id}" />">
-            <i class="fa fa-trash-o fa-lg"></i> Delete</a>
-        <a class="btn btn-primary btn-lg"  href="<c:url value="/project/share/${project.id}" />">
-            <i class="fa fa-share-alt"></i> Share</a>
+    <div class="row col-sm-12">
+        <div class="btn-group col-sm-1 col-sm-offset-11">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Actions <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="<c:url value="/project/delete/${project.id}/${project.type}" />">
+                    <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
+                <li><a href="<c:url value="/project/share/${project.id}" />">
+                    <i class="fa fa-share-alt"></i> Share</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <h5><b>Author: </b><u><c:out value="${author.fullName}"/></u></h5>
+        <h5><b>Connection details:</b>
+            <u>Server</u> - <c:out value="${project.serverName}"/>;
+            <u>Port</u> - <c:out value="${project.port}"/>;  <u>SID</u> - <c:out value="${project.sid}"/>;
+            <u>User name</u> - <c:out value="${project.userName}"/>;  <u>Password</u>  - <c:out value="${project.password}"/>;</h5>
+        <h5><b>Description:</b></h5>
+        <p class="text-muted"><c:out value="${project.description}"/></p>
     </div>
 
-    <div class="projdescription jumbotron">
-        <h4>Author:</h4>
-        <pre class="text-success"><c:out value="${author.fullName}"/></pre>
-        <h4>Connection details:</h4>
-        <pre class="text-primary">Server - <c:out value="${project.serverName}"/>;   Port - <c:out value="${project.port}"/>;  SID - <c:out value="${project.sid}"/>;  User name - <c:out value="${project.userName}"/>;  Password  - <c:out value="${project.password}"/>;</pre>
-        <h4>Description:</h4>
-        <pre class="text-muted"><c:out value="${project.description}"/></pre>
-    </div>
+
     <ul class="nav nav-tabs" id="myTab">
         <c:forEach items="${project.selectors}" var="entry">
             <li><a data-target="#${entry.key}" data-toggle="tab">${entry.value.name}</a></li>

@@ -1,14 +1,6 @@
 .project-item {
     margin-top: 15px;
 }
-.newPblock{
-    margin-bottom: 50px;
-}
-
-.new-proj {
-    position: absolute;
-    right: 20px;
-}
 
 .pr-name:hover {
     border: 1px solid #18b4ff;
