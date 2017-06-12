@@ -12,7 +12,7 @@ public class UserRequestValidator {
         if (firstName == null||firstName.isEmpty()||firstName.toCharArray().length>20) return false;
         if (lastName == null||lastName.isEmpty()||lastName.toCharArray().length>20) return false;
         if (email == null||!email.matches("^.+@.+\\..+$")||email.length()>20) return false;
-        if (password == null||password.length()<6||password.length()>15) return false;
+        if (password == null||password.length()<6||password.length()>20) return false;
 
         return true;
     }
