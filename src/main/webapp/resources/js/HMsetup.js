@@ -1,14 +1,31 @@
 $(document).ready(function () {
-   /* $(".conn-field").click(function () {
-        $("#right_conn").addClass('hide');
-        $("#error_conn").addClass('hide');
-    });*/
+
+    $("#submit").on('click', function() {
+        $("#connform").valid();
+    });
+
+    $("#next").on('click', function() {
+        $("#connform").valid();
+    });
+
+    $('#connform input').on('keyup blur', function () {
+        if ($('#connform').valid()) {
+            $('#submit').prop('disabled', false);
+            $('#next').prop('disabled', false);
+        } else {
+            $('#next').prop('disabled', 'disabled');
+            $('#submit').prop('disabled', 'disabled');
+        }
+    });
+
     $("#submit").click(function () {
+        $('#submit').button('loading');
         var data = isData();
        if (data == false) {
-            $("#error_conn").html("Connection fields can not be empty!");
+           /* $("#error_conn").html("Connection fields can not be empty!");
             $("#right_conn").addClass('hide');
-            $("#error_conn").removeClass('hide');
+            $("#error_conn").removeClass('hide');*/
+           $("#connform").valid();
         }  else {
             $.ajax({
                 url: "/project/health-monitor-setup-test-conn",
@@ -17,6 +34,7 @@ $(document).ready(function () {
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 error: function (responce) {
+                    $('#submit').button('reset');
                     if (responce.responseText == "successful") {
                        $("#right_conn").html("Connect successful.");
                         $("#error_conn").addClass('hide');
@@ -32,11 +50,13 @@ $(document).ready(function () {
     });
 
     $("#next").click(function () {
+        $('#next').button('loading');
         var data = isData();
         if (data == false) {
-            $("#error_conn").html("Connection fields can not be empty!");
+            /*$("#error_conn").html("Connection fields can not be empty!");
             $("#right_conn").addClass('hide');
-            $("#error_conn").removeClass('hide');
+            $("#error_conn").removeClass('hide');*/
+            $("#connform").valid();
         } else {
             $.ajax({
                     url: "/project/health-monitor-setup-test-conn",
@@ -45,6 +65,7 @@ $(document).ready(function () {
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     error: function (responce) {
+                        $('#next').button('reset');
                         if (responce.responseText == "successful") {
                             $.ajax({
                                 url: "/project/health-monitor-setup-save",
@@ -138,16 +159,23 @@ $(document).ready(function () {
                 required: "Please enter user name"
             }
         },
-        errorElement: "em",
-        errorPlacement: function ( error, element ) {
-            error.addClass( "help-block alert-danger" );
-            error.insertAfter( element );
+        tooltip_options: {
+            serverName: {placement:'right'},
+            port: {placement:'right'},
+            sid: {placement:'right'},
+            password: {placement:'right'},
+            username: {placement:'right'}
         },
-        highlight: function ( element, errorClass, validClass ) {
-            $( element ).parents( ".col-sm-3" ).addClass( "has-error" ).removeClass( "has-success" );
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $( element ).parents( ".col-sm-3" ).addClass( "has-success" ).removeClass( "has-error" );
-        }
+         /*errorElement: "em",*/
+         errorPlacement: function ( error, element ) {
+         error.addClass( "help-block alert-danger" );
+         error.insertAfter( element );
+         },
+         highlight: function ( element, errorClass, validClass ) {
+         $( element ).parents( ".col-sm-3" ).addClass( "has-error" ).removeClass( "has-success" );
+         },
+         unhighlight: function (element, errorClass, validClass) {
+         $( element ).parents( ".col-sm-3" ).addClass( "has-success" ).removeClass( "has-error" );
+         }
     } );
 });

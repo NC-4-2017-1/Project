@@ -17,12 +17,17 @@
     <script src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="    crossorigin="anonymous"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>
     <script type="text/javascript" src="/resources/js/HMsetup.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 <div class = "container-hm-setup">
-        <h3 class="pageName"> HM project Connection:</h3>
+    <h3 class="pageName"> HM project Connection:</h3>
+    <div class="setup-error">
+        <div class="alert alert-danger hide text-center" id = "error_conn"></div>
+        <div class="alert alert-success hide text-center" id = "right_conn"></div>
+    </div>
         <form id="connform" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-5" for="serverName">Server name:</label>
@@ -55,23 +60,21 @@
                 </div>
             </div>
             <div>
-                <div class="col-sm-5">
-                <button class="btn btn-sm btn-primary col-sm-3 col-sm-offset-9" type="button" id="submit">
+                <div class="col-sm-5 center-block">
+                <button class="btn btn-sm btn-primary col-sm-4 col-sm-offset-8" type="button" id="submit"
+                        data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Testing...">
                     <i class="fa fa-cog" aria-hidden="true"></i><b>&nbsp;Test</b>
                 </button>
                 </div>
 
                 <div class="col-sm-5">
-                <button class="btn btn-sm btn-primary col-sm-3" type="button" id="next">
+                <button class="btn btn-sm btn-primary col-sm-4" type="button" id="next"
+                        data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Connecting...">
                     <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
                 </div>
             </div>
         </form>
-    <div class="setup-error">
-        <div class="col-sm-5 col-sm-offset-3 alert alert-danger hide" id = "error_conn"></div>
-        <div class="col-sm-5 col-sm-offset-3 alert alert-success hide" id = "right_conn"></div>
-    </div>
 </div>
 <jsp:include page="footer.jsp"/>
 </body>

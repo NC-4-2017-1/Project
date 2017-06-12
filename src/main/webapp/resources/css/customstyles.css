@@ -1,11 +1,18 @@
+.tooltip.right .tooltip-arrow {
+    border-right-color: #ebccd1;
+}
+
+.conn-field + .tooltip > .tooltip-inner {
+    min-width: 200px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
 .pageName{
     text-align: center;
     color: rgba(0, 0, 0, 0.69);
     font-weight: bold;
-}
-
-.setup-error {
-    margin-top: 50px;
 }
 
 .adminPanel{
