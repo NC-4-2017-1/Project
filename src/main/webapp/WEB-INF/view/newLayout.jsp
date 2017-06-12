@@ -5,19 +5,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <title>Project Creation</title>
 
-    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/css/customstyles.css" />" rel="stylesheet">
+    <jsp:include page="headFragment.jsp"/>
     <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
     <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 </head>
 
@@ -45,7 +38,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
                 <div class="col-sm-3 ">
-                    <textarea class="form-control input-sm" rows="5" id="description"></textarea>
+                    <textarea class="form-control input-sm" rows="5" id="description"/>
                 </div>
             </div>
                 <!--<label class="control-label col-sm-2 col-sm-offset-3" for="description"></label>

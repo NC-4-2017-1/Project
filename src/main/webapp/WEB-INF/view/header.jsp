@@ -28,6 +28,7 @@
                             </li>
                         </sec:authorize>
                     </ul>
+                    <c:if test="${sessionScope.userObject!=null}">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="#">${sessionScope.userObject.getFullName()}</a>
@@ -36,6 +37,7 @@
                             <a href="<c:url value="/logout" />">Log out</a>
                         </li>
                     </ul>
+                    </c:if>
                 </div>
             </div>
         </div>
