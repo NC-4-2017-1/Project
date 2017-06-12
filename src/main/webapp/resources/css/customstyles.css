@@ -1,7 +1,9 @@
 .pageName{
     text-align: center;
-    color: #5bc0de;
+    color: rgba(0, 0, 0, 0.69);
+    font-weight: bold;
 }
+
 .setup-error {
     margin-top: 50px;
 }

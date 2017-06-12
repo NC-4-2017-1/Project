@@ -6,6 +6,12 @@
     border: 1px solid #18b4ff;
 }
 
+/*.tooltip-arrow,*/
+.pr-name + .tooltip > .tooltip-inner {
+   /*background-color: #12b7ff;*/
+    min-width: 300px;
+}
+
 .pr-type, .pr-date {
     margin: 5px 5px;
 }

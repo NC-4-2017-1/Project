@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <!DOCTYPE html>
@@ -62,7 +63,14 @@
             <u>Port</u> - <c:out value="${project.port}"/>;  <u>SID</u> - <c:out value="${project.sid}"/>;
             <u>User name</u> - <c:out value="${project.userName}"/>;  <u>Password</u>  - <c:out value="${project.password}"/>;</h5>
         <h5><b>Description:</b></h5>
-        <p class="text-muted"><c:out value="${project.description}"/></p>
+        <p class="text-muted">
+            <c:if test = "${not empty fn:trim(project.description)}">
+                ${project.description}
+            </c:if>
+            <c:if test = "${empty fn:trim(project.description)}">
+                not defined
+            </c:if>
+        </p>
     </div>
 
 

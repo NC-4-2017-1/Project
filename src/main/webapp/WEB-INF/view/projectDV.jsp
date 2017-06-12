@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <!DOCTYPE html>
@@ -52,9 +53,16 @@
         <i class="fa fa-share-alt"></i> Share</a>
 </div>-->
 <div class="row">
-    <h5><b>Author:</b><u><c:out value="${author.fullName}"/></u></h5>
+    <h5><b>Author: </b><u><c:out value="${author.fullName}"/></u></h5>
     <h5><b>Description:</b></h5>
-    <p class="text-muted"><c:out value="${project.description}"/></p>
+    <p class="text-muted">
+        <c:if test = "${not empty fn:trim(project.description)}">
+            ${project.description}
+        </c:if>
+        <c:if test = "${empty fn:trim(project.description)}">
+            not defined
+        </c:if>
+    </p>
 </div>
 
 <!--<div class="author"><h4>Author: <c:out value="${author.fullName}"/></h4></div>

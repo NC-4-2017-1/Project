@@ -1,3 +1,9 @@
+.prjDesc{
+    max-height: 200px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 .projtype {
     text-align: center;
     color: #5bc0de;
