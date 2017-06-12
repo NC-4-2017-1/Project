@@ -39,7 +39,7 @@
     <h3 class="pageName">PROJECT LIST</h3>
 <div class="pull-right">
     <button class="btn btn-sm btn-success" onclick="myFunction()">
-        <i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add Project</b></i>
+        <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
     </button>
 </div>
     <div>
@@ -58,26 +58,20 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
-                                        <form role="form" method="GET" action="/project/project-dv">
-                                            <button type="submit" class="btn btn-secondary btn-sm pr-name"
+                                            <a href="/project/project-dv/${project.id}" class = "pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
                                                         data-toggle="tooltip"
                                                         title="${project.description}"
                                                         data-placement="right"
-                                                    </c:if>
-                                                    name="projDvId" value="${project.id}">${project.name}</button>
-                                        </form>
+                                                    </c:if>>${project.name}</a>
                                     </c:when>
                                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
-                                        <form role="form" method="GET" action="/project/project-hm">
-                                            <button type="submit" class="btn btn-secondary btn-sm pr-name"
-                                                    <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip"
-                                                        title="${project.description}"
-                                                        data-placement="right"
-                                                    </c:if>
-                                                    name="projHmId" value="${project.id}">${project.name}</button>
-                                        </form>
+                                        <a href="/project/project-hm/${project.id}" class = "pr-name"
+                                                <c:if test = "${not empty fn:trim(project.description)}">
+                                                    data-toggle="tooltip"
+                                                    title="${project.description}"
+                                                    data-placement="right"
+                                                </c:if>>${project.name}</a>
                                     </c:when>
                                 </c:choose>
 

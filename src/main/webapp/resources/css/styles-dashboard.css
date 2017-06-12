@@ -2,10 +2,6 @@
     margin-top: 15px;
 }
 
-.pr-name:hover {
-    border: 1px solid #18b4ff;
-}
-
 /*.tooltip-arrow,*/
 .pr-name + .tooltip > .tooltip-inner {
    /*background-color: #12b7ff;*/
