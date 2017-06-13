@@ -52,20 +52,20 @@
                         </c:forEach>
 
                         <script>
-                            if(i==0){
-                                $("#${user.id}").html("<button class=\"btn btn-xs btn-success bt-share\" type=\"button\" value=\"share\" onclick=\"shareObj(${user.id});\" >" +
-                                    "Share </button>");
+                <%--   if(i==0){
+                      $("#${user.id}").html("<button class=\"btn btn-xs btn-success bt-share\" type=\"button\" value=\"share\" onclick=\"shareObj(${user.id});\" >" +
+                          "Share </button>");
+                  }
+                  else {
+                      $("#${user.id}").html("<button class=\"btn btn-xs btn-danger bt-share\" type=\"button\" value=\"unshare\" onclick=\"UnShareObj(${user.id});\" >" +
+                          "UnShare </button>");
+                  }--%>
+                           if(i==0){
+                                $("#${user.id}").html('<input class="btn btn-xs btn-success bt-share" type="button" value="share" onclick="shareObj(${user.id});"/>');
                             }
                             else {
-                                $("#${user.id}").html("<button class=\"btn btn-xs btn-danger bt-share\" type=\"button\" value=\"unshare\" onclick=\"UnShareObj(${user.id});\" >" +
-                                    "UnShare </button>");
+                                $("#${user.id}").html('<input class="btn btn-xs btn-danger bt-share" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
                             }
-                           <%-- if(i==0){
-                                $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="share" onclick="shareObj(${user.id});"/>');
-                            }
-                            else {
-                                $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
-                            }--%>
                         </script>
                     </td>
                 </tr>
