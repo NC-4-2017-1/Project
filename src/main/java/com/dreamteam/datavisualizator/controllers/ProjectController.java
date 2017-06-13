@@ -262,10 +262,8 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    /*@RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model, @RequestParam(value = "projDvId", required = false) BigInteger id) {*/
-    @RequestMapping(path = "/project-dv/{id}", method = RequestMethod.GET)
-    public String projectView(Model model, @PathVariable BigInteger id) {
+    @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
+    public String projectView(Model model, @RequestParam(value = "projDvId", required = false) BigInteger id) {
         DataVisualizationProject projectToShow = null;
 
         if (id != null) {
@@ -450,8 +448,8 @@ public class ProjectController {
 
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/project-hm/{id}", method = RequestMethod.GET)
-    public String openHealthMonitorProject(Model model, @PathVariable BigInteger id) {
+    @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
+    public String openHealthMonitorProject(Model model, @RequestParam(value = "projHmId", required = false) BigInteger id) {
         try {
             BigInteger finalProjId = null;
             Project project = null;

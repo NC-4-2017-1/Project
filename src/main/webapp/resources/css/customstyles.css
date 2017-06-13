@@ -1,4 +1,4 @@
-.tooltip.right .tooltip-arrow {
+.conn-field + .tooltip.right .tooltip-arrow {
     border-right-color: #ebccd1;
 }
 

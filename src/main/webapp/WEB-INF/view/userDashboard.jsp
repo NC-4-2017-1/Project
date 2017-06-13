@@ -51,23 +51,24 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
-                                            <a href="/project/project-dv/${project.id}" class = "pr-name"
+                                        <form role="form" method="GET" action="/project/project-dv">
+                                            <button type="submit" class="btn btn-link btn-sm pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip"
-                                                        title="${project.description}"
-                                                        data-placement="right"
-                                                    </c:if>>${project.name}</a>
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projDvId" value="${project.id}">${project.name}</button>
+                                        </form>
                                     </c:when>
                                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
-                                        <a href="/project/project-hm/${project.id}" class = "pr-name"
-                                                <c:if test = "${not empty fn:trim(project.description)}">
-                                                    data-toggle="tooltip"
-                                                    title="${project.description}"
-                                                    data-placement="right"
-                                                </c:if>>${project.name}</a>
+                                        <form role="form" method="GET" action="/project/project-hm">
+                                            <button type="submit" class="btn btn-link btn-sm pr-name"
+                                                    <c:if test = "${not empty fn:trim(project.description)}">
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projHmId" value="${project.id}">${project.name}</button>
+                                        </form>
                                     </c:when>
                                 </c:choose>
-
                             </td>
                             <td class="pr-date">
                                     ${project.creationDate}

@@ -130,7 +130,7 @@
                         <div class="col-sm-offset-2 col-sm-10">
                            <!-- <button type="submit" class="btn btn-primary">Create</button>-->
                             <button class="btn btn-sm btn-primary" type="submit" id="next">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i><b>&nbsp;Next</b>
+                                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
                         </div>
                     </div>
