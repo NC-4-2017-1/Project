@@ -5,7 +5,8 @@ import java.math.BigInteger;
 
 public enum ProjectTypes {
     DATA_VISUALIZATION(BigInteger.valueOf(4L), "Data Visualization"),
-    HEALTH_MONITORING(BigInteger.valueOf(3L), "Health Monitoring");
+    HEALTH_MONITORING(BigInteger.valueOf(3L), "Health Monitoring"),
+    GRAPH(BigInteger.valueOf(18L),"Graph");
 
 
     private final BigInteger id;
