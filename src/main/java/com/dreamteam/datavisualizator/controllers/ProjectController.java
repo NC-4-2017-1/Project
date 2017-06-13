@@ -21,6 +21,7 @@ import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
 import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -84,8 +85,8 @@ public class ProjectController {
     @ResponseBody
     public String create(@RequestBody CreateProjectRequest request, Model model) {
         sessionScopeBean.getCustomerProject().setType(ProjectTypes.getRoleById(new BigInteger(request.getType())));
-        sessionScopeBean.getCustomerProject().setName(request.getName());
-        sessionScopeBean.getCustomerProject().setDescription(request.getDescription());
+        sessionScopeBean.getCustomerProject().setName(Jsoup.parse(request.getName()).text());
+        sessionScopeBean.getCustomerProject().setDescription(Jsoup.parse(request.getDescription()).text());
         if (ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(request.getType())) {
             return "visualization-setup";
         } else {
