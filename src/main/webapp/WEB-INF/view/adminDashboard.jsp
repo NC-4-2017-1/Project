@@ -15,20 +15,15 @@
 
 <body>
 <jsp:include page="header.jsp"/>
-<div class = "modal-content">
-    <div class="content">
-        <div class="form-group">
-            <input class="btn btn-md" id="add-button" type="button" onclick="createUser()" value="Add user"/>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <b class="text-muted">User list</b>
-                </h4>
-            </div>
-            <div class="panel-body adminPanel">
-                <table class="table table-striped table-sm">
-                    <thead class="text-info">
+<h3 class="pageName">USER LIST</h3>
+<div class="pull-right">
+    <!--<input class="btn btn-sm" id="add-button" type="button" onclick="createUser()" value="Add user"/>-->
+    <button class="btn btn-sm btn-success" onclick="createUser()" >
+        <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add user</b>
+    </button>
+</div>
+                <table class="table table-striped table-condensed table-sm">
+                    <thead>
                     <tr>
                         <th>FIRST NAME</th>
                         <th>LAST NAME</th>
@@ -38,22 +33,18 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${users}" var="user">
-                        <tr class = "text-muted">
+                        <tr>
                             <td><p>${user.firstName}</p></td>
                             <td><p>${user.lastName}</p></td>
                             <td><p>${user.email}</p></td>
                             <td>
-                                <input class="btn btn-primary btn-sm" type="button" value="delete"
+                                <input class="btn btn-danger btn-xs" type="button" value="delete"
                                        onclick="deleteObj(${user.id});"/>
                             </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
-            </div>
-            </div>
-    </div>
-</div>
 
 
 <jsp:include page="footer.jsp"/>

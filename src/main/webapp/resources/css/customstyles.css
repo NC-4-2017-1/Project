@@ -146,12 +146,6 @@ footer {
     position: absolute;
 }
 
-#add-button {
-    position: fixed;
-    bottom: 60px;
-    right: 10px;
-}
-
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
         color: black;
