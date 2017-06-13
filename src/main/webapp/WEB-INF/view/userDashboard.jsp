@@ -19,13 +19,14 @@
 <script>
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $('.nav-tabs a:first').tab('show');
     });
 
     function myFunction() {
         window.location.assign("/project/new-layout");
     }
 
-    function activatePr(){
+   /* function activatePr(){
        $("#myProjects").removeClass("inactive-divs");
        $("#myProjects").addClass("active-divs");
 
@@ -39,19 +40,140 @@
 
         $("#myProjects").removeClass("active-divs");
         $("#myProjects").addClass("inactive-divs");
-    }
+    }*/
 </script>
 <body>
 
 <jsp:include page="header.jsp"/>
 
-    <h3 class="pageName">PROJECT LIST</h3>
+<h3 class="pageName">PROJECT LIST</h3>
 <div class="pull-right">
     <button class="btn btn-sm btn-success" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
     </button>
 </div>
-<div class = "pull-left">
+<ul class="nav nav-tabs" id="projectTab">
+    <li><a data-target="#1" data-toggle="tab">My projects</a></li>
+    <li><a data-target="#2" data-toggle="tab">Shared to me projects</a></li>
+</ul>
+<div class="tab-content">
+        <div class="tab-pane" id="1">
+
+            <c:if test = "${not empty userProjects}">
+                <table class="table table-striped table-condensed project-list">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created at</th>
+                        <th>Type</th>
+                        <th>Created by</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${userProjects}" var="project">
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
+                                        <form role="form" method="GET" action="/project/project-dv">
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
+                                                    <c:if test = "${not empty fn:trim(project.description)}">
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projDvId" value="${project.id}">${project.name}</button>
+                                        </form>
+                                    </c:when>
+                                    <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
+                                        <form role="form" method="GET" action="/project/project-hm">
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
+                                                    <c:if test = "${not empty fn:trim(project.description)}">
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projHmId" value="${project.id}">${project.name}</button>
+                                        </form>
+                                    </c:when>
+                                </c:choose>
+                            </td>
+                            <td class="pr-date">
+                                    ${project.creationDate}
+                            </td>
+                            <td class="pr-type">
+                                    ${project.type.toString()}
+                            </td>
+                            <td class="pr-autor">
+                                    ${project.authorFullName}
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+            <c:if test = "${empty userProjects}">
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong> No shared projects.</div>
+            </c:if>
+        </div>
+
+
+
+        <div class="tab-pane" id="2">
+            <c:if test = "${not empty sharedToUserProjects}">
+                <table class="table table-striped table-condensed project-list">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created at</th>
+                        <th>Type</th>
+                        <th>Created by</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${sharedToUserProjects}" var="project">
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
+                                        <form role="form" method="GET" action="/project/project-dv">
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
+                                                    <c:if test = "${not empty fn:trim(project.description)}">
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projDvId" value="${project.id}">${project.name}</button>
+                                        </form>
+                                    </c:when>
+                                    <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
+                                        <form role="form" method="GET" action="/project/project-hm">
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
+                                                    <c:if test = "${not empty fn:trim(project.description)}">
+                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                    </c:if>
+                                                    name="projHmId" value="${project.id}">${project.name}</button>
+                                        </form>
+                                    </c:when>
+                                </c:choose>
+                            </td>
+                            <td class="pr-date">
+                                    ${project.creationDate}
+                            </td>
+                            <td class="pr-type">
+                                    ${project.type.toString()}
+                            </td>
+                            <td class="pr-autor">
+                                    ${project.authorFullName}
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+            <c:if test = "${empty sharedToUserProjects}">
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong> No shared projects.</div>
+            </c:if>
+        </div>
+
+</div>
+
+
+<%--<div class = "pull-left">
     <button class="btn btn-default btn-sm" id="span-myProjects" onclick="activatePr()">My projects</button>
     <button class="btn btn-default btn-sm" id="span-sharedToMeProjects" onclick="activateSh()">Shared to me projects</button>
 </div>
@@ -72,7 +194,7 @@
                                 <c:choose>
                                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
                                         <form role="form" method="GET" action="/project/project-dv">
-                                            <button type="submit" class="btn btn-link btn-sm pr-name"
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
                                                         data-toggle="tooltip" title="${project.description}"  data-placement="right"
                                                     </c:if>
@@ -81,7 +203,7 @@
                                     </c:when>
                                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
                                         <form role="form" method="GET" action="/project/project-hm">
-                                            <button type="submit" class="btn btn-link btn-sm pr-name"
+                                            <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
                                                         data-toggle="tooltip" title="${project.description}"  data-placement="right"
                                                     </c:if>
@@ -122,7 +244,7 @@
                         <c:choose>
                             <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
                                 <form role="form" method="GET" action="/project/project-dv">
-                                    <button type="submit" class="btn btn-link btn-sm pr-name"
+                                    <button type="submit" class="btn btn-link btn-xs pr-name"
                                             <c:if test = "${not empty fn:trim(project.description)}">
                                                 data-toggle="tooltip" title="${project.description}"  data-placement="right"
                                             </c:if>
@@ -131,7 +253,7 @@
                             </c:when>
                             <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
                                 <form role="form" method="GET" action="/project/project-hm">
-                                    <button type="submit" class="btn btn-link btn-sm pr-name"
+                                    <button type="submit" class="btn btn-link btn-xs pr-name"
                                             <c:if test = "${not empty fn:trim(project.description)}">
                                                 data-toggle="tooltip" title="${project.description}"  data-placement="right"
                                             </c:if>
@@ -139,7 +261,6 @@
                                 </form>
                             </c:when>
                         </c:choose>
-
                     </td>
                     <td class="pr-date">
                             ${project.creationDate}
@@ -154,7 +275,7 @@
             </c:forEach>
             </tbody>
         </table>
-    </div>
+    </div>--%>
 
 <jsp:include page="footer.jsp"/>
 

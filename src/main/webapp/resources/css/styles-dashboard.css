@@ -8,16 +8,12 @@
     min-width: 300px;
 }
 
-.pr-type, .pr-date {
-    margin: 5px 5px;
-}
-
-.pr-date {
-
-}
-
 .project-list{
     margin: 0px;
+}
+
+.prj-list-info{
+    margin-top: 10px;
 }
 
 

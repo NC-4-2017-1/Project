@@ -17,28 +17,32 @@
 <body>
 
 <jsp:include page="header.jsp"/>
+<h3 class="pageName">USER LIST FOR SHARE PROJECT</h3>
 
-<div class="container" id="container-middle">
-    <div class="panel panel-default">
-        <span>
-            <input id="SearchUser" type="text" placeholder="Search User" class="search-in-list">
-        </span>
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="control-label col-sm-5" for="SearchUser">Search user:</label>
+        <div class="col-sm-3">
+            <input class="form-control conn-field input-sm" id="SearchUser" type="text" placeholder="text for searching..." class="search-in-list" autofocus>
+        </div>
+    </div>
+</form>
 
-        <table class="table">
+        <table class="table table-striped table-condensed table-sm">
             <thead>
             <tr>
-                <th>first name</th>
-                <th>last name</th>
-                <th>email</th>
+                <th>FIRST NAME</th>
+                <th>LAST NAME</th>
+                <th>EMAIL</th>
                 <th></th>
             </tr>
             </thead>
             <tbody id="allElements">
             <c:forEach items="${users}" var="user">
                 <tr data-select="user" data-firstname="${user.firstName}" data-lastname="${user.lastName}" data-email="${user.email}" class="user-in-list">
-                    <td><p>${user.firstName}</p></td>
-                    <td><p>${user.lastName}</p></td>
-                    <td><p>${user.email}</p></td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.email}</td>
                     <td id="${user.id}">
                         <script>var i=0;</script>
                         <c:forEach items="${users_with_access}" var="user_with_access">
@@ -46,21 +50,28 @@
                                 <script>i++;</script>
                             </c:if>
                         </c:forEach>
+
                         <script>
                             if(i==0){
+                                $("#${user.id}").html("<button class=\"btn btn-xs btn-success bt-share\" type=\"button\" value=\"share\" onclick=\"shareObj(${user.id});\" >" +
+                                    "Share </button>");
+                            }
+                            else {
+                                $("#${user.id}").html("<button class=\"btn btn-xs btn-danger bt-share\" type=\"button\" value=\"unshare\" onclick=\"UnShareObj(${user.id});\" >" +
+                                    "UnShare </button>");
+                            }
+                           <%-- if(i==0){
                                 $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="share" onclick="shareObj(${user.id});"/>');
                             }
                             else {
                                 $("#${user.id}").html('<input class="btn btn-default btn-sm" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
-                            }
+                            }--%>
                         </script>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
-    </div>
-</div>
 
 <jsp:include page="footer.jsp"/>
 

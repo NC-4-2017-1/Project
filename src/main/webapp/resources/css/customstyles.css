@@ -1,3 +1,7 @@
+.bt-share{
+    width: 80px;
+}
+
 .conn-field + .tooltip.right .tooltip-arrow {
     border-right-color: #ebccd1;
 }
