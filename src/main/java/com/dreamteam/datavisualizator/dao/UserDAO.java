@@ -33,4 +33,6 @@ public interface UserDAO {
     List<User> getUsersThatHaveAccessToProject(Project project);
 
     List<Project> getAllUserProjects(User user);
+
+    List<Project> getAllSharedToUserProjects(User user);
 }

@@ -267,6 +267,24 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
+    @Override
+    public List<Project> getAllSharedToUserProjects(User user) {
+        try {
+            if (user != null) {
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+            } else {
+                LOGGER.error("Projects for user wasn't selected because of user " + user);
+                return null;
+            }
+        } catch (DataAccessException e) {
+            LOGGER.error("Shared to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Shared to user projects haven't been fetched  User(id:" + user.getId() + " name:" + user.getFullName() + ")", e);
+            return null;
+        }
+    }
+
     private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rownum) throws SQLException {
             String email = rs.getString(UserColumnName.email.toString());
@@ -374,6 +392,36 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and project.object_id = description.object_id" +
             " and description.attr_id = 7 " +
             " and ref.attr_id = 17" +
+            " and ref.object_id = project.object_id" +
+            " and ref.reference = author.object_id" +
+            " and author.object_id=?" +
+            " union" +
+            " select project.object_id id, project.name name, project.object_type_id type_id," +
+            " creation_date.date_value creation_date, author.object_id author,  author.name author_name,description.value description" +
+            " from objects project, attributes creation_date, objects have_access, attributes description, " +
+            " objects author, objreference ref_author, objreference ref_access" +
+            " where project.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and project.object_id = description.object_id" +
+            " and description.attr_id = 7" +
+            " and ref_author.attr_id = 17" +
+            " and ref_author.object_id = project.object_id" +
+            " and ref_author.reference = author.object_id" +
+            " and author.object_id = ?" +
+            " )order by creation_date desc";
+
+    private static final String SELECT_ALL_SHARED_TO_USER_PROJECT = "select id, name, type_id, creation_date, author,author_name, description from (" +
+            " select project.object_id id, project.name name, project.object_type_id type_id, " +
+            " creation_date.date_value creation_date, author.object_id author, author.name author_name, description.value description" +
+            " from objects project, attributes creation_date, objects author, attributes description, objreference ref" +
+            " where project.object_id = creation_date.object_id" +
+            " and creation_date.attr_id = 6" +
+            " and project.object_id = description.object_id" +
+            " and description.attr_id = 7 " +
+            " and ref.attr_id = 17" +
+            " and ref.object_id = project.object_id" +
+            " and ref.reference = author.object_id" +
+            " and ref.attr_id = 18" +
             " and ref.object_id = project.object_id" +
             " and ref.reference = author.object_id" +
             " and author.object_id=?" +

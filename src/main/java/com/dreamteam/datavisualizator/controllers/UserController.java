@@ -39,6 +39,8 @@ public class UserController {
     public String getUserDashboard(Model model, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("userObject");
         List<Project> userProjects = userDAO.getAllUserProjects(user);
+        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user);
+        model.addAttribute("sharedToUserProjects", sharedToUserProjects);
         model.addAttribute("userProjects", userProjects);
         model.addAttribute("userObject", user);
         return "userDashboard";

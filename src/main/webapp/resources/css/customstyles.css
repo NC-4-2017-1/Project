@@ -146,6 +146,11 @@ footer {
     position: absolute;
 }
 
+.inactive-divs{
+    display:none;
+}
+
+
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
         color: black;
