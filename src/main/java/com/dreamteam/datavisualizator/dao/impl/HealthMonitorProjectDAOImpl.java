@@ -524,6 +524,11 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             put(S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
         }};
 
+
+    public Map<BigInteger, SelectorCreator> getSelectorCreators(){
+        return mapSelectorCreators;
+    }
+
     private enum HWProjectColumnName {
         id("id"),
         name("name"),

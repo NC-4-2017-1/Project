@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao;
 
+import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
 import com.dreamteam.datavisualizator.models.Graphic;
 import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.Selector;
@@ -34,4 +35,5 @@ public interface HealthMonitorProjectDAO {
 
     Project saveProject(Project project);
 
+    Map<BigInteger, SelectorCreator> getSelectorCreators();
 }

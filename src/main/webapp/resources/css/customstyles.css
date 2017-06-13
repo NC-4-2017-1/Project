@@ -19,6 +19,11 @@
     font-weight: bold;
 }
 
+.selectorPre{
+    padding: 3px;
+    margin: 0px;
+}
+
 .adminPanel{
     overflow-x: auto;
     padding-left: 0px;

@@ -21,7 +21,7 @@ public class HtmlSerializer {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
+            htmlTable.append("<table class=\"table table-condensed selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
             htmlTable.append("<thead><tr>");
@@ -33,7 +33,7 @@ public class HtmlSerializer {
                 rowCount++;
                 htmlTable.append("<tr>");
                 for (int i = 0; i < columnCount; i++) {
-                    htmlTable.append("<td><pre style=\"margin: 0;\">" + selectorResultSet.getString(i + 1) + "</pre></td>");
+                    htmlTable.append("<td><pre class = \"selectorPre\" >" + selectorResultSet.getString(i + 1) + "</pre></td>");
                 }
                 htmlTable.append("</tr>");
             }
@@ -53,7 +53,7 @@ public class HtmlSerializer {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table class=\"table selector\" id=\"" + cssId + "\">");
+            htmlTable.append("<table class=\"table table-condensed selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
             htmlTable.append("<thead><tr>");
@@ -65,9 +65,9 @@ public class HtmlSerializer {
             while (resultData.next()) {
                 rowCount++;
                 htmlTable.append("<tr>");
-                htmlTable.append("<td><pre style=\"margin: 0;\">" + resultData.getString(1) + "</pre></td>");
+                htmlTable.append("<td><pre class = \"selectorPre\">" + resultData.getString(1) + "</pre></td>");
                 String clobString = ClobToStringService.clobToString(resultData.getClob(2));
-                htmlTable.append("<td><pre style=\"margin: 0;\">" + clobString + "</pre></td>");
+                htmlTable.append("<td><pre class = \"selectorPre\">" + clobString + "</pre></td>");
                 htmlTable.append("</tr>");
             }
             htmlTable.append("</tbody></table>");

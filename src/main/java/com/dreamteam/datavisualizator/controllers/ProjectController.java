@@ -468,18 +468,7 @@ public class ProjectController {
 
             project = healthMonitorProjectDAOImpl.getProjectById(finalProjId);
 
-            Map<BigInteger, SelectorCreator> mapSelectorCreators = new HashMap<BigInteger, SelectorCreator>();
-            mapSelectorCreators.put(S_INSTANCE_INFO_OBJTYPE_ID, new SelectorInstanceInfoCreator());
-            mapSelectorCreators.put(S_SIZE_TABLESPACE_OBJTYPE_ID, new SelectorSizeForTablespaceCreator());
-            mapSelectorCreators.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, new SelectorSizeForIndexLobCreator());
-            mapSelectorCreators.put(S_LAST_ERRORS_OBJTYPE_ID, new SelectorLastErrorsCreator());
-            mapSelectorCreators.put(S_ACTIVE_SESSIONS_OBJTYPE_ID, new SelectorActiveSessionsCreator());
-            mapSelectorCreators.put(S_ACTIVE_QUERIES_OBJTYPE_ID, new SelectorActiveQueriesCreator());
-            mapSelectorCreators.put(S_QUERIES_RESULTS_OBJTYPE_ID, new SelectorQueriesResultsCreator());
-            mapSelectorCreators.put(S_SQL_MONITOR_OBJTYPE_ID, new SelectorSqlQueryMonitorCreator());
-            mapSelectorCreators.put(S_DB_LOCKS_OBJTYPE_ID, new SelectorDBLocksCreator());
-            mapSelectorCreators.put(S_ACTIVE_JOBS_OBJTYPE_ID, new SelectorActiveJobsCreator());
-
+            Map<BigInteger, SelectorCreator> mapSelectorCreators = healthMonitorProjectDAOImpl.getSelectorCreators();
             Map<BigInteger, String> mapSelectorAttr = new HashMap<>();
             model.addAttribute("project", project);
             Map<BigInteger, Selector> projectSelectors = ((HealthMonitorProject) project).getSelectors();
