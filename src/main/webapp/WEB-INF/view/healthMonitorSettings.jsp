@@ -62,7 +62,7 @@
                             <label for="sizetablelobCheck" class="custom-control custom-checkbox">Size for table-index-lob</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="tableindexlob" name="tableindexlob" placeholder="Segment name">
+                            <input type="text" class="form-control input-sm" id="tableindexlob" name="tableindexlob" placeholder="Default: 'user'">
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@
                             <label for="activesessioncheck" class="custom-control custom-checkbox">Active sessions</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activesession" name="activesession" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="activesession" name="activesession" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@
                             <label for="activequeriescheck" class="custom-control custom-checkbox">Active queries</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activequeries" name="activequeries" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="activequeries" name="activequeries" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@
                             <label for="queriesrescheck" class="custom-control custom-checkbox">Queries results</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="queriesres" name="queriesres" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="queriesres" name="queriesres" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -102,7 +102,7 @@
                             <label for="sqlmonitorcheck" class="custom-control custom-checkbox">SQL queries monitor</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="sqlmonitor" name="sqlmonitor" placeholder="Top value">
+                            <input type="text" class="form-control input-sm" id="sqlmonitor" name="sqlmonitor" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
                             <label for="activejobscheck" class="custom-control custom-checkbox">Active jobs</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activejobs" name="activejobs" placeholder="Hour count">
+                            <input type="text" class="form-control input-sm" id="activejobs" name="activejobs" placeholder="Hour count(default: 24)">
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@
                             <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="graph" name="graph" placeholder="Hour count">
+                            <input type="text" class="form-control input-sm" id="graph" name="graph" placeholder="Hour count(default: 24)">
                         </div>
                     </div>
 

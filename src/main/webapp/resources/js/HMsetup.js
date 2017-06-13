@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    $('#next').prop('disabled', 'disabled');
+    $('#submit').prop('disabled', 'disabled');
 
     $("#submit").on('click', function() {
         $("#connform").valid();
@@ -8,15 +10,25 @@ $(document).ready(function () {
         $("#connform").valid();
     });
 
-    $('#connform input').on('keyup blur', function () {
+    checkField('#serverName');
+    checkField('#port');
+    checkField('#sid');
+    checkField('#username');
+
+    $('#password').on('keyup blur', function () {
         if ($('#connform').valid()) {
             $('#submit').prop('disabled', false);
             $('#next').prop('disabled', false);
-        } else {
-            $('#next').prop('disabled', 'disabled');
-            $('#submit').prop('disabled', 'disabled');
         }
     });
+
+    function checkField(em) {
+        $(em).on('keyup blur', function () {
+            if ($(em).val()) {
+                $(em).valid();
+            }
+        });
+    }
 
     $("#submit").click(function () {
         $('#submit').button('loading');
