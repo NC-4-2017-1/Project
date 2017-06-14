@@ -5,7 +5,7 @@
 /*.tooltip-arrow,*/
 .pr-name + .tooltip > .tooltip-inner {
    /*background-color: #12b7ff;*/
-    min-width: 300px;
+    min-width: 200px;
 }
 
 .project-list{

@@ -60,7 +60,11 @@
                                         <form role="form" method="GET" action="/project/project-dv">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
+                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                            ...
+                                                         </c:if>
+                                                         " data-placement="right"
                                                     </c:if>
                                                     name="projDvId" value="${project.id}">${project.name}</button>
                                         </form>
@@ -69,7 +73,11 @@
                                         <form role="form" method="GET" action="/project/project-hm">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
+                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                            ...
+                                                        </c:if>
+                                                        " data-placement="right"
                                                     </c:if>
                                                     name="projHmId" value="${project.id}">${project.name}</button>
                                         </form>
@@ -132,7 +140,11 @@
                                         <form role="form" method="GET" action="/project/project-dv">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
+                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                            ...
+                                                        </c:if>
+                                                        " data-placement="right"
                                                     </c:if>
                                                     name="projDvId" value="${project.id}">${project.name}</button>
                                         </form>
@@ -141,7 +153,11 @@
                                         <form role="form" method="GET" action="/project/project-hm">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
+                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                            ...
+                                                        </c:if>
+                                                        " data-placement="right"
                                                     </c:if>
                                                     name="projHmId" value="${project.id}">${project.name}</button>
                                         </form>
