@@ -16,32 +16,7 @@
     <script src="/resources/js/jquery-3.2.1.min.js"></script>
     <script src="/resources/js/bootstrap.min.js"></script>
 </head>
-<script>
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-        $('.nav-tabs a:first').tab('show');
-    });
 
-    function myFunction() {
-        window.location.assign("/project/new-layout");
-    }
-
-   /* function activatePr(){
-       $("#myProjects").removeClass("inactive-divs");
-       $("#myProjects").addClass("active-divs");
-
-       $("#sharedToMeProjects").removeClass("active-divs");
-       $("#sharedToMeProjects").addClass("inactive-divs");
-    }
-
-    function activateSh(){
-        $("#sharedToMeProjects").removeClass("inactive-divs");
-        $("#sharedToMeProjects").addClass("active-divs");
-
-        $("#myProjects").removeClass("active-divs");
-        $("#myProjects").addClass("inactive-divs");
-    }*/
-</script>
 <body>
 
 <jsp:include page="header.jsp"/>
@@ -58,7 +33,9 @@
 </ul>
 <div class="tab-content">
         <div class="tab-pane" id="1">
-
+            <div class="col-sm-3 search-input">
+                <input class="form-control conn-field input-sm" id="SearchMyProject" type="text" placeholder="Search project by name..." class="search-in-list" autofocus>
+            </div>
             <c:if test = "${not empty userProjects}">
                 <table class="table table-striped table-condensed project-list">
                     <thead>
@@ -69,9 +46,9 @@
                         <th>Created by</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="allElementsOfMyProjects">
                     <c:forEach items="${userProjects}" var="project">
-                        <tr>
+                        <tr data-select="my_project" data-name="${project.name}">
                             <td>
                                 <c:choose>
                                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
@@ -116,6 +93,9 @@
 
 
         <div class="tab-pane" id="2">
+            <div class="col-sm-3 search-input">
+                <input class="form-control conn-field input-sm" id="SearchSharedProject" type="text" placeholder="Search project by name..." class="search-in-list" autofocus>
+            </div>
             <c:if test = "${not empty sharedToUserProjects}">
                 <table class="table table-striped table-condensed project-list">
                     <thead>
@@ -126,9 +106,9 @@
                         <th>Created by</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="allElementsOfSharedProjects">
                     <c:forEach items="${sharedToUserProjects}" var="project">
-                        <tr>
+                        <tr data-select="shared_project" data-name="${project.name}">
                             <td>
                                 <c:choose>
                                     <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
@@ -280,4 +260,118 @@
 <jsp:include page="footer.jsp"/>
 
 </body>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.nav-tabs a:first').tab('show');
+    });
+
+    function myFunction() {
+        window.location.assign("/project/new-layout");
+    }
+
+    /* function activatePr(){
+     $("#myProjects").removeClass("inactive-divs");
+     $("#myProjects").addClass("active-divs");
+
+     $("#sharedToMeProjects").removeClass("active-divs");
+     $("#sharedToMeProjects").addClass("inactive-divs");
+     }
+
+     function activateSh(){
+     $("#sharedToMeProjects").removeClass("inactive-divs");
+     $("#sharedToMeProjects").addClass("active-divs");
+
+     $("#myProjects").removeClass("active-divs");
+     $("#myProjects").addClass("inactive-divs");
+     }*/
+
+    var searchField;
+    var secondSearchField;
+    var searchFieldData  = "";
+
+    searchField = $("#SearchMyProject");
+    searchField.on("keydown", OnSearchKeyDown);
+
+    secondSearchField = $("#SearchSharedProject");
+    secondSearchField.on("keydown", OnSearchKeyDown);
+
+    function OnSearchKeyDown(event)
+    {
+        var currentElement;
+        var key;
+        var keyCode;
+
+        currentElement = $(event.currentTarget);
+        key = event.key;
+        keyCode = event.keyCode;
+
+        console.debug(keyCode);
+        searchFieldData = currentElement.val();
+        if(keyCode >= 65 && keyCode <= 90) {
+            searchFieldData += key;
+        }
+        else if(keyCode == 46) {
+            searchFieldData = "";
+        }
+        else if(keyCode == 8) {
+            var length;
+            length = searchFieldData.length;
+            if(length > 0) {
+                searchFieldData = searchFieldData.substring(0, length - 1);
+            }
+            else {
+                searchFieldData = "";
+            }
+        }
+        else if(keyCode == 46) {
+            var length;
+            length = searchFieldData.length;
+            if(length > 0) {
+                searchFieldData = searchFieldData.substring(0, length - 1);
+            }
+            else {
+                searchFieldData = "";
+            }
+        }
+
+        var allUsersParent;
+        var allUserTr;
+
+        if(this.id == "SearchMyProject"){
+            allUsersParent = $("#allElementsOfMyProjects");
+            allUserTr = allUsersParent.find("[data-select=my_project]");
+            BuildSearchBody(searchFieldData, allUserTr);
+        }else if(this.id == "SearchSharedProject"){
+            allUsersParent = $("#allElementsOfSharedProjects");
+            allUserTr = allUsersParent.find("[data-select=shared_project]");
+            BuildSearchBody(searchFieldData, allUserTr);
+        }
+
+    }
+
+
+    function BuildSearchBody(searchFieldData, allUserTr)
+    {
+        $.each(allUserTr, function(key, value)
+        {
+            var currentElement;
+            var currentName;
+
+            currentElement = $(value);
+            currentName = currentElement.attr("data-name");
+
+            currentName = currentName.toLowerCase();
+            searchFieldData = searchFieldData.toLowerCase();
+
+            if((currentName.indexOf(searchFieldData) +1)) {
+                currentElement.show();
+            }
+            else {
+                currentElement.hide();
+            }
+        });
+    }
+
+</script>
 </html>

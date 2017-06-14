@@ -158,7 +158,9 @@ footer {
 .inactive-divs{
     display:none;
 }
-
+.search-input{
+    margin: 1% 1% 1% -1%;
+}
 
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
