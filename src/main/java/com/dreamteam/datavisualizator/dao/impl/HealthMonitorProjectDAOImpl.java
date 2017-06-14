@@ -203,10 +203,10 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             return generalTemplate.queryForObject(SELECT_HMPROJECT_BY_ID, new Object[]{id}, new CompleteHealthMonitorProjectRowMapper());
         } catch (DataAccessException e) {
             LOGGER.error("Project not fetched by id " + id, e);
-            throw e;
+            return null;
         }catch (Exception e) {
             LOGGER.error("Project not fetched by id " + id, e);
-            throw e;
+            return null;
         }
     }
 

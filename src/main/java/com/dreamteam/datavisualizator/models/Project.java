@@ -23,4 +23,18 @@ public interface Project {
     String getDescription();
 
     void setId(BigInteger id);
+
+    void setAuthor(BigInteger id);
+
+    void setAuthorFullName(String fullName);
+
+    void setUsersProjectAccessible(List<User> usersProjectAccessible);
+
+    void setType(ProjectTypes type);
+
+    void setDescription(String description);
+
+    void setCreationDate(Date creationDate);
+
+    void setName(String name);
 }

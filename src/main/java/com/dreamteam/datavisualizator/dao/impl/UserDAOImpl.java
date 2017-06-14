@@ -51,19 +51,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public User getUserByFullName(String fullName) {
-        try {
-            return generalTemplate.queryForObject(SELECT_USER_BY_FULLNAME, new Object[]{fullName}, new UserRowMapperWithoutPassword());
-        } catch (DataAccessException e) {
-            LOGGER.error("User not fetched by full name " + fullName, e);
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("User not fetched by full name " + fullName, e);
-            return null;
-        }
-    }
-
-    @Override
     public User getUserByEmail(String email) {
         try {
             return generalTemplate.queryForObject(SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
@@ -114,56 +101,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public User updateUsersEmail(User user, String email) {
-        try {
-            generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, email, user.getId(), USER_EMAIL_ATTR_ID);
-            user.setEmail(email);
-        } catch (DataAccessException e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated email to " + email, e);
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated email to " + email, e);
-            return null;
-        }
-        return user;
-    }
-
-    @Override
-    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public User updateUsersName(User user, String firstName, String lastName) {
-        try {
-            generalTemplate.update(UPDATE_USER_NAME, lastName + " " + firstName, user.getId());
-            generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, firstName, user.getId(), USER_FIRST_NAME_ATTR_ID);
-            generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, lastName, user.getId(), USER_LAST_NAME_ATTR_ID);
-            user = getUserById(user.getId());
-        } catch (DataAccessException e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated full name to " + lastName + " " + firstName, e);
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated full name to " + lastName + " " + firstName, e);
-            return null;
-        }
-        return user;
-    }
-
-    @Override
-    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public User updateUsersPassword(User user, String password) {
-        try {
-            generalTemplate.update(UPDATE_ATTRIBUTE_BY_USER_ID, password, user.getId(), PASSWORD_ATTR_ID);
-            user.setPassword(password);
-        } catch (DataAccessException e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated password to " + password, e);
-            return null;
-        } catch (Exception e) {
-            LOGGER.error("User (id: " + user.getId() + ", name: " + user.getFullName() + ") not updated password to " + password, e);
-            return null;
-        }
-        return user;
-    }
-
-    @Override
-    @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public boolean giveUserAccessToProject(User user, Project project) {
         try {
             if (user != null && project != null) {
@@ -208,8 +145,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
-        //!TODO check if email exists and don't let to create account if so
-        User user;
+        User user = getUserByEmail(email);
+        if (user!=null){
+            LOGGER.warn("User with '"+email+"' already exists");
+            return null;
+        }
         BigInteger insertedObjectId;
         try {
             insertedObjectId = createObject(lastName + " " + firstName, USER_OBJTYPE_ID);
@@ -229,7 +169,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
         return user;
     }
-
 
     @Override
     public List<User> getUsersThatHaveAccessToProject(Project project) {

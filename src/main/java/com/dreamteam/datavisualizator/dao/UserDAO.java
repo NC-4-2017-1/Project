@@ -10,8 +10,6 @@ import java.util.List;
 public interface UserDAO {
     User getUserById(BigInteger id);
 
-    User getUserByFullName(String fullName);
-
     User getUserByEmail(String email);
 
     List<User> getAllUsersList();
@@ -19,12 +17,6 @@ public interface UserDAO {
     boolean deleteUser(User user);
 
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);
-
-    User updateUsersEmail(User user, String email);
-
-    User updateUsersName(User user, String first_name, String last_name);
-
-    User updateUsersPassword(User user, String password);
 
     boolean giveUserAccessToProject(User user, Project project);
 
