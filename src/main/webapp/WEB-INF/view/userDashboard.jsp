@@ -29,14 +29,19 @@
 </div>
 <ul class="nav nav-tabs" id="projectTab">
     <li><a data-target="#1" data-toggle="tab">My projects</a></li>
-    <li><a data-target="#2" data-toggle="tab">Shared to me projects</a></li>
+    <li><a data-target="#2" data-toggle="tab">Shared projects</a></li>
 </ul>
 <div class="tab-content">
         <div class="tab-pane" id="1">
-            <div class="col-sm-3 search-input">
-                <input class="form-control conn-field input-sm" id="SearchMyProject" type="text" placeholder="Search project by name..." class="search-in-list" autofocus>
-            </div>
             <c:if test = "${not empty userProjects}">
+            <form>
+                    <div class="form-group ">
+                        <label class="control-label pull-left search-input" for="SearchMyProject">Search project:</label>
+                        <div class="col-sm-3 ">
+                            <input class="form-control input-sm" id="SearchMyProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
+                        </div>
+                    </div>
+            </form>
                 <table class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
@@ -86,17 +91,29 @@
                 </table>
             </c:if>
             <c:if test = "${empty userProjects}">
-                <div class="alert alert-info prj-list-info"><strong>Info!</strong> No shared projects.</div>
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong> You haven't projects yet.</div>
             </c:if>
         </div>
 
 
 
         <div class="tab-pane" id="2">
-            <div class="col-sm-3 search-input">
-                <input class="form-control conn-field input-sm" id="SearchSharedProject" type="text" placeholder="Search project by name..." class="search-in-list" autofocus>
-            </div>
+
             <c:if test = "${not empty sharedToUserProjects}">
+                <%--<div class="col-sm-3 search-input">
+                    <label class="control-label" for="SearchSharedProject">Search project:</label>
+                    <input class="form-control conn-field input-sm" id="SearchSharedProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
+                </div>--%>
+
+                <form>
+                    <div class="form-group ">
+                        <label class="control-label pull-left search-input" for="SearchSharedProject">Search project:</label>
+                        <div class="col-sm-3 ">
+                            <input class="form-control input-sm" id="SearchSharedProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
+                        </div>
+                    </div>
+                </form>
+
                 <table class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
@@ -146,7 +163,7 @@
                 </table>
             </c:if>
             <c:if test = "${empty sharedToUserProjects}">
-                <div class="alert alert-info prj-list-info"><strong>Info!</strong> No shared projects.</div>
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong> There are no shared projects for you.</div>
             </c:if>
         </div>
 

@@ -159,7 +159,8 @@ footer {
     display:none;
 }
 .search-input{
-    margin: 1% 1% 1% -1%;
+    padding: 0px;
+    margin: 3px;
 }
 
 @media (max-width: 767px) {
