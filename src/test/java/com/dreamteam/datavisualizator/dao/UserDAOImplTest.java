@@ -5,7 +5,6 @@ import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.*;
 import com.google.gson.JsonObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {ServletContext.class, UserDAOImplTest.UserDaoCustomConfiguration.class})
-@Ignore
 public class UserDAOImplTest {
 
     @Autowired
@@ -48,7 +46,7 @@ public class UserDAOImplTest {
             TimeZone.setDefault(timeZone);
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
             dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-            dataSource.setUrl(System.getenv("SQL_JDBC_URL"));
+            dataSource.setUrl(System.getenv("TEST_SQL_JDBC_URL"));
             dataSource.setUsername(System.getenv("TEST_SQL_LOGIN"));
             dataSource.setPassword(System.getenv("TEST_SQL_PASSWORD"));
             return dataSource;
