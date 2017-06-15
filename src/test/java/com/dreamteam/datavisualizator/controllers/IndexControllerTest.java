@@ -74,11 +74,11 @@ public class IndexControllerTest {
 
         mockMvc.perform(get("/login").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/dashboard-get/4/desc"));
+                .andExpect(redirectedUrl("/user/dashboard-get/4/desc/1"));
 
         mockMvc.perform(get("/").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/dashboard-get/4/desc"));
+                .andExpect(redirectedUrl("/user/dashboard-get/4/desc/1"));
     }
 
     @Test
