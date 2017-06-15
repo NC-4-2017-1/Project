@@ -3,7 +3,6 @@ package com.dreamteam.datavisualizator.controllers;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserTypes;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -20,7 +19,7 @@ public class IndexController {
                 return "redirect:/user/admin-panel";
             }
             if (user.getUserType().equals(UserTypes.REGULAR_USER)) {
-                return "redirect:/user/dashboard-get/4/desc";
+                return "redirect:/user/dashboard-get/4/desc/1";
             }
         }
         return "authorization";
