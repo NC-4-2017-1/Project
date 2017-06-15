@@ -73,7 +73,7 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         }
 
         if (isUser) {
-            return "/user/dashboard";
+            return "/user/dashboard-get/4/desc/1";
         } else if (isAdmin) {
             return "/user/admin-panel";
         } else {

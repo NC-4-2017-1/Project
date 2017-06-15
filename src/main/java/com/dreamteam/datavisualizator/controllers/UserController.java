@@ -31,22 +31,9 @@ public class UserController {
         return "adminDashboard";
     }
 
-    //@Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
-    public String getUserDashboard(Model model, HttpServletRequest request) {
-        /*User user = (User) request.getSession().getAttribute("userObject");
-        //List<Project> userProjects = userDAO.getAllUserProjects(user);
-        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user);
-        model.addAttribute("sharedToUserProjects", sharedToUserProjects);
-        //model.addAttribute("userProjects", userProjects);
-        model.addAttribute("userObject", user);
-        return "userDashboard";*/
-        return "redirect:/user/dashboard-get/4/desc/1";
-    }
-
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard-get/{field}/{sortType}/{sortTab}", method = RequestMethod.GET)
-    public String getUserDashboard2(@PathVariable int field,@PathVariable String sortType, @PathVariable int sortTab, HttpServletRequest request, Model model) {
+    public String getUserDashboard(@PathVariable int field,@PathVariable String sortType, @PathVariable int sortTab, HttpServletRequest request, Model model) {
         model.addAttribute("sortF",field);
         model.addAttribute("sortT",sortType);
         model.addAttribute("sortTab",sortTab);
