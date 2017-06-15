@@ -18,41 +18,36 @@
 
 <jsp:include page="header.jsp"/>
 <c:url value="/user/create" var="create"/>
-<form:form class="form-horizontal" modelAttribute="user" action="${create}" method="post"  style="margin: 0 auto;
-    width: 500px;">
+<form:form class="form-horizontal custom-width" modelAttribute="user" action="${create}" method="post">
     <fieldset>
         <div id="legend">
             <legend class="">Register</legend>
         </div>
         <div class="control-group">
-            <!-- First name -->
             <label class="control-label" for="firstname">First name</label>
             <div class="controls">
-                <form:input type="text" id="firstname" path="firstName" placeholder="" class="input-xlarge"
+                <form:input type="text" id="firstname" path="firstName" placeholder="First name" class="form-control input-sm"
                        required="required"/>
             </div>
         </div>
         <div class="control-group">
-            <!-- Last name -->
             <label class="control-label" for="lastname">Last name</label>
             <div class="controls">
-                <form:input type="text" id="lastname" path="lastName" placeholder="" class="input-xlarge"
+                <form:input type="text" id="lastname" path="lastName" placeholder="Last name" class="form-control input-sm"
                        required="required"/>
             </div>
         </div>
         <div class="control-group">
-            <!-- Email -->
             <label class="control-label" for="email">Email</label>
             <div class="controls">
-                <form:input type="email" id="email" path="email" placeholder="" class="input-xlarge" required="required"/>
+                <form:input type="email" id="email" path="email" placeholder="someaddress@email.com" class="form-control input-sm" required="required"/>
             </div>
         </div>
 
         <div class="control-group">
-            <!-- Password-->
             <label class="control-label" for="password">Password</label>
             <div class="controls">
-                <form:input type="password" id="password" path="password" placeholder="" class="input-xlarge"
+                <form:input type="password" id="password" path="password" placeholder="password" class="form-control input-sm"
                        required="required"/>
             </div>
         </div>

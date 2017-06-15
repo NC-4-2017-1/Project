@@ -17,7 +17,7 @@
         </div>
         <footer class="site-footer bg-white">
             <div class="col-md-12">
-                <div class="padding-text-footer" style="text-align: right">Copyright © DREAMTEAM 2017. All rights reserved.</div>
+                <div class="footer-text padding-text-footer">Copyright © DREAMTEAM 2017. All rights reserved.</div>
             </div>
             <div class="padding-text-footer">
             </div>

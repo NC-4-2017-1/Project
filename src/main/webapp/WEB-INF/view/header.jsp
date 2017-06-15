@@ -10,31 +10,39 @@
                     <a href="<c:url value="/"/>" class="navbar-brand">
                         Data visualizer
                     </a>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#respinsive-menu">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
                         <span class="sr-only">Open navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                <div class="collapse navbar-collapse" id="respinsive-menu">
+                <div class="collapse navbar-collapse" id="responsive-menu">
                     <ul class="nav navbar-nav">
                         <sec:authorize access="hasRole('ADMIN')">
-                            <li class="active"><a href="<c:url value="/user/admin-panel"/>">Users</a></li>
+                            <li><a href="<c:url value="/user/admin-panel"/>" class="nav-link">All users</a></li>
+                        </sec:authorize>
+                        <sec:authorize access="hasRole('ADMIN')">
+                            <li><a href="<c:url value="/user/create-user"/>" class="nav-link">Create user</a></li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('REGULAR_USER')">
                             <li>
-                                <a href="<c:url value="/user/dashboard"/>">Projects</a>
+                                <a href="<c:url value="/user/dashboard-get/4/desc/1"/>" class="nav-link">All projects</a>
+                            </li>
+                        </sec:authorize>
+                        <sec:authorize access="hasRole('REGULAR_USER')">
+                            <li>
+                                <a href="<c:url value="/project/new-layout"/>" class="nav-link">Create project</a>
                             </li>
                         </sec:authorize>
                     </ul>
                     <c:if test="${sessionScope.userObject!=null}">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#">${sessionScope.userObject.getFullName()}</a>
+                            <a href="#" class="nav-link lobster-style">${sessionScope.userObject.getFullName()}</a>
                         </li>
                         <li>
-                            <a href="<c:url value="/logout" />">Log out</a>
+                            <a href="<c:url value="/logout" />" class="nav-link">Log out</a>
                         </li>
                     </ul>
                     </c:if>

@@ -96,12 +96,33 @@ footer {
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
     color: lightgrey;
-
 }
+.navbar-inverse .navbar-nav>li>a{
+    padding-top: 20px;
+    padding-bottom: 0;
+}
+
+.input-xlarge{
+    width: 304px;
+}
+
+.custom-width{
+    margin: 0 auto;
+    width: 305px;
+}
+
+.navbar>.container .navbar-brand,
+.navbar>.container-fluid .navbar-brand{
+    padding-top:16px;
+    padding-bottom: 0;
+}
+
 .navbar>.container .navbar-brand,
 .navbar>.container-fluid .navbar-brand {
     font-family: 'Lobster', cursive;
     font-size: 2.3em;
+    padding-bottom: 0px;
+    padding-top: 16px;
 }
 .navbar-default .navbar-text {
     color: lightgrey;
@@ -161,6 +182,17 @@ footer {
 .search-input{
     padding: 0px;
     margin: 3px;
+}
+
+.nav-link{
+    font-family: 'Lobster', cursive;
+    font-size: 1.14em;
+}
+
+.footer-text{
+    font-family: 'Lobster', cursive;
+    font-size: 14px;
+    text-align: right;
 }
 
 @media (max-width: 767px) {
