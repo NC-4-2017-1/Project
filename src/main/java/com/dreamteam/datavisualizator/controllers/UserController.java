@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
@@ -34,12 +31,28 @@ public class UserController {
         return "adminDashboard";
     }
 
-    @Secured("ROLE_REGULAR_USER")
+    //@Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard", method = RequestMethod.GET)
     public String getUserDashboard(Model model, HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("userObject");
-        List<Project> userProjects = userDAO.getAllUserProjects(user);
+        /*User user = (User) request.getSession().getAttribute("userObject");
+        //List<Project> userProjects = userDAO.getAllUserProjects(user);
         List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user);
+        model.addAttribute("sharedToUserProjects", sharedToUserProjects);
+        //model.addAttribute("userProjects", userProjects);
+        model.addAttribute("userObject", user);
+        return "userDashboard";*/
+        return "redirect:/user/dashboard-get/4/desc/1";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/dashboard-get/{field}/{sortType}/{sortTab}", method = RequestMethod.GET)
+    public String getUserDashboard2(@PathVariable int field,@PathVariable String sortType, @PathVariable int sortTab, HttpServletRequest request, Model model) {
+        model.addAttribute("sortF",field);
+        model.addAttribute("sortT",sortType);
+        model.addAttribute("sortTab",sortTab);
+        User user = (User) request.getSession().getAttribute("userObject");
+        List<Project> userProjects = userDAO.getAllUserProjects(user, field, sortType);
+        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, field, sortType);
         model.addAttribute("sharedToUserProjects", sharedToUserProjects);
         model.addAttribute("userProjects", userProjects);
         model.addAttribute("userObject", user);

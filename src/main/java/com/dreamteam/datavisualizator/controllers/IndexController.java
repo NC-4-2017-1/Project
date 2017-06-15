@@ -20,7 +20,7 @@ public class IndexController {
                 return "redirect:/user/admin-panel";
             }
             if (user.getUserType().equals(UserTypes.REGULAR_USER)) {
-                return "redirect:/user/dashboard";
+                return "redirect:/user/dashboard-get/4/desc";
             }
         }
         return "authorization";

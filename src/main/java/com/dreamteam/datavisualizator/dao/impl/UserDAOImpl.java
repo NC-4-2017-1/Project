@@ -189,10 +189,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllUserProjects(User user) {
+    public List<Project> getAllUserProjects(User user, int field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_USERS_PROJECT, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                return generalTemplate.query(SELECT_ALL_USERS_PROJECT + " order by " + field + " " + sortType, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -207,10 +207,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllSharedToUserProjects(User user) {
+    public List<Project> getAllSharedToUserProjects(User user, int field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by " + field + " " + sortType, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -347,7 +347,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and ref_author.object_id = project.object_id" +
             " and ref_author.reference = author.object_id" +
             " and author.object_id = ?" +
-            " )order by creation_date desc";
+            " )";
 
     private static final String SELECT_ALL_SHARED_TO_USER_PROJECT = "select id, name, type_id, creation_date, author,author_name, description from (" +
             " select project.object_id id, project.name name, project.object_type_id type_id, " +
@@ -380,7 +380,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and ref_access.object_id = project.object_id" +
             " and ref_access.reference = have_access.object_id" +
             " and have_access.object_id = ?" +
-            " )order by creation_date desc";
+            " )";
 
     private static final String UPDATE_USER_NAME = "update objects" +
             " set objects.name=?" +

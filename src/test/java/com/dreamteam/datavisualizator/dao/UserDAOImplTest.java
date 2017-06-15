@@ -155,6 +155,6 @@ public class UserDAOImplTest {
 
         assertTrue(dao.deleteUser(user));
         assertNull(dao.getUserById(user.getId()));
-        assertTrue(dao.getAllUserProjects(user).equals(Collections.<Project>emptyList()));
+        assertTrue(dao.getAllUserProjects(user, 4, "desc").equals(Collections.<Project>emptyList()));
     }
 }

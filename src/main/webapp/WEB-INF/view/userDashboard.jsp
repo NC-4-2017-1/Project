@@ -18,37 +18,85 @@
 </head>
 
 <body>
-
+<div class="sortTab" hidden>${sortTab} </div>
 <jsp:include page="header.jsp"/>
 
-<h3 class="pageName">PROJECT LIST</h3>
+<h3 class="pageName">Project list</h3>
 <div class="pull-right">
     <button class="btn btn-sm btn-success" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
     </button>
 </div>
 <ul class="nav nav-tabs" id="projectTab">
-    <li><a data-target="#1" data-toggle="tab">My projects</a></li>
-    <li><a data-target="#2" data-toggle="tab">Shared projects</a></li>
+    <li><a data-target="#1" data-toggle="tab" class = "first">My projects</a></li>
+    <li><a data-target="#2" data-toggle="tab" class = "second">Shared projects</a></li>
 </ul>
 <div class="tab-content">
+    <%--<div>${sortF} </div>--%>
+
         <div class="tab-pane" id="1">
             <c:if test = "${not empty userProjects}">
             <form>
                     <div class="form-group ">
                         <label class="control-label pull-left search-input" for="SearchMyProject">Search project:</label>
-                        <div class="col-sm-3 ">
+                        <div class="col-sm-3">
                             <input class="form-control input-sm" id="SearchMyProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
                         </div>
                     </div>
             </form>
-                <table class="table table-striped table-condensed project-list">
+                <table id="table-sort" class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Created at</th>
+                        <th>
+                           <%-- <form method="POST"  action="/user/dashboard-get">
+                                <input type="text" value=" 2 " name="field" hidden>
+                                <button type="submit" class="btn btn-link desc" name = "sort-type" value=" desc"><i class="fa fa-sort-desc" aria-hidden="true"></i></button>
+                                <button type="submit" class="btn btn-link asc"  name = "sort-type" value=" asc"><i class="fa fa-sort-asc" aria-hidden="true"></i></button>
+                            </form>--%>
+                            <c:if test = "${fn:length(userProjects) > 1}">
+                                <c:if test = "${sortF == '2'}">
+                                    <u>Name</u>
+                                    <c:if test = "${sortT == 'desc'}">
+                                        <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'asc')"><i class="fa fa-long-arrow-up" aria-hidden="true"></i></button>--%>
+                                     </c:if>
+                                     <c:if test = "${sortT == 'asc'}">
+                                         <a href="/user/dashboard-get/2/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                       <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'desc')"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></button>--%>
+                                    </c:if>
+                                </c:if>
+                                <c:if test = "${sortF != '2'}">
+                                    Name
+                                        <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/2/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                </c:if>
+                            </c:if>
+                            <c:if test = "${fn:length(userProjects) == 1}">
+                                Name
+                            </c:if>
+                        </th>
+                        <th>
+                            <c:if test = "${fn:length(userProjects) > 1}">
+                                <c:if test = "${sortF == '4'}">
+                                    <u>Created at</u>
+                                    <c:if test = "${sortT == 'desc'}">
+                                        <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                    </c:if>
+                                    <c:if test = "${sortT == 'asc'}">
+                                        <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                    </c:if>
+                                </c:if>
+                                <c:if test = "${sortF != '4'}">
+                                    Created at
+                                        <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                </c:if>
+                            </c:if>
+                            <c:if test = "${fn:length(userProjects) == 1}">
+                                Created at
+                            </c:if>
+                        </th>
                         <th>Type</th>
-                        <th>Created by</th>
                     </tr>
                     </thead>
                     <tbody id="allElementsOfMyProjects">
@@ -90,9 +138,9 @@
                             <td class="pr-type">
                                     ${project.type.toString()}
                             </td>
-                            <td class="pr-autor">
+                            <%--<td class="pr-autor">
                                     ${project.authorFullName}
-                            </td>
+                            </td>--%>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -125,10 +173,70 @@
                 <table class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Created at</th>
+                        <th>
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                                <c:if test = "${sortF == '2'}">
+                                    <u>Name</u>
+                                    <c:if test = "${sortT == 'desc'}">
+                                        <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                    </c:if>
+                                    <c:if test = "${sortT == 'asc'}">
+                                        <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                    </c:if>
+                                </c:if>
+                                <c:if test = "${sortF != '2'}">
+                                    Name
+                                        <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                </c:if>
+                            </c:if>
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                                Name
+                            </c:if>
+                        </th>
+                        <th>
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                                <c:if test = "${sortF == '4'}">
+                                    <u>Created at</u>
+                                    <c:if test = "${sortT == 'desc'}">
+                                        <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                    </c:if>
+                                    <c:if test = "${sortT == 'asc'}">
+                                        <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                    </c:if>
+                                </c:if>
+                                <c:if test = "${sortF != '4'}">
+                                    Created at
+                                        <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                </c:if>
+                            </c:if>
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                                Created at
+                            </c:if>
+                        </th>
                         <th>Type</th>
-                        <th>Created by</th>
+                        <th>
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                                <c:if test = "${sortF == '6'}">
+                                    <u>Created by</u>
+                                    <c:if test = "${sortT == 'desc'}">
+                                        <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                    </c:if>
+                                    <c:if test = "${sortT == 'asc'}">
+                                        <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                    </c:if>
+                                 </c:if>
+                                <c:if test = "${sortF != '6'}">
+                                    Created by
+                                        <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                </c:if>
+                            </c:if>
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                                Created by
+                            </c:if>
+                        </th>
                     </tr>
                     </thead>
                     <tbody id="allElementsOfSharedProjects">
@@ -186,138 +294,36 @@
 </div>
 
 
-<%--<div class = "pull-left">
-    <button class="btn btn-default btn-sm" id="span-myProjects" onclick="activatePr()">My projects</button>
-    <button class="btn btn-default btn-sm" id="span-sharedToMeProjects" onclick="activateSh()">Shared to me projects</button>
-</div>
-    <div id="myProjects" class="active-divs">
-        <table class="table table-striped table-condensed project-list">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Created at</th>
-                <th>Type</th>
-                <th>Created by</th>
-            </tr>
-            </thead>
-            <tbody>
-                 <c:forEach items="${userProjects}" var="project">
-                        <tr>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
-                                        <form role="form" method="GET" action="/project/project-dv">
-                                            <button type="submit" class="btn btn-link btn-xs pr-name"
-                                                    <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
-                                                    </c:if>
-                                                    name="projDvId" value="${project.id}">${project.name}</button>
-                                        </form>
-                                    </c:when>
-                                    <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
-                                        <form role="form" method="GET" action="/project/project-hm">
-                                            <button type="submit" class="btn btn-link btn-xs pr-name"
-                                                    <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${project.description}"  data-placement="right"
-                                                    </c:if>
-                                                    name="projHmId" value="${project.id}">${project.name}</button>
-                                        </form>
-                                    </c:when>
-                                </c:choose>
-                            </td>
-                            <td class="pr-date">
-                                    ${project.creationDate}
-                            </td>
-                            <td class="pr-type">
-                                   ${project.type.toString()}
-                            </td>
-                            <td class="pr-autor">
-                                    ${project.authorFullName}
-                            </td>
-                        </tr>
-                </c:forEach>
-            </tbody>
-        </table>
-    </div>
-
-    <div id="sharedToMeProjects" class="inactive-divs">
-        <table class="table table-striped table-condensed project-list">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Created at</th>
-                <th>Type</th>
-                <th>Created by</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach items="${sharedToUserProjects}" var="project">
-                <tr>
-                    <td>
-                        <c:choose>
-                            <c:when test="${project.type.name().equals('DATA_VISUALIZATION')}">
-                                <form role="form" method="GET" action="/project/project-dv">
-                                    <button type="submit" class="btn btn-link btn-xs pr-name"
-                                            <c:if test = "${not empty fn:trim(project.description)}">
-                                                data-toggle="tooltip" title="${project.description}"  data-placement="right"
-                                            </c:if>
-                                            name="projDvId" value="${project.id}">${project.name}</button>
-                                </form>
-                            </c:when>
-                            <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
-                                <form role="form" method="GET" action="/project/project-hm">
-                                    <button type="submit" class="btn btn-link btn-xs pr-name"
-                                            <c:if test = "${not empty fn:trim(project.description)}">
-                                                data-toggle="tooltip" title="${project.description}"  data-placement="right"
-                                            </c:if>
-                                            name="projHmId" value="${project.id}">${project.name}</button>
-                                </form>
-                            </c:when>
-                        </c:choose>
-                    </td>
-                    <td class="pr-date">
-                            ${project.creationDate}
-                    </td>
-                    <td class="pr-type">
-                            ${project.type.toString()}
-                    </td>
-                    <td class="pr-autor">
-                            ${project.authorFullName}
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>--%>
-
 <jsp:include page="footer.jsp"/>
 
 </body>
 <script>
+
+
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
-        $('.nav-tabs a:first').tab('show');
+        //$('#projectTab a:first').tab('show');
+       // $('.nav-tabs a[class = "active"]').tab('show');
+
+        var sortTab = $.trim($( ".sortTab" ).text());
+        if (sortTab == 1){
+            $('.nav-tabs a[class = "first"]').tab('show');
+            //$('#projectTab a[href="#2"]').tab('show');
+        } else if (sortTab == 2){
+            //$('#projectTab a[href="#2"]').tab('show');
+            $('.nav-tabs a[class = "second"]').tab('show');
+        } else {
+            //$('#projectTab a[href="#1"]').tab('show');
+            $('.nav-tabs a[class = "first"]').tab('show');
+        }
     });
+
+
 
     function myFunction() {
         window.location.assign("/project/new-layout");
     }
 
-    /* function activatePr(){
-     $("#myProjects").removeClass("inactive-divs");
-     $("#myProjects").addClass("active-divs");
-
-     $("#sharedToMeProjects").removeClass("active-divs");
-     $("#sharedToMeProjects").addClass("inactive-divs");
-     }
-
-     function activateSh(){
-     $("#sharedToMeProjects").removeClass("inactive-divs");
-     $("#sharedToMeProjects").addClass("active-divs");
-
-     $("#myProjects").removeClass("active-divs");
-     $("#myProjects").addClass("inactive-divs");
-     }*/
 
     var searchField;
     var secondSearchField;
