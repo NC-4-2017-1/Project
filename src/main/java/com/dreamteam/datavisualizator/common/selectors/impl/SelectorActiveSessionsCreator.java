@@ -35,7 +35,7 @@ public class SelectorActiveSessionsCreator extends AbstactSelectorCreator implem
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Active sessions");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveSessions"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveSessions", 0));
             mapSelectors.put(S_ACTIVE_SESSIONS_OBJTYPE_ID,selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Active sessions' can not be selected from HM DataBase", e);

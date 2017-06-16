@@ -35,7 +35,7 @@ public class SelectorSizeForIndexLobCreator extends AbstactSelectorCreator imple
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Size for table-index-lob");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSizeForIndexLob"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSizeForIndexLob", 0));
             mapSelectors.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Size for table-index-lob' can not be selected from HM DataBase", e);

@@ -34,7 +34,7 @@ public class SelectorInstanceInfoCreator extends AbstactSelectorCreator implemen
             String sql_query = simpleCallTemplate.executeFunction(String.class).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Instance information");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorInstanceInfo"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorInstanceInfo", 0));
             mapSelectors.put(S_INSTANCE_INFO_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Instance information' can not be selected from HM DataBase", e);

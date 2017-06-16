@@ -35,7 +35,7 @@ public class SelectorActiveQueriesCreator extends AbstactSelectorCreator impleme
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Active queries");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveQueries"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveQueries", 0));
             mapSelectors.put(S_ACTIVE_QUERIES_OBJTYPE_ID,selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Active queries' can not be selected from HM DataBase", e);

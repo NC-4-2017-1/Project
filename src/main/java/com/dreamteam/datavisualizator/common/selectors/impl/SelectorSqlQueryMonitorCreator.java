@@ -42,7 +42,7 @@ public class SelectorSqlQueryMonitorCreator extends AbstactSelectorCreator imple
                 simpleCallTemplatePlan.withCatalogName(SELECTOR_QUERIES_PACKAGE).withFunctionName(QUERY_FOR_SQL_PLAN);
                 sql_query = simpleCallTemplatePlan.executeFunction(String.class, in).toString();
                 results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
-                selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor"));
+                selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSqlMonitor", 1));
             }
             mapSelectors.put(S_SQL_MONITOR_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {

@@ -30,7 +30,7 @@ public class SelectorSizeForTablespaceCreator extends AbstactSelectorCreator imp
             String sql_query = simpleCallTemplate.executeFunction(String.class).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Size for tablespace");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSizeForTablespace"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorSizeForTablespace", 0));
             mapSelectors.put(S_SIZE_TABLESPACE_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Size for tablespace' can not be selected from HM DataBase", e);

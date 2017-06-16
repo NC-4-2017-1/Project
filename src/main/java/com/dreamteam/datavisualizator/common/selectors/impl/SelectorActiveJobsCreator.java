@@ -36,7 +36,7 @@ public class SelectorActiveJobsCreator extends AbstactSelectorCreator implements
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Active jobs");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveJobs"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorActiveJobs", 0));
             mapSelectors.put(S_ACTIVE_JOBS_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Active jobs' can not be selected from HM DataBase", e);

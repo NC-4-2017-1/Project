@@ -19,6 +19,9 @@ $(document).ready(function () {
         if ($('#connform').valid()) {
             $('#submit').prop('disabled', false);
             $('#next').prop('disabled', false);
+        } else {
+            $('#next').prop('disabled', 'disabled');
+            $('#submit').prop('disabled', 'disabled');
         }
     });
 

@@ -30,7 +30,7 @@ public class SelectorDBLocksCreator extends AbstactSelectorCreator implements Se
             String sql_query = simpleCallTemplate.executeFunction(String.class).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("DB locks");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorDbLocks"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorDbLocks", 0));
             mapSelectors.put(S_DB_LOCKS_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'DB locks' can not be selected from HM DataBase", e);

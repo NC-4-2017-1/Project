@@ -17,11 +17,11 @@ import java.util.Set;
 public class HtmlSerializer {
     private static final Logger LOGGER = Logger.getLogger(HtmlSerializer.class);
 
-    public static String createHtmlTable(ResultSetWrappingSqlRowSet selectorResultSet, String cssId) {
+    public static String createHtmlTable(ResultSetWrappingSqlRowSet selectorResultSet, String cssId, int typeCell) {
         try {
             int rowCount = 0;
             StringBuffer htmlTable = new StringBuffer();
-            htmlTable.append("<table class=\"table table-condensed selector\" id=\"" + cssId + "\">");
+            htmlTable.append("<table class=\"table table-striped table-condensed selector\" id=\"" + cssId + "\">");
             SqlRowSetMetaData selectorSetMeta = selectorResultSet.getMetaData();
             int columnCount = selectorSetMeta.getColumnCount();
             htmlTable.append("<thead><tr>");
@@ -33,11 +33,14 @@ public class HtmlSerializer {
                 rowCount++;
                 htmlTable.append("<tr>");
                 for (int i = 0; i < columnCount; i++) {
-                    htmlTable.append("<td><pre class = \"selectorPre\" >" + selectorResultSet.getString(i + 1) + "</pre></td>");
+                    if (typeCell == 0) {
+                        htmlTable.append("<td>" + selectorResultSet.getString(i + 1) + "</td>");
+                    } else {
+                        htmlTable.append("<td><pre class = \"selectorPre\">" + selectorResultSet.getString(i + 1) + "</pre></td>");
+                    }
                 }
                 htmlTable.append("</tr>");
             }
-
             htmlTable.append("</tbody></table>");
             if (rowCount == 0) {
                 return "<div class=\"alert alert-info selector-info-mess\"><strong>Info!</strong> No data in database for this selector.</div>";

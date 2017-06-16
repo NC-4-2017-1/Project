@@ -36,7 +36,7 @@ public class SelectorQueriesResultsCreator extends AbstactSelectorCreator implem
             String sql_query = simpleCallTemplate.executeFunction(String.class, in).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Queries results");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorQueriesResults"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorQueriesResults", 0));
             mapSelectors.put(S_QUERIES_RESULTS_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Queries results' can not be selected from HM DataBase", e);

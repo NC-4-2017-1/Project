@@ -516,7 +516,7 @@ public class ProjectController {
             }
         }
         //TODO show errors
-        return "redirect:/user/dashboard";
+        return "redirect:/user/dashboard-get/4/desc/1";
     }
 
     @Secured("ROLE_REGULAR_USER")

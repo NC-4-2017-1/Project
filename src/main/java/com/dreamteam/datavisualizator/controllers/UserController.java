@@ -34,6 +34,18 @@ public class UserController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard-get/{field}/{sortType}/{sortTab}", method = RequestMethod.GET)
     public String getUserDashboard(@PathVariable int field,@PathVariable String sortType, @PathVariable int sortTab, HttpServletRequest request, Model model) {
+        if (sortTab != 1 && sortTab != 2){
+            sortTab = 1;
+        }
+        if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
+            sortType = "desc";
+        }
+        if (sortTab == 1 && (field != 2 && field != 4)){
+            field = 4;
+        }
+        if (sortTab == 2 && (field != 2 && field != 4 && field != 6)){
+            field = 4;
+        }
         model.addAttribute("sortF",field);
         model.addAttribute("sortT",sortType);
         model.addAttribute("sortTab",sortTab);

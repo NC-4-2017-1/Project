@@ -192,7 +192,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<Project> getAllUserProjects(User user, int field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_USERS_PROJECT + " order by " + field + " " + sortType, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                return generalTemplate.query(SELECT_ALL_USERS_PROJECT + " order by "
+                        + ((field != 2 && field != 4)?4:field) + " "
+                        + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
+                        new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -210,7 +213,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<Project> getAllSharedToUserProjects(User user, int field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by " + field + " " + sortType, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by "
+                                + ((field != 2 && field != 4 && field != 6)?4:field) + " "
+                                + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
+                                new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;

@@ -30,7 +30,7 @@ public class SelectorLastErrorsCreator extends AbstactSelectorCreator implements
             String sql_query = simpleCallTemplate.executeFunction(String.class).toString();
             ResultSetWrappingSqlRowSet results = (ResultSetWrappingSqlRowSet) templateHM.queryForRowSet(sql_query);
             selector.setName("Last DB errors");
-            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorLastErrors"));
+            selector.setValue(HtmlSerializer.createHtmlTable(results, "selectorLastErrors", 0));
             mapSelectors.put(S_LAST_ERRORS_OBJTYPE_ID, selector);
         }catch (BadSqlGrammarException e) {
             LOGGER.error("Selector 'Last DB errors' can not be selected from HM DataBase", e);
