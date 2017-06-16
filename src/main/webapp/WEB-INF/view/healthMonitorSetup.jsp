@@ -8,7 +8,7 @@
 
     <jsp:include page="headFragment.jsp"/>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>

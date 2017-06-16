@@ -6,11 +6,10 @@
 <html lang="en">
 <head>
     <title>Admin dashboard</title>
-
     <jsp:include page="headFragment.jsp"/>
-    <link href="<c:url value="/resources/js/bootstrap.min.js"/>">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js"/>">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -102,7 +101,7 @@
         var x = new XMLHttpRequest();
         x.open("DELETE", "/user/delete/" + id);
         x.onreadystatechange = function () {
-            window.location.replace("/user/admin-panel");
+            window.location.replace("/user/admin-panel/0/s");
         }
         x.send();
     }

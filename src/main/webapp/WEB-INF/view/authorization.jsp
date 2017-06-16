@@ -7,10 +7,10 @@
 <head>
     <title>Authorzation page</title>
     <jsp:include page="headFragment.jsp"/>
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
 
 <body>

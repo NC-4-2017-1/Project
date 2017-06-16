@@ -7,15 +7,12 @@
 <html lang="en">
 <head>
     <title>Share project</title>
-
     <jsp:include page="headFragment.jsp"/>
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <script src="/resources/js/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
-
 <body>
-
 <jsp:include page="header.jsp"/>
 <h3 class="pageName">USER LIST FOR SHARE PROJECT</h3>
 

@@ -7,22 +7,16 @@
 <html lang="en">
 <head>
     <title>HM ${project.name}</title>
-
     <jsp:include page="headFragment.jsp"/>
     <link href="<c:url value="/resources/css/styles-projview.css" />" rel="stylesheet">
-
-
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-    <script src="/resources/js/jquery-3.2.1.min.js"></script>
-    <script src="/resources/js/bootstrap.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
 </head>
-
 <body>
-
 <jsp:include page="header.jsp"/>
 <div class="row col-sm-12">
     <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">

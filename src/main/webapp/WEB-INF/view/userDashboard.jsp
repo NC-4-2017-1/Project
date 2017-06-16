@@ -7,16 +7,13 @@
 <html lang="en">
 <head>
     <title>User dasboard</title>
-
     <jsp:include page="headFragment.jsp"/>
     <link href="<c:url value="/resources/css/styles-dashboard.css" />" rel="stylesheet">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-
-    <script src="/resources/js/jquery-3.2.1.min.js"></script>
-    <script src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
-
 <body>
 <div class="sortTab" hidden>${sortTab} </div>
 <jsp:include page="header.jsp"/>

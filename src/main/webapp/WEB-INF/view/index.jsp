@@ -5,19 +5,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <title>Index</title>
-
     <jsp:include page="headFragment.jsp"/>
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="stylesheet">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="stylesheet">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
-
 <body>
-
 <jsp:include page="header.jsp"/>
-
 <div class = "modal-content" style="margin-top: 20px;">
     <div class="container">
         <h1>datavisualization.com</h1>

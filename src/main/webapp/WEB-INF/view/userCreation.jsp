@@ -7,15 +7,12 @@
 <html lang="en">
 <head>
     <title>Create user</title>
-
     <jsp:include page="headFragment.jsp"/>
-    <link href="<c:url value="/resources/js/bootstrap.min.js" />" rel="script">
-    <link href="<c:url value="/resources/js/jquery-3.2.1.min.js" />" rel="script">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
-
 <body>
-
 <jsp:include page="header.jsp"/>
 <c:url value="/user/create" var="create"/>
 <form:form class="form-horizontal col-sm-6 col-sm-offset-3" modelAttribute="user" action="${create}" method="post">
