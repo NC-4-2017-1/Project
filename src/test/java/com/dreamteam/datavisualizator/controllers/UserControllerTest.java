@@ -75,9 +75,9 @@ public class UserControllerTest {
                 .buildUserProjects(null)
                 .buildUser();
 
-        when(userDaoMock.getAllUsersList()).thenReturn(Arrays.asList(user1, user2));
+        when(userDaoMock.getAllUsersList(3, "desc")).thenReturn(Arrays.asList(user1, user2));
 
-        mockMvc.perform(get("/user/admin-panel"))
+        mockMvc.perform(get("/user/admin-panel/3/desc"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("adminDashboard"))
                 .andExpect(model().attribute("users", hasSize(2)))
@@ -97,7 +97,7 @@ public class UserControllerTest {
                                 hasProperty("email", is("test@email2"))
                         )
                 )));
-        verify(userDaoMock, times(1)).getAllUsersList();
+        verify(userDaoMock, times(1)).getAllUsersList(3, "desc");
         verifyNoMoreInteractions(userDaoMock);
     }
 
@@ -180,7 +180,7 @@ public class UserControllerTest {
                 .param("email", email)
                 .param("password", password))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/admin-panel"))
+                .andExpect(redirectedUrl("/user/admin-panel/0/s"))
                 .andExpect(model().size(1));
 
         assertNull(actions.andReturn().getRequest().getSession().getAttribute("errorMessage"));

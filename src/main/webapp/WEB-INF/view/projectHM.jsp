@@ -45,7 +45,7 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href="<c:url value="/project/delete/${project.id}/${project.type}" />">
                     <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
-                <li><a href="<c:url value="/project/share/${project.id}" />">
+                <li><a href="<c:url value="/project/share/${project.id}/${project.type}" />">
                     <i class="fa fa-share-alt"></i> Share</a></li>
             </ul>
             </c:if>

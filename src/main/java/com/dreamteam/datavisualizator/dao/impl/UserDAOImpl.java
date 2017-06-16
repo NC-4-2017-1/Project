@@ -64,9 +64,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getAllUsersList() {
+    public List<User> getAllUsersList(int field, String sortType) {
         try {
-            return generalTemplate.query(SELECT_ALL_USERS, new UserRowMapperWithoutPassword());
+            return generalTemplate.query(SELECT_ALL_USERS+ " order by "
+                    + ((field != 2 && field != 3 && field != 4)?3:field) + " "
+                    + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
+                    new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;

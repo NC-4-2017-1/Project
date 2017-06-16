@@ -16,15 +16,13 @@ public class IndexController {
         User user = (User) request.getSession().getAttribute("userObject");
         if (user!=null) {
             if (user.getUserType().equals(UserTypes.ADMIN)) {
-                return "redirect:/user/admin-panel";
+                return "redirect:/user/admin-panel/0/s";
             }
             if (user.getUserType().equals(UserTypes.REGULAR_USER)) {
-                return "redirect:/user/dashboard-get/4/desc/1";
+                return "redirect:/user/dashboard-get/0/s/0";
             }
         }
         return "authorization";
     }
-
-
 
 }

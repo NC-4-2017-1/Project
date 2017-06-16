@@ -24,9 +24,17 @@ public class UserController {
     private UserDAO userDAO;
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(path = "/admin-panel", method = RequestMethod.GET)
-    public String getAdminDashboard(Model model) {
-        List<User> users = userDAO.getAllUsersList();
+    @RequestMapping(path = "/admin-panel/{field}/{sortType}", method = RequestMethod.GET)
+    public String getAdminDashboard(Model model, @PathVariable int field,@PathVariable String sortType) {
+        if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
+            sortType = "asc";
+        }
+        if (field != 2 && field != 3 && field != 4){
+            field = 3;
+        }
+        model.addAttribute("sortF",field);
+        model.addAttribute("sortT",sortType);
+        List<User> users = userDAO.getAllUsersList(field, sortType);
         model.addAttribute("users", users);
         return "adminDashboard";
     }
@@ -83,7 +91,7 @@ public class UserController {
         }
         userDAO.createUser(userRequest.getFirstName(), userRequest.getLastName(),
                 userRequest.getEmail(), userRequest.getPassword(), UserTypes.REGULAR_USER);
-        return "redirect:/user/admin-panel";
+        return "redirect:/user/admin-panel/0/s";
     }
 
     @Secured("ROLE_ADMIN")

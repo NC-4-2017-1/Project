@@ -520,62 +520,61 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}", method = RequestMethod.GET)
-    public String shareProject(Model model, @PathVariable BigInteger id) {
-        List<User> users = userDAO.getAllUsersList();
-        Project project = projectDAO.getProjectById(id);
+    @RequestMapping(path = "/share/{id}/{project_type}", method = RequestMethod.GET)
+    public String shareProject(Model model, @PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {
+        List<User> users = userDAO.getAllUsersList(0, "s");
+        Project project = null;
+        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
+             project = projectDAO.getProjectById(id);
+        } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
+             project = healthMonitorProjectDAOImpl.getProjectById(id);
+        }
         List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(project);
         model.addAttribute("users", users);
         model.addAttribute("users_with_access", users_with_access);
         model.addAttribute("project_id", id);
+        model.addAttribute("project_type", project_type);
         return "shareProject";
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}/{user_id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/share/{id}/{user_id}/{project_type}", method = RequestMethod.GET)
     public boolean shareProject(Model model, @PathVariable BigInteger id,
-                                @PathVariable BigInteger user_id) {
+                                @PathVariable BigInteger user_id, @PathVariable ProjectTypes project_type) {
         User user = userDAO.getUserById(user_id);
-        Project project = projectDAO.getProjectById(id);
+        Project project = null;
+        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
+            project = projectDAO.getProjectById(id);
+        }
+        if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
+            project = healthMonitorProjectDAOImpl.getProjectById(id);
+        }
         if (project != null) {
             if(!(user_id.equals(project.getAuthor()))){
-                ProjectTypes projectType = project.getType();
-                LOGGER.info("Project type " + projectType);
-                if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
-                    project = projectDAO.getProjectById(id);
-                    return userDAO.giveUserAccessToProject(user, project);
-                } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
-                    project = healthMonitorProjectDAOImpl.getProjectById(id);
-                    return userDAO.giveUserAccessToProject(user, project);
-                }
+                 return userDAO.giveUserAccessToProject(user, project);
             }
             else{
                 return false;
             }
         }
-
         return false;
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/unshare/{id}/{user_id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/unshare/{id}/{user_id}/{project_type}", method = RequestMethod.GET)
     public boolean UnShareProject(Model model, @PathVariable BigInteger id,
-                                @PathVariable BigInteger user_id) {
+                                @PathVariable BigInteger user_id, @PathVariable ProjectTypes project_type) {
         User user = userDAO.getUserById(user_id);
-        Project project = projectDAO.getProjectById(id);
-        if (project != null) {
-            ProjectTypes projectType = project.getType();
-            LOGGER.info("Project type " + projectType);
-            if (projectType != null && projectType.equals(ProjectTypes.DATA_VISUALIZATION)) {
-                project = projectDAO.getProjectById(id);
-                return userDAO.removeAccessToProjectFromUser(user, project);
-            } else if (projectType != null && projectType.equals(ProjectTypes.HEALTH_MONITORING)) {
-                project = healthMonitorProjectDAOImpl.getProjectById(id);
-                return userDAO.removeAccessToProjectFromUser(user, project);
-            }
+        Project project = null;
+        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
+            project = projectDAO.getProjectById(id);
         }
-
+        if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
+            project = healthMonitorProjectDAOImpl.getProjectById(id);
+        }
+        if (project != null) {
+            return userDAO.removeAccessToProjectFromUser(user, project);
+        }
         return false;
     }
-
 }

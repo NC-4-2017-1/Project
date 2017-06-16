@@ -54,7 +54,7 @@
                                 <button type="submit" class="btn btn-link asc"  name = "sort-type" value=" asc"><i class="fa fa-sort-asc" aria-hidden="true"></i></button>
                             </form>--%>
                             <c:if test = "${fn:length(userProjects) > 1}">
-                                <c:if test = "${sortF == '2'}">
+                                <c:if test = "${sortF == 2}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
                                         <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -65,7 +65,7 @@
                                        <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'desc')"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></button>--%>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != '2'}">
+                                <c:if test = "${sortF != 2}">
                                     Name
                                         <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                         <a href="/user/dashboard-get/2/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
@@ -77,7 +77,7 @@
                         </th>
                         <th>
                             <c:if test = "${fn:length(userProjects) > 1}">
-                                <c:if test = "${sortF == '4'}">
+                                <c:if test = "${sortF == 4}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
                                         <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -86,7 +86,7 @@
                                         <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != '4'}">
+                                <c:if test = "${sortF != 4}">
                                     Created at
                                         <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                         <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -175,7 +175,7 @@
                     <tr>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == '2'}">
+                                <c:if test = "${sortF == 2}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
                                         <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -184,7 +184,7 @@
                                         <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != '2'}">
+                                <c:if test = "${sortF != 2}">
                                     Name
                                         <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                         <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -196,7 +196,7 @@
                         </th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == '4'}">
+                                <c:if test = "${sortF == 4}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
                                         <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -205,7 +205,7 @@
                                         <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != '4'}">
+                                <c:if test = "${sortF != 4}">
                                     Created at
                                         <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                         <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -218,7 +218,7 @@
                         <th>Type</th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == '6'}">
+                                <c:if test = "${sortF == 6}">
                                     <u>Created by</u>
                                     <c:if test = "${sortT == 'desc'}">
                                         <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
@@ -227,7 +227,7 @@
                                         <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                  </c:if>
-                                <c:if test = "${sortF != '6'}">
+                                <c:if test = "${sortF != 6}">
                                     Created by
                                         <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                         <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>

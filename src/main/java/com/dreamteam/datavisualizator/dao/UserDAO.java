@@ -12,7 +12,7 @@ public interface UserDAO {
 
     User getUserByEmail(String email);
 
-    List<User> getAllUsersList();
+    List<User> getAllUsersList(int field, String sortType);
 
     boolean deleteUser(User user);
 
