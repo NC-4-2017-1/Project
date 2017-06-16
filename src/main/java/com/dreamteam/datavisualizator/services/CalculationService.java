@@ -17,6 +17,9 @@ public class CalculationService {
 
     public static BigDecimal calculateAverage(List<Map<String, Object>> parseData, String header) {
         ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseData, header);
+        if(dataForCalculate == null){
+            return BigDecimal.ZERO;
+        }
         try {
             double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
             BigDecimal result = new BigDecimal((new Mean()).evaluate(arrayForCalculate));
@@ -31,7 +34,7 @@ public class CalculationService {
     }
 
     private static ArrayList<BigDecimal> convertParseDate(List<Map<String, Object>> data, String header) {
-        if (!(data.get(1).get(header) instanceof BigDecimal)) {
+        if (!(data.get(0).get(header) instanceof BigDecimal)) {
             return null;
         }
         ArrayList<BigDecimal> dataForCalculate = new ArrayList<>();
@@ -43,6 +46,9 @@ public class CalculationService {
 
     public static BigDecimal calculateOlympicAverage(List<Map<String, Object>> parseData, String header) {
         ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseData, header);
+        if(dataForCalculate == null){
+            return BigDecimal.ZERO;
+        }
         ArrayList<BigDecimal> newDataForCalculate = new ArrayList<>(dataForCalculate);
         Collections.sort(newDataForCalculate, new Comparator<BigDecimal>() {
             public int compare(BigDecimal o1, BigDecimal o2) {
@@ -78,6 +84,9 @@ public class CalculationService {
     public static BigDecimal calculateCorrelation(List<Map<String, Object>> parseData, String headerOfFirstColumn, String headerOfSecondColumn) {
         ArrayList<BigDecimal> listOfFirstGraph = convertParseDate(parseData, headerOfFirstColumn);
         ArrayList<BigDecimal> listOfSecondGraph = convertParseDate(parseData, headerOfSecondColumn);
+        if(listOfFirstGraph == null || listOfSecondGraph == null){
+            return BigDecimal.ZERO;
+        }
         try {
             double[] arrayOfFirstGraph = new CalculationService().arrayListToDouble(listOfFirstGraph);
             double[] arrayOfSecondGraph = new CalculationService().arrayListToDouble(listOfSecondGraph);
@@ -96,6 +105,9 @@ public class CalculationService {
 
     public static BigDecimal calculateDispersion(List<Map<String, Object>> parseData, String header) {
         ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseData, header);
+        if(dataForCalculate == null){
+            return BigDecimal.ZERO;
+        }
         try {
             double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
             BigDecimal result = new BigDecimal((new Variance()).evaluate(arrayForCalculate));
@@ -108,6 +120,9 @@ public class CalculationService {
 
     public static BigDecimal calculationMathExpectation(List<Map<String, Object>> parseData, String header) {
         ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseData, header);
+        if(dataForCalculate == null){
+            return BigDecimal.ZERO;
+        }
         double[] arrayForCalculate = new CalculationService().arrayListToDouble(dataForCalculate);
         double probability = 1.0 / arrayForCalculate.length;
         double expectedValue = 0;

@@ -15,6 +15,7 @@ import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
+import com.dreamteam.datavisualizator.services.CalculationService;
 import com.dreamteam.datavisualizator.services.HtmlSerializer;
 import com.dreamteam.datavisualizator.services.JsonSerializer;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
@@ -213,6 +214,7 @@ public class ProjectController {
 
         LOGGER.info("Got x axis from client: " + Arrays.toString(dvGraphicCreationRequest.getxAxis()));
         LOGGER.info("Got y axis from client: " + Arrays.toString(dvGraphicCreationRequest.getyAxis()));
+        LOGGER.info("Got columns for math from client: " + Arrays.toString(dvGraphicCreationRequest.getmathCol()));
 
         List<Map<String, Object>> result = null;
         if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
@@ -238,10 +240,10 @@ public class ProjectController {
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
                     .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size() + 2)
                     .buildGraphicJSON(jsonObj)
-                    .buildAverage(BigDecimal.ONE)
-                    .buildDispersion(BigDecimal.ONE)
-                    .buildMathExpectation(BigDecimal.ONE)
-                    .buildOlympicAverage(BigDecimal.ONE)
+                    .buildAverage(CalculationService.calculateAverage(result, dvGraphicCreationRequest.getmathCol()[i]))
+                    .buildDispersion(CalculationService.calculateDispersion(result, dvGraphicCreationRequest.getmathCol()[i]))
+                    .buildMathExpectation(CalculationService.calculationMathExpectation(result, dvGraphicCreationRequest.getmathCol()[i]))
+                    .buildOlympicAverage(CalculationService.calculateOlympicAverage(result, dvGraphicCreationRequest.getmathCol()[i]))
                     .buildGraphic();
             LOGGER.info(graphic + " added");
             graphicList.add(graphic);

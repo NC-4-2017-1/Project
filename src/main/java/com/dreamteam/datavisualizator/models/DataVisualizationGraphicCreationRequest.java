@@ -3,6 +3,7 @@ package com.dreamteam.datavisualizator.models;
 public class DataVisualizationGraphicCreationRequest {
     private String[] xAxis;
     private String[] yAxis;
+    private String[] mathCol;
 
     public DataVisualizationGraphicCreationRequest() {
     }
@@ -22,5 +23,15 @@ public class DataVisualizationGraphicCreationRequest {
     public void setyAxis(String[] yAxis) {
         this.yAxis = yAxis;
     }
+
+    public String[] getmathCol(){
+        return mathCol;
+    }
+
+    public void setmathCol(String[] mathCol){
+        this.mathCol = mathCol;
+    }
+
+
 
 }

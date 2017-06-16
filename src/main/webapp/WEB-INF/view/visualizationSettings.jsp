@@ -44,9 +44,26 @@
                                                        value="${entry}">${entry}</label>
                 </c:forEach>
             </div>
+
+            <div class="selectMath">
+                Choose column for calculate:
+                <select class="selectForMath form-control" id="valSelectMath0" name="selectForMath" style="width: 20%;">
+                    <option value=""></option>
+                    <c:forEach items="${tableKeys}" var="entry">
+                        <option value="${entry}">${entry}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
             <hr>
         </div>
+
+
+
+
     </div>
+
+
 
 
     <div class="form-group row">
@@ -59,6 +76,7 @@
 
     <script>
         var i = 1;
+        var j = 0;
 
         function addGraphRadioButtons() {
             var cloneOfKeyRadio = $(".keyRadio:first").clone();
@@ -73,18 +91,22 @@
                 i++;
             });
 
+            $("div.selectMath").find('#valSelectMath'+j).attr('id','valSelectMath' + (j+1));
 
             cloneOfKeyRadio.appendTo(".keyRadios");
             i++;
+            j++;
         }
 
         function isData() {
 
             var xAxisArray = [];
             var yAxisArray = [];
+            var mathArray = [];
 
             var xAxis = $(".xAxis");
             var yAxis = $(".yAxis");
+            var math = $(".selectForMath");
 
             $.each(xAxis, function (index, value) {
 
@@ -101,9 +123,15 @@
                 }
             });
 
+            $.each(math, function(index, value){
+                var idd = value.id;
+                mathArray.push($("#"+idd).val());
+            });
+
             var data = {
                 xAxis: xAxisArray,
-                yAxis: yAxisArray
+                yAxis: yAxisArray,
+                mathCol: mathArray
             };
             return data;
 
@@ -113,6 +141,7 @@
 
         $("#submit").click(function () {
             var data = isData();
+            console.log(JSON.stringify(data));
             if (data == false) {
                 return false;
             }
