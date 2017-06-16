@@ -83,6 +83,8 @@
                 eval(t.jsCodeForGraph);
             </script>
             <div class="graphmath">
+                <span id="mathName${graph.id}"><script>$("#mathName${graph.id}").text("Calculate by "+t.math+" column");
+                </script></span>
                 <div class="graphmathitem">
                     <b> Average:</b> <c:out value="${graph.average}"/>
                 </div>

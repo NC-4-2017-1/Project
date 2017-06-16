@@ -26,7 +26,7 @@ public class JsonSerializer {
     }
 
     public static JsonObject serializeGraph(List<Map<String, Object>> dataForSerialize,
-                                            String columnNameAxisX, String columnNameAxisY){
+                                            String columnNameAxisX, String columnNameAxisY, String columnNameOfMathCalculate){
         JsonArray arrayForGraph = serializeTableData(dataForSerialize,columnNameAxisX,columnNameAxisY);
         String typeOfAxisX = columnNameAxisX.compareTo("Date")==0 ? "datetime" : "linear";
 
@@ -92,6 +92,7 @@ public class JsonSerializer {
 
         JsonObject jsonGraph = new JsonObject();
         jsonGraph.addProperty("jsCodeForGraph", jsStringForDvGraph);
+        jsonGraph.addProperty("math", columnNameOfMathCalculate);
 
         return jsonGraph;
     }
