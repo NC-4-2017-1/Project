@@ -11,6 +11,7 @@
     <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 </head>
+
 <body>
 
 <jsp:include page="header.jsp"/>
@@ -28,7 +29,8 @@
         <label class="control-label col-sm-2 col-sm-offset-3">X:</label>
         <div class="col-sm-3">
             <select class="form-control input-sm xAxisSelect"  name="X">
-                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                <c:forEach items="${tableKeys}" var="entry">
+                    <option value="${entry}">${entry}</option>
                 </c:forEach>
             </select>
         </div>
@@ -36,7 +38,8 @@
         <label class="control-label col-sm-2 col-sm-offset-3">Y:</label>
         <div class="col-sm-3">
             <select class="form-control input-sm yAxisSelect"   name="Y">
-                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                <c:forEach items="${tableKeys}" var="entry">
+                    <option value="${entry}">${entry}</option>
                 </c:forEach>
             </select>
         </div>
@@ -45,7 +48,8 @@
         <div class="col-sm-3">
             <select class="form-control input-sm mathSelect" name="Math">
                 <option value=""></option>
-                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                <c:forEach items="${tableKeys}" var="entry">
+                    <option value="${entry}">${entry}</option>
                 </c:forEach>
             </select>
         </div>
@@ -64,12 +68,11 @@
             </button>
         </div>
     </div>
+
     <div class="form-group">
-        <div class="col-sm-5">
-            <button class="btn btn-sm btn-primary col-sm-3" type="button" id="submit">
+            <button class="btn btn-sm btn-primary col-sm-1" type="button" id="submit">
                 <b>Finish</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
             </button>
-        </div>
     </div>
 
 
@@ -171,8 +174,6 @@
         });
 
     </script>
-
-
 </form>
 
 <jsp:include page="footer.jsp"/>
