@@ -186,14 +186,14 @@ public class ProjectController {
         if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
             try {
                 File file = sessionScopeBean.getCustomerProject().getFile();
-                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
+                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 5);
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as csv", e);
             }
         } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
             try {
                 File file = sessionScopeBean.getCustomerProject().getFile();
-                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 10);
+                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 5);
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as xml", e);
             }

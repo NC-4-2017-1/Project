@@ -19,84 +19,106 @@
 <jsp:include page="header.jsp"/>
 
 <h3 class="pageName"> Visualization Settings</h3>
+<h4 class="text-center">Preview data table</h4>
+<br>
 <c:out value="${table}" escapeXml="false"></c:out>
-<div class="form-group row">
-    <div class="col-sm-12">
-        <button onclick="addGraphRadioButtons()" class="btn btn-sm btn-success col-sm-2 col-sm-offset-5" type="button"
-                id="addgraph"><i class="fa fa-plus-square" aria-hidden="true"><b>&nbsp;Add graph</b></i>
-        </button>
-    </div>
-</div>
-<form method="POST" role="form" action="/project/save-visualization">
-    <div class="keyRadios">
-        <div class="keyRadio">
-            <div class="radiosDivX">
-                X:
-                <c:forEach items="${tableKeys}" var="entry">
-                    <label class="radio-inline"><input class="xAxis" type="radio" name="x"
-                                                       value="${entry}">${entry}</label>
-                </c:forEach>
-            </div>
-            <div class="radiosDivY">
-                Y:
-                <c:forEach items="${tableKeys}" var="entry">
-                    <label class="radio-inline"><input class="yAxis" type="radio" name="y"
-                                                       value="${entry}">${entry}</label>
-                </c:forEach>
-            </div>
 
-            <div class="selectMath">
-                Choose column for calculate:
-                <select class="selectForMath form-control" id="valSelectMath0" name="selectForMath" style="width: 20%;">
-                    <option value=""></option>
-                    <c:forEach items="${tableKeys}" var="entry">
-                        <option value="${entry}">${entry}</option>
-                    </c:forEach>
-                </select>
-            </div>
+<h4 class="text-center">Please select the coordinate axis for the graph and column for calculating mathematical data:</h4>
 
-            <hr>
+<form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/save-visualization"
+      enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-sm-offset-3">X:</label>
+        <div class="col-sm-3">
+            <select class="form-control input-sm xAxisSelect"  name="X">
+                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                </c:forEach>
+            </select>
         </div>
 
+        <label class="control-label col-sm-2 col-sm-offset-3">Y:</label>
+        <div class="col-sm-3">
+            <select class="form-control input-sm yAxisSelect"   name="Y">
+                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                </c:forEach>
+            </select>
+        </div>
 
-
-
+        <label class="control-label col-sm-2 col-sm-offset-3">MathDataColumn:</label>
+        <div class="col-sm-3">
+            <select class="form-control input-sm mathSelect" name="Math">
+                <option value=""></option>
+                <c:forEach items="${tableKeys}" var="entry"> <option value="${entry}">${entry}</option>
+                </c:forEach>
+            </select>
+        </div>
     </div>
 
+    <div>
+        <div class="col-sm-5">
+            <button class="btn btn-sm btn-success col-sm-4 col-sm-offset-8"  type="button"
+                    id="addGraph"><i class="fa fa-plus-square"><b>&nbsp;Add graph</b></i>
+            </button>
+        </div>
 
-
-
-    <div class="form-group row">
-        <div class="col-sm-12">
-            <button class="btn btn-sm btn-primary col-sm-2 col-sm-offset-5" type="button" id="submit">
-                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+        <div class="col-sm-5">
+            <button class="btn btn-sm btn-danger col-sm-4 "  type="button"
+                    id="removeGraph"><i class="fa fa-minus-square"><b>&nbsp;Remove graph</b></i>
+            </button>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-5">
+            <button class="btn btn-sm btn-primary col-sm-3" type="button" id="submit">
+                <b>Finish</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
             </button>
         </div>
     </div>
 
+
+    <table class="table js-table hidden tab-pane"  style="width:100%" border="1">
+        <tr>
+            <th  style="width:5%">Graph</th>
+            <th  style="width:30%">X</th>
+            <th  style="width:30%">Y</th>
+            <th  style="width:30%">MathData</th>
+        </tr>
+    </table>
+
     <script>
-        var i = 1;
-        var j = 0;
+        var i = 0;
 
-        function addGraphRadioButtons() {
-            var cloneOfKeyRadio = $(".keyRadio:first").clone();
-
-            $("div.radiosDivX").each(function() {
-                $(this).find('input').attr('name', 'x' + i);
-                i++;
-            });
-
-            $("div.radiosDivY").each(function() {
-                $(this).find('input').attr('name', 'y' + i);
-                i++;
-            });
-
-            $("div.selectMath").find('#valSelectMath'+j).attr('id','valSelectMath' + (j+1));
-
-            cloneOfKeyRadio.appendTo(".keyRadios");
+        $("#addGraph").click(function () {
             i++;
-            j++;
-        }
+            var x = $(".xAxisSelect :selected").val();
+            var y = $(".yAxisSelect :selected").val();
+            var math = $(".mathSelect :selected").val();
+            var table = document.querySelector(".js-table");
+            $(table).removeClass("hidden");
+            tr = table.insertRow(1);
+            $(tr).addClass("tr-selector_" + i);
+            td = tr.insertCell(0);
+            td.appendChild(document.createTextNode(i));
+            td = tr.insertCell(1);
+            td.appendChild(document.createTextNode(x));
+            $(td).addClass("xAxis");
+            td = tr.insertCell(2);
+            td.appendChild(document.createTextNode(y));
+            $(td).addClass("yAxis");
+            td = tr.insertCell(3);
+            td.appendChild(document.createTextNode(math));
+            $(td).addClass("selectForMath");
+        });
+
+        $("#removeGraph").click(function () {
+            $(".tr-selector_" +i).remove();
+            if(i == 1){
+                $(".js-table").addClass("hidden");
+            }if(i == 0){
+                return;
+            }
+            i--;
+        });
 
         function isData() {
 
@@ -109,23 +131,19 @@
             var math = $(".selectForMath");
 
             $.each(xAxis, function (index, value) {
-
-                if ($(value).is(":checked")) { // check if the radio is checked
-                    var val = $(this).val(); // retrieve the value
-                    xAxisArray.push(val);
-                }
+                var val = value.textContent;
+                xAxisArray.push(val);
             });
 
             $.each(yAxis, function (index, value) {
-                if ($(value).is(":checked")) { // check if the radio is checked
-                    var val = $(this).val(); // retrieve the value
-                    yAxisArray.push(val);
-                }
+                var val = value.textContent;
+                yAxisArray.push(val);
             });
 
             $.each(math, function(index, value){
-                var idd = value.id;
-                mathArray.push($("#"+idd).val());
+                var val = value.textContent;
+                mathArray.push(val);
+
             });
 
             var data = {
@@ -134,15 +152,11 @@
                 mathCol: mathArray
             };
             return data;
-
-        }
-        ;
-
+        };
 
         $("#submit").click(function () {
             var data = isData();
-            console.log(JSON.stringify(data));
-            if (data == false) {
+            if (data.xAxis.length == 0 || data.yAxis.length == 0) {
                 return false;
             }
             $.ajax({
