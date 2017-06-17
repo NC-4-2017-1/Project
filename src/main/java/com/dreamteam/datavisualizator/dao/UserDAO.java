@@ -18,11 +18,11 @@ public interface UserDAO {
 
     User createUser(String firstName, String lastName, String email, String password, UserTypes type);
 
-    boolean giveUserAccessToProject(User user, Project project);
+    boolean giveUserAccessToProject(BigInteger user, BigInteger project);
 
-    boolean removeAccessToProjectFromUser(User user, Project project);
+    boolean removeAccessToProjectFromUser(BigInteger userId, BigInteger projectId);
 
-    List<User> getUsersThatHaveAccessToProject(Project project);
+    List<User> getUsersThatHaveAccessToProject(BigInteger project);
 
     List<Project> getAllUserProjects(User user, int field, String sortType);
 

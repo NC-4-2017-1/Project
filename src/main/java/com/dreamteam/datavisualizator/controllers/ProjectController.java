@@ -22,6 +22,7 @@ import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
 import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.util.StringUtils;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -520,60 +521,55 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}/{project_type}", method = RequestMethod.GET)
-    public String shareProject(Model model, @PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {
-        List<User> users = userDAO.getAllUsersList(0, "s");
-        Project project = null;
-        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
-             project = projectDAO.getProjectById(id);
-        } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
-             project = healthMonitorProjectDAOImpl.getProjectById(id);
+    @RequestMapping(path = "/share/{idProject}/{field}/{sortType}", method = RequestMethod.GET)
+    public String shareProject(Model model, @PathVariable String idProject,
+                               @PathVariable int field,
+                               @PathVariable String sortType, HttpServletRequest request
+    ) {
+        if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
+            sortType = "asc";
         }
-        List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(project);
-        model.addAttribute("users", users);
-        model.addAttribute("users_with_access", users_with_access);
-        model.addAttribute("project_id", id);
-        model.addAttribute("project_type", project_type);
-        return "shareProject";
+        if (field != 2 && field != 3 && field != 4){
+            field = 3;
+        }
+        try {
+            Integer idP = Integer.parseInt(idProject.trim());
+            model.addAttribute("sortF", field);
+            model.addAttribute("sortT", sortType);
+            List<User> users = userDAO.getAllUsersList(field, sortType);
+            BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
+            Iterator<User> iter = users.iterator();
+            while (iter.hasNext()) {
+                User author = iter.next();
+                if (userID.equals(author.getId())) {
+                    iter.remove();
+                }
+            }
+            model.addAttribute("users", users);
+            model.addAttribute("project_id", idProject);
+            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP));
+            model.addAttribute("users_with_access", users_with_access);
+            return "shareProject";
+        } catch (NumberFormatException e){
+            return "redirect:/user/dashboard-get/0/s/0";
+        }
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{id}/{user_id}/{project_type}", method = RequestMethod.GET)
-    public boolean shareProject(Model model, @PathVariable BigInteger id,
-                                @PathVariable BigInteger user_id, @PathVariable ProjectTypes project_type) {
-        User user = userDAO.getUserById(user_id);
-        Project project = null;
-        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
-            project = projectDAO.getProjectById(id);
-        }
-        if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
-            project = healthMonitorProjectDAOImpl.getProjectById(id);
-        }
-        if (project != null) {
-            if(!(user_id.equals(project.getAuthor()))){
-                 return userDAO.giveUserAccessToProject(user, project);
-            }
-            else{
-                return false;
-            }
+    @RequestMapping(path = "/share/{id}/{user_id}", method = RequestMethod.GET)
+    public boolean shareProject(Model model, @PathVariable BigInteger id, @PathVariable BigInteger user_id) {
+        if (id != null && user_id != null) {
+            return userDAO.giveUserAccessToProject(user_id, id);
         }
         return false;
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/unshare/{id}/{user_id}/{project_type}", method = RequestMethod.GET)
+    @RequestMapping(path = "/unshare/{id}/{user_id}", method = RequestMethod.GET)
     public boolean UnShareProject(Model model, @PathVariable BigInteger id,
-                                @PathVariable BigInteger user_id, @PathVariable ProjectTypes project_type) {
-        User user = userDAO.getUserById(user_id);
-        Project project = null;
-        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
-            project = projectDAO.getProjectById(id);
-        }
-        if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
-            project = healthMonitorProjectDAOImpl.getProjectById(id);
-        }
-        if (project != null) {
-            return userDAO.removeAccessToProjectFromUser(user, project);
+                                @PathVariable BigInteger user_id) {
+        if (id != null && user_id != null) {
+            return userDAO.removeAccessToProjectFromUser(user_id, id);
         }
         return false;
     }

@@ -19,11 +19,16 @@
 <jsp:include page="header.jsp"/>
 
 <h3 class="pageName">Project list</h3>
+<%--<c:if test = "${not empty error}">
+    <div class="alert alert-danger hide text-center">${error}</div>
+</c:if>--%>
+
 <div class="pull-right">
-    <button class="btn btn-sm btn-success" onclick="myFunction()">
+    <button class="btn btn-sm btn-success add-project" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
     </button>
 </div>
+
 <ul class="nav nav-tabs" id="projectTab">
     <li><a data-target="#1" data-toggle="tab" class = "first">My projects</a></li>
     <li><a data-target="#2" data-toggle="tab" class = "second">Shared projects</a></li>
@@ -94,6 +99,7 @@
                             </c:if>
                         </th>
                         <th>Type</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="allElementsOfMyProjects">
@@ -138,6 +144,18 @@
                             <%--<td class="pr-autor">
                                     ${project.authorFullName}
                             </td>--%>
+                            <td>
+                                <div class="btn-group">
+                                     <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
+                                                    Actions <span class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">
+                                                        <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
+                                        <li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
+                                                        <i class="fa fa-share-alt"></i> Share</a></li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                     </c:forEach>
                     </tbody>

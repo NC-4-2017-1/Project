@@ -104,21 +104,26 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public boolean giveUserAccessToProject(User user, Project project) {
+    public boolean giveUserAccessToProject(BigInteger userId, BigInteger projectId) {
         try {
-            if (user != null && project != null) {
-                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, user.getId(), project.getId());
+            if (userId != null && projectId != null) {
+                Integer refAutor = generalTemplate.queryForObject(SELECT_REF_PROJECTID_USERID, new Object[]{userId, projectId}, Integer.class);
+                if (refAutor == 0) {
+                    generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, userId, projectId);
+                }
+                else {
+                    LOGGER.error("Access to project was not given because user is autor project");
+                    return false;
+                }
             } else {
                 LOGGER.error("Access to project was not given because of nulls in method");
                 return false;
             }
         } catch (DataAccessException e) {
-            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
-                    ") not granted to User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
+            LOGGER.error("Access to project (id: " + projectId + ") not granted to User (id: " + userId + ")", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
-                    ") not granted to User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
+            LOGGER.error("Access to project (id: " + projectId + ") not granted to User (id: " + userId + ")", e);
             return false;
         }
         return true;
@@ -126,21 +131,19 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
-    public boolean removeAccessToProjectFromUser(User user, Project project) {
+    public boolean removeAccessToProjectFromUser(BigInteger userId, BigInteger projectId) {
         try {
-            if (user != null && project != null) {
-                generalTemplate.update(REMOVE_ACCESS_TO_PROJECT_FROM_USER, project.getId(), user.getId());
+            if (userId != null && projectId != null) {
+                generalTemplate.update(REMOVE_ACCESS_TO_PROJECT_FROM_USER, projectId, userId);
             } else {
                 LOGGER.error("Access to project was not removed because of nulls in method");
                 return false;
             }
         } catch (DataAccessException e) {
-            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
-                    ") not removed from User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
+            LOGGER.error("Access to project (id: " + projectId + ") not removed from User (id: " + userId + ")", e);
             return false;
         } catch (Exception e) {
-            LOGGER.error("Access to project (id: " + project.getId() + ", name: " + project.getName() +
-                    ") not removed from User (id: " + user.getId() + ", name: " + user.getFullName() + ")", e);
+            LOGGER.error("Access to project (id: " + projectId + ") not removed from User (id: " + userId + ")", e);
         }
         return true;
     }
@@ -174,19 +177,19 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getUsersThatHaveAccessToProject(Project project) {
+    public List<User> getUsersThatHaveAccessToProject(BigInteger projectId) {
         try {
-            if (project != null) {
-                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT, new Object[]{project.getId()}, new UserRowMapperWithoutPassword());
+            if (projectId != null) {
+                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT, new Object[]{projectId}, new UserRowMapperWithoutPassword());
             } else {
-                LOGGER.error("Users that have access to project wasn't fetched because project is " + project);
+                LOGGER.error("Users that have access to project wasn't fetched because project is " + projectId);
                 return null;
             }
         } catch (DataAccessException e) {
-            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
+            LOGGER.error("Users that have access to project wasn't fetched project id:" + projectId, e);
             return null;
         } catch (Exception e) {
-            LOGGER.error("Users that have access to project wasn't fetched project id:" + project.getId() + " name:" + project.getName(), e);
+            LOGGER.error("Users that have access to project wasn't fetched project id:" + projectId, e);
             return null;
         }
     }
@@ -195,10 +198,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<Project> getAllUserProjects(User user, int field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_USERS_PROJECT + " order by "
+                String sql = SELECT_ALL_USERS_PROJECT + " order by "
                         + ((field != 2 && field != 4)?4:field) + " "
-                        + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
-                        new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                        + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType);
+                return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -453,4 +456,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and usertype.attr_id = 5" +
             " and usertype.list_value_id = 1" +
             " and obj_user.object_id = ?";
+    private static final String SELECT_REF_PROJECTID_USERID ="select count(*) from objreference ref_autor\n" +
+            "where ref_autor.attr_id=17 and ref_autor.reference=? and ref_autor.object_id=?";
 }

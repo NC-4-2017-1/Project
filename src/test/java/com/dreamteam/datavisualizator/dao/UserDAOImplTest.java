@@ -165,7 +165,7 @@ public class UserDAOImplTest {
         dvProject.setAuthor(user1.getId());
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
-        assertTrue(dao.giveUserAccessToProject(user2, dvProject));
+        assertTrue(dao.giveUserAccessToProject(user2.getId(), dvProject.getId()));
         assertTrue(dao.getAllSharedToUserProjects(user2, 4, "desc").size()==1);
     }
 
@@ -185,9 +185,9 @@ public class UserDAOImplTest {
         dvProject.setAuthor(user1.getId());
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
-        dao.giveUserAccessToProject(user2, dvProject);
+        dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
         assertTrue(dao.getAllSharedToUserProjects(user2, 4, "desc").size()==1);
-        dao.removeAccessToProjectFromUser(user2, dvProject);
+        dao.removeAccessToProjectFromUser(user2.getId(), dvProject.getId());
         assertTrue(dao.getAllSharedToUserProjects(user2, 4, "desc").isEmpty());
     }
 
@@ -225,9 +225,9 @@ public class UserDAOImplTest {
         dvProject.setAuthor(user1.getId());
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
-        dao.giveUserAccessToProject(user2, dvProject);
+        dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
 
-        List<User> usersThatHaveAccessToProject = dao.getUsersThatHaveAccessToProject(dvProject);
+        List<User> usersThatHaveAccessToProject = dao.getUsersThatHaveAccessToProject(dvProject.getId());
 
         assertTrue(usersThatHaveAccessToProject.size()==1);
         assertEquals(user2.getId(), usersThatHaveAccessToProject.get(0).getId());
@@ -268,7 +268,7 @@ public class UserDAOImplTest {
         dvProject.setAuthor(user1.getId());
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
-        dao.giveUserAccessToProject(user2, dvProject);
+        dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
 
         List<Project> allSharedToUserProjects = dao.getAllSharedToUserProjects(user2, 4, "desc");
 
