@@ -78,7 +78,7 @@
 
     <table class="table js-table hidden tab-pane"  style="width:100%" border="1">
         <tr>
-            <th  style="width:5%">Graph</th>
+            <th  style="width:5%; text-align:center;">Graph </th>
             <th  style="width:30%">X</th>
             <th  style="width:30%">Y</th>
             <th  style="width:30%">MathData</th>
@@ -86,19 +86,20 @@
     </table>
 
     <script>
-        var i = 0;
 
         $("#addGraph").click(function () {
-            i++;
             var x = $(".xAxisSelect :selected").val();
             var y = $(".yAxisSelect :selected").val();
             var math = $(".mathSelect :selected").val();
             var table = document.querySelector(".js-table");
             $(table).removeClass("hidden");
             tr = table.insertRow(1);
-            $(tr).addClass("tr-selector_" + i);
             td = tr.insertCell(0);
-            td.appendChild(document.createTextNode(i));
+            td.setAttribute("style", "text-align:center;");
+            var check = document.createElement("INPUT");
+            check.setAttribute("type", "checkbox");
+            check.setAttribute("class", "js-remove");
+            td.appendChild(check);
             td = tr.insertCell(1);
             td.appendChild(document.createTextNode(x));
             $(td).addClass("xAxis");
@@ -111,13 +112,16 @@
         });
 
         $("#removeGraph").click(function () {
-            $(".tr-selector_" +i).remove();
-            if(i == 1){
+            var removElements = $(".js-remove");
+            $.each(removElements, function (index, value) {
+                if($(value).prop("checked")){
+                    $(value).closest('tr').remove();
+                }
+            });
+            var removAllElements = $(".js-remove");
+            if(removAllElements.length ==0 ){
                 $(".js-table").addClass("hidden");
-            }if(i == 0){
-                return;
             }
-            i--;
         });
 
         function isData() {
