@@ -37,6 +37,10 @@
     <%--<div>${sortF} </div>--%>
 
         <div class="tab-pane" id="1">
+            <c:if test = "${not empty error1}">
+                <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error1}</div>
+            </c:if>
+        <c:if test = "${empty error1}">
             <c:if test = "${not empty userProjects}">
             <form>
                     <div class="form-group ">
@@ -56,21 +60,21 @@
                                 <button type="submit" class="btn btn-link asc"  name = "sort-type" value=" asc"><i class="fa fa-sort-asc" aria-hidden="true"></i></button>
                             </form>--%>
                             <c:if test = "${fn:length(userProjects) > 1}">
-                                <c:if test = "${sortF == 2}">
+                                <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                         <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'asc')"><i class="fa fa-long-arrow-up" aria-hidden="true"></i></button>--%>
                                      </c:if>
                                      <c:if test = "${sortT == 'asc'}">
-                                         <a href="/user/dashboard-get/2/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                         <a href="/user/dashboard-get/name/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                        <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'desc')"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></button>--%>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 2}">
+                                <c:if test = "${sortF != 'name'}">
                                     Name
-                                        <a href="/user/dashboard-get/2/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get/2/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
                             <c:if test = "${fn:length(userProjects) == 1}">
@@ -79,19 +83,19 @@
                         </th>
                         <th>
                             <c:if test = "${fn:length(userProjects) > 1}">
-                                <c:if test = "${sortF == 4}">
+                                <c:if test = "${sortF == 'creation_date'}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
                                     <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 4}">
+                                <c:if test = "${sortF != 'creation_date'}">
                                     Created at
-                                        <a href="/user/dashboard-get/4/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get/4/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
                             <c:if test = "${fn:length(userProjects) == 1}">
@@ -145,7 +149,7 @@
                                     ${project.authorFullName}
                             </td>--%>
                             <td>
-                                <div class="btn-group">
+                                <div class="btn-group pull-right">
                                      <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
                                                     Actions <span class="caret"></span></button>
                                     <ul class="dropdown-menu" role="menu">
@@ -164,12 +168,16 @@
             <c:if test = "${empty userProjects}">
                 <div class="alert alert-info prj-list-info"><strong>Info!</strong> You haven't projects yet.</div>
             </c:if>
-        </div>
+    </c:if>
+    </div>
 
 
 
         <div class="tab-pane" id="2">
-
+        <c:if test = "${not empty error2}">
+            <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error1}</div>
+        </c:if>
+        <c:if test = "${empty error2}">
             <c:if test = "${not empty sharedToUserProjects}">
                 <%--<div class="col-sm-3 search-input">
                     <label class="control-label" for="SearchSharedProject">Search project:</label>
@@ -190,19 +198,19 @@
                     <tr>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 2}">
+                                <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
                                     <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 2}">
+                                <c:if test = "${sortF != 'name'}">
                                     Name
-                                        <a href="/user/dashboard-get/2/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get/2/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
                             <c:if test = "${fn:length(sharedToUserProjects) == 1}">
@@ -211,19 +219,19 @@
                         </th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 4}">
+                                <c:if test = "${sortF == 'creation_date'}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
                                     <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 4}">
+                                <c:if test = "${sortF != 'creation_date'}">
                                     Created at
-                                        <a href="/user/dashboard-get/4/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get/4/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/creation_date/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
                             <c:if test = "${fn:length(sharedToUserProjects) == 1}">
@@ -233,19 +241,19 @@
                         <th>Type</th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 6}">
+                                <c:if test = "${sortF == 'author_name'}">
                                     <u>Created by</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/author_name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
                                     <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/author_name/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                  </c:if>
-                                <c:if test = "${sortF != 6}">
+                                <c:if test = "${sortF != 'author_name'}">
                                     Created by
-                                        <a href="/user/dashboard-get/6/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get/6/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/author_name/desc/2" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                        <a href="/user/dashboard-get/author_name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
                             <c:if test = "${fn:length(sharedToUserProjects) == 1}">
@@ -304,6 +312,7 @@
             <c:if test = "${empty sharedToUserProjects}">
                 <div class="alert alert-info prj-list-info"><strong>Info!</strong> There are no shared projects for you.</div>
             </c:if>
+        </c:if>
         </div>
 
 </div>
@@ -321,10 +330,10 @@
        // $('.nav-tabs a[class = "active"]').tab('show');
 
         var sortTab = $.trim($( ".sortTab" ).text());
-        if (sortTab == 1){
+        if (sortTab == "1"){
             $('.nav-tabs a[class = "first"]').tab('show');
             //$('#projectTab a[href="#2"]').tab('show');
-        } else if (sortTab == 2){
+        } else if (sortTab == "2"){
             //$('#projectTab a[href="#2"]').tab('show');
             $('.nav-tabs a[class = "second"]').tab('show');
         } else {

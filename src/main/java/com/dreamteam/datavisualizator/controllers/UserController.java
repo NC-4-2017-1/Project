@@ -25,41 +25,50 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/admin-panel/{field}/{sortType}", method = RequestMethod.GET)
-    public String getAdminDashboard(Model model, @PathVariable int field,@PathVariable String sortType) {
+    public String getAdminDashboard(Model model, @PathVariable String field,@PathVariable String sortType) {
         if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "asc";
         }
-        if (field != 2 && field != 3 && field != 4){
-            field = 3;
+        if (!"first_name".equals(field) && !"last_name".equals(field) &&!"email".equals(field)){
+            field = "email";
         }
         model.addAttribute("sortF",field);
         model.addAttribute("sortT",sortType);
         List<User> users = userDAO.getAllUsersList(field, sortType);
+        if (users == null) {
+            model.addAttribute("error1", "Users wasn't selected.");
+        }
         model.addAttribute("users", users);
         return "adminDashboard";
     }
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard-get/{field}/{sortType}/{sortTab}", method = RequestMethod.GET)
-    public String getUserDashboard(@PathVariable int field,@PathVariable String sortType, @PathVariable int sortTab, HttpServletRequest request, Model model) {
-        if (sortTab != 1 && sortTab != 2){
-            sortTab = 1;
+    public String getUserDashboard(@PathVariable String field,@PathVariable String sortType, @PathVariable String sortTab, HttpServletRequest request, Model model) {
+        if (!"1".equals(sortTab) && !"2".equals(sortTab)){
+            sortTab = "1";
         }
         if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "desc";
         }
-        if (sortTab == 1 && (field != 2 && field != 4)){
-            field = 4;
+        if ("1".equals(sortTab) && (!"name".equals(field) && !"creation_date".equals(field))){
+            field = "creation_date";
         }
-        if (sortTab == 2 && (field != 2 && field != 4 && field != 6)){
-            field = 4;
+        if ("2".equals(sortTab) && (!"name".equals(field) && !"creation_date".equals(field) &&!"author_name".equals(field))){
+            field = "creation_date";
         }
         model.addAttribute("sortF",field);
         model.addAttribute("sortT",sortType);
         model.addAttribute("sortTab",sortTab);
         User user = (User) request.getSession().getAttribute("userObject");
         List<Project> userProjects = userDAO.getAllUserProjects(user, field, sortType);
+        if (userProjects == null) {
+            model.addAttribute("error1", "User projects wasn't selected.");
+        }
         List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, field, sortType);
+        if (sharedToUserProjects == null) {
+            model.addAttribute("error2", "User shared projects wasn't selected.");
+        }
         model.addAttribute("sharedToUserProjects", sharedToUserProjects);
         model.addAttribute("userProjects", userProjects);
         model.addAttribute("userObject", user);

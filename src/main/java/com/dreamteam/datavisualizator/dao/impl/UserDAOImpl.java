@@ -64,12 +64,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getAllUsersList(int field, String sortType) {
+    public List<User> getAllUsersList(String field, String sortType) {
         try {
-            return generalTemplate.query(SELECT_ALL_USERS+ " order by "
-                    + ((field != 2 && field != 3 && field != 4)?3:field) + " "
-                    + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
-                    new UserRowMapperWithoutPassword());
+            return generalTemplate.query(SELECT_ALL_USERS+ " order by lower("
+                            + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field))?"email":field) + ") "
+                            + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
+                            new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;
@@ -195,11 +195,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllUserProjects(User user, int field, String sortType) {
+    public List<Project> getAllUserProjects(User user, String field, String sortType) {
         try {
             if (user != null) {
-                String sql = SELECT_ALL_USERS_PROJECT + " order by "
-                        + ((field != 2 && field != 4)?4:field) + " "
+                String sql = SELECT_ALL_USERS_PROJECT + " order by lower("
+                        + ((!"name".equals(field) && !"creation_date".equals(field))?"creation_date":field) + ") "
                         + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType);
                 return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
@@ -216,11 +216,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllSharedToUserProjects(User user, int field, String sortType) {
+    public List<Project> getAllSharedToUserProjects(User user, String field, String sortType) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by "
-                                + ((field != 2 && field != 4 && field != 6)?4:field) + " "
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by lower("
+                                + ((!"name".equals(field) && !"creation_date".equals(field) &&!"author_name".equals(field))?"creation_date":field) + ") "
                                 + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
                                 new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {

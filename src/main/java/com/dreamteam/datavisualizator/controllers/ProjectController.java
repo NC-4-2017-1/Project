@@ -523,14 +523,14 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/share/{idProject}/{field}/{sortType}", method = RequestMethod.GET)
     public String shareProject(Model model, @PathVariable String idProject,
-                               @PathVariable int field,
+                               @PathVariable String field,
                                @PathVariable String sortType, HttpServletRequest request
     ) {
         if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "asc";
         }
-        if (field != 2 && field != 3 && field != 4){
-            field = 3;
+        if (!"first_name".equals(field) && !"last_name".equals(field) &&!"email".equals(field)){
+            field = "email";
         }
         try {
             Integer idP = Integer.parseInt(idProject.trim());
@@ -548,6 +548,9 @@ public class ProjectController {
             model.addAttribute("users", users);
             model.addAttribute("project_id", idProject);
             List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP));
+            if (users == null || users_with_access == null) {
+                model.addAttribute("error1", "Users for sharing project wasn't selected.");
+            }
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";
         } catch (NumberFormatException e){

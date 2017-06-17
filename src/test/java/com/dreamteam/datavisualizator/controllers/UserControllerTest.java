@@ -75,9 +75,9 @@ public class UserControllerTest {
                 .buildUserProjects(null)
                 .buildUser();
 
-        when(userDaoMock.getAllUsersList(3, "desc")).thenReturn(Arrays.asList(user1, user2));
+        when(userDaoMock.getAllUsersList("email", "desc")).thenReturn(Arrays.asList(user1, user2));
 
-        mockMvc.perform(get("/user/admin-panel/3/desc"))
+        mockMvc.perform(get("/user/admin-panel/email/desc"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("adminDashboard"))
                 .andExpect(model().attribute("users", hasSize(2)))
@@ -97,7 +97,7 @@ public class UserControllerTest {
                                 hasProperty("email", is("test@email2"))
                         )
                 )));
-        verify(userDaoMock, times(1)).getAllUsersList(3, "desc");
+        verify(userDaoMock, times(1)).getAllUsersList("email", "desc");
         verifyNoMoreInteractions(userDaoMock);
     }
 
@@ -264,7 +264,7 @@ public class UserControllerTest {
         Project project1 = new DataVisualizationProject.Builder(name1, date1, id, user.getFullName()).buildProject();
         Project project2 = new DataVisualizationProject.Builder(name2, date2, id, user.getFullName()).buildProject();
 
-        when(userDaoMock.getAllUserProjects(user, 4, "desc")).thenReturn(Arrays.asList(project1, project2));
+        when(userDaoMock.getAllUserProjects(user, "creation_date", "desc")).thenReturn(Arrays.asList(project1, project2));
 
         ResultActions actions = mockMvc.perform(get("/user/dashboard").sessionAttr("userObject", user))
                 .andExpect(status().isOk())
@@ -287,7 +287,7 @@ public class UserControllerTest {
                 )))
                 .andExpect(model().attributeExists("userObject"));
 
-        verify(userDaoMock, times(1)).getAllUserProjects(user, 4, "desc");
+        verify(userDaoMock, times(1)).getAllUserProjects(user, "creation_date", "desc");
         verifyNoMoreInteractions(userDaoMock);
     }
 }

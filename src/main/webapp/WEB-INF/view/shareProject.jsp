@@ -15,7 +15,10 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h3 class="pageName">User list for share project</h3>
-
+<c:if test = "${not empty error1}">
+    <div class="alert alert-danger project-share-list-error"> <strong>Warning!</strong> ${error1}</div>
+</c:if>
+<c:if test = "${empty error1}">
 
 
 <form class="form-horizontal" method="GET"  role="form" action="/project/share/">
@@ -34,51 +37,51 @@
             <thead>
             <tr>
                 <th>
-                    <c:if test = "${sortF == 2}">
+                    <c:if test = "${sortF == 'first_name'}">
                         <u>First name</u>
                         <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/2/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                         </c:if>
                         <c:if test = "${sortT == 'asc'}">
-                            <a href="/project/share/${project_id}/2/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 2}">
+                    <c:if test = "${sortF != 'first_name'}">
                         First name
-                        <a href="/project/share/${project_id}/2/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/2/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${sortF == 3}">
+                    <c:if test = "${sortF == 'last_name'}">
                         <u>Last name</u>
                         <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/3/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                         </c:if>
                         <c:if test = "${sortT == 'asc'}">
-                            <a href="/project/share/${project_id}/3/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 3}">
+                    <c:if test = "${sortF != 'last_name'}">
                         Last name
-                        <a href="/project/share/${project_id}/3/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/3/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${sortF == 4}">
+                    <c:if test = "${sortF == 'email'}">
                         <u>Email</u>
                         <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/4/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                         </c:if>
                         <c:if test = "${sortT == 'asc'}">
-                            <a href="/project/share/${project_id}/4/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 4}">
+                    <c:if test = "${sortF != 'email'}">
                         Email
-                        <a href="/project/share/${project_id}/4/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/4/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                        <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th></th>
@@ -119,6 +122,7 @@
             </c:forEach>
             </tbody>
         </table>
+</c:if>
 <jsp:include page="footer.jsp"/>
 
 </body>

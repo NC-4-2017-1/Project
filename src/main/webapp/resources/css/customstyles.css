@@ -30,6 +30,14 @@
     padding-right: 0px;
 }
 
+.project-share-list-error{
+    margin-top: 10px;
+}
+
+.admin-list-users{
+    margin-top: 45px;
+}
+
 .bg-whole {
     background-color: #5BE870;
 }
