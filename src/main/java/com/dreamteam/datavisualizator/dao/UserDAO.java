@@ -24,7 +24,7 @@ public interface UserDAO {
 
     List<User> getUsersThatHaveAccessToProject(BigInteger project);
 
-    List<Project> getAllUserProjects(User user, String field, String sortType);
+    List<Project> getAllUserProjects(User user, String field, String sortType, String whereName);
 
-    List<Project> getAllSharedToUserProjects(User user, String field, String sortType);
+    List<Project> getAllSharedToUserProjects(User user, String field, String sortType, String whereName);
 }

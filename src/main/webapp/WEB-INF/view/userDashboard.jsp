@@ -19,10 +19,6 @@
 <jsp:include page="header.jsp"/>
 
 <h3 class="pageName">Project list</h3>
-<%--<c:if test = "${not empty error}">
-    <div class="alert alert-danger hide text-center">${error}</div>
-</c:if>--%>
-
 <div class="pull-right">
     <button class="btn btn-sm btn-success add-project" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
@@ -34,7 +30,7 @@
     <li><a data-target="#2" data-toggle="tab" class = "second">Shared projects</a></li>
 </ul>
 <div class="tab-content">
-    <%--<div>${sortF} </div>--%>
+    <%--<div>${search-name} </div>--%>
 
         <div class="tab-pane" id="1">
             <c:if test = "${not empty error1}">
@@ -42,23 +38,11 @@
             </c:if>
         <c:if test = "${empty error1}">
             <c:if test = "${not empty userProjects}">
-            <form>
-                    <div class="form-group ">
-                        <label class="control-label pull-left search-input" for="SearchMyProject">Search project:</label>
-                        <div class="col-sm-3">
-                            <input class="form-control input-sm" id="SearchMyProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
-                        </div>
-                    </div>
-            </form>
+                <jsp:include page="searchForm.jsp"/>
                 <table id="table-sort" class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
                         <th>
-                           <%-- <form method="POST"  action="/user/dashboard-get">
-                                <input type="text" value=" 2 " name="field" hidden>
-                                <button type="submit" class="btn btn-link desc" name = "sort-type" value=" desc"><i class="fa fa-sort-desc" aria-hidden="true"></i></button>
-                                <button type="submit" class="btn btn-link asc"  name = "sort-type" value=" asc"><i class="fa fa-sort-asc" aria-hidden="true"></i></button>
-                            </form>--%>
                             <c:if test = "${fn:length(userProjects) > 1}">
                                 <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
@@ -165,8 +149,12 @@
                     </tbody>
                 </table>
             </c:if>
+            <c:if test = "${empty userProjects && not empty search}">
+                <jsp:include page="searchForm.jsp"/>
+                <br> <br>
+            </c:if>
             <c:if test = "${empty userProjects}">
-                <div class="alert alert-info prj-list-info"><strong>Info!</strong> You haven't projects yet.</div>
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong> User projects not found.</div>
             </c:if>
     </c:if>
     </div>
@@ -175,24 +163,11 @@
 
         <div class="tab-pane" id="2">
         <c:if test = "${not empty error2}">
-            <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error1}</div>
+            <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error2}</div>
         </c:if>
         <c:if test = "${empty error2}">
             <c:if test = "${not empty sharedToUserProjects}">
-                <%--<div class="col-sm-3 search-input">
-                    <label class="control-label" for="SearchSharedProject">Search project:</label>
-                    <input class="form-control conn-field input-sm" id="SearchSharedProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
-                </div>--%>
-
-                <form>
-                    <div class="form-group ">
-                        <label class="control-label pull-left search-input" for="SearchSharedProject">Search project:</label>
-                        <div class="col-sm-3 ">
-                            <input class="form-control input-sm" id="SearchSharedProject" type="text" placeholder="Project name..." class="search-in-list" autofocus>
-                        </div>
-                    </div>
-                </form>
-
+                <jsp:include page="searchFormShareP.jsp"/>
                 <table class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
@@ -309,8 +284,12 @@
                     </tbody>
                 </table>
             </c:if>
+            <c:if test = "${empty sharedToUserProjects && not empty search}">
+                <jsp:include page="searchFormShareP.jsp"/>
+                <br> <br>
+            </c:if>
             <c:if test = "${empty sharedToUserProjects}">
-                <div class="alert alert-info prj-list-info"><strong>Info!</strong> There are no shared projects for you.</div>
+                <div class="alert alert-info prj-list-info"><strong>Info!</strong>  User shared projects not found.</div>
             </c:if>
         </c:if>
         </div>
@@ -346,9 +325,9 @@
 
     function myFunction() {
         window.location.assign("/project/new-layout");
-    }
+    };
 
-
+    /*
     var searchField;
     var secondSearchField;
     var searchFieldData  = "";
@@ -434,7 +413,7 @@
                 currentElement.hide();
             }
         });
-    }
+    }*/
 
 </script>
 </html>

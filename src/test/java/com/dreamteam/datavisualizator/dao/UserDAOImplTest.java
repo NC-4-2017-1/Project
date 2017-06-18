@@ -153,7 +153,7 @@ public class UserDAOImplTest {
 
         assertTrue(dao.deleteUser(user));
         assertNull(dao.getUserById(user.getId()));
-        assertTrue(dao.getAllUserProjects(user,"creation_date", "desc").equals(Collections.<Project>emptyList()));
+        assertTrue(dao.getAllUserProjects(user,"creation_date", "desc", null).equals(Collections.<Project>emptyList()));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class UserDAOImplTest {
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
         assertTrue(dao.giveUserAccessToProject(user2.getId(), dvProject.getId()));
-        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc").size()==1);
+        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc", null).size()==1);
     }
 
     @Test
@@ -186,9 +186,9 @@ public class UserDAOImplTest {
         dvProject.setAuthorFullName(user1.getFullName());
         dvProject = dvDao.saveProject(dvProject);
         dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
-        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc").size()==1);
+        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc", null).size()==1);
         dao.removeAccessToProjectFromUser(user2.getId(), dvProject.getId());
-        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc").isEmpty());
+        assertTrue(dao.getAllSharedToUserProjects(user2, "creation_date", "desc", null).isEmpty());
     }
 
     @Test
@@ -249,14 +249,14 @@ public class UserDAOImplTest {
         hmProject.setAuthorFullName(user.getFullName());
         dvDao.saveProject(dvProject);
         hmDao.saveProject(hmProject);
-        List<Project> allUserProjects = dao.getAllUserProjects(user, "creation_date", "desc");
+        List<Project> allUserProjects = dao.getAllUserProjects(user, "creation_date", "desc", null);
 
         assertTrue(allUserProjects.size()==2);
     }
 
     @Test
     public void getAllUserProjectsWithNullParameters(){
-        assertNull(dao.getAllUserProjects(null, "creation_date", null));
+        assertNull(dao.getAllUserProjects(null, "creation_date", null, null));
     }
 
     @Test
@@ -270,7 +270,7 @@ public class UserDAOImplTest {
         dvProject = dvDao.saveProject(dvProject);
         dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
 
-        List<Project> allSharedToUserProjects = dao.getAllSharedToUserProjects(user2, "creation_date", "desc");
+        List<Project> allSharedToUserProjects = dao.getAllSharedToUserProjects(user2, "creation_date", "desc", null);
 
         assertTrue(allSharedToUserProjects.size()==1);
         assertEquals(ProjectTypes.DATA_VISUALIZATION, allSharedToUserProjects.get(0).getType());
@@ -278,7 +278,7 @@ public class UserDAOImplTest {
 
     @Test
     public void getAllSharedToUserProjectsWithNullParameter(){
-        assertNull(dao.getAllSharedToUserProjects(null, "creation_date", null));
+        assertNull(dao.getAllSharedToUserProjects(null, "creation_date", null, null));
     }
 
 

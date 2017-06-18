@@ -44,7 +44,10 @@ public class UserController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/dashboard-get/{field}/{sortType}/{sortTab}", method = RequestMethod.GET)
-    public String getUserDashboard(@PathVariable String field,@PathVariable String sortType, @PathVariable String sortTab, HttpServletRequest request, Model model) {
+    public String getUserDashboard(@PathVariable String field,
+                                   @PathVariable String sortType,
+                                   @PathVariable String sortTab,
+                                   HttpServletRequest request, Model model) {
         if (!"1".equals(sortTab) && !"2".equals(sortTab)){
             sortTab = "1";
         }
@@ -61,11 +64,11 @@ public class UserController {
         model.addAttribute("sortT",sortType);
         model.addAttribute("sortTab",sortTab);
         User user = (User) request.getSession().getAttribute("userObject");
-        List<Project> userProjects = userDAO.getAllUserProjects(user, field, sortType);
+        List<Project> userProjects = userDAO.getAllUserProjects(user, field, sortType, null);
         if (userProjects == null) {
             model.addAttribute("error1", "User projects wasn't selected.");
         }
-        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, field, sortType);
+        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, field, sortType, null);
         if (sharedToUserProjects == null) {
             model.addAttribute("error2", "User shared projects wasn't selected.");
         }
@@ -73,6 +76,42 @@ public class UserController {
         model.addAttribute("userProjects", userProjects);
         model.addAttribute("userObject", user);
         return "userDashboard";
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/dashboard-search", method = RequestMethod.POST)
+   // @ResponseBody
+    public String getUserDashboardWithSearch(@RequestParam(value = "SearchProject", defaultValue = "") String SearchProject,
+                                             @RequestParam(value = "search", defaultValue = "") String search,
+                                             @RequestParam(value = "cancel", defaultValue = "") String cancel,
+                                             @RequestParam(value = "tab", defaultValue = "1") String tab,
+                                             HttpServletRequest request,
+                                             Model model) {
+        if (SearchProject.isEmpty() || !cancel.isEmpty() || search.isEmpty()){
+            //return "userDashboard";
+            //return "redirect:/user/dashboard-get/s/s/1";
+            SearchProject = null;
+        }
+        if (!"1".equals(tab) && !"2".equals(tab)){
+            tab = "1";
+        }
+        model.addAttribute("searchName",SearchProject);
+        model.addAttribute("search",search);
+        model.addAttribute("sortTab",tab);
+        User user = (User) request.getSession().getAttribute("userObject");
+        List<Project> userProjects = userDAO.getAllUserProjects(user, null, null, ("1".equals(tab)?SearchProject:null));
+        if (userProjects == null) {
+            model.addAttribute("error1", "User projects that name contained '" + SearchProject + "' wasn't find.");
+        }
+        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, null, null, ("2".equals(tab)?SearchProject:null));
+        if (sharedToUserProjects == null) {
+            model.addAttribute("error2", "User shared projects that name contained '" + SearchProject + "'  wasn't find.");
+        }
+        model.addAttribute("sharedToUserProjects", sharedToUserProjects);
+        model.addAttribute("userProjects", userProjects);
+        model.addAttribute("userObject", user);
+        return "userDashboard";
+       // return  SearchProject + search + cancel + tab;
     }
 
     @Secured("ROLE_ADMIN")

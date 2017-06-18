@@ -264,7 +264,7 @@ public class UserControllerTest {
         Project project1 = new DataVisualizationProject.Builder(name1, date1, id, user.getFullName()).buildProject();
         Project project2 = new DataVisualizationProject.Builder(name2, date2, id, user.getFullName()).buildProject();
 
-        when(userDaoMock.getAllUserProjects(user, "creation_date", "desc")).thenReturn(Arrays.asList(project1, project2));
+        when(userDaoMock.getAllUserProjects(user, "creation_date", "desc", null)).thenReturn(Arrays.asList(project1, project2));
 
         ResultActions actions = mockMvc.perform(get("/user/dashboard").sessionAttr("userObject", user))
                 .andExpect(status().isOk())
@@ -287,7 +287,7 @@ public class UserControllerTest {
                 )))
                 .andExpect(model().attributeExists("userObject"));
 
-        verify(userDaoMock, times(1)).getAllUserProjects(user, "creation_date", "desc");
+        verify(userDaoMock, times(1)).getAllUserProjects(user, "creation_date", "desc", null);
         verifyNoMoreInteractions(userDaoMock);
     }
 }

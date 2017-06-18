@@ -195,10 +195,16 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllUserProjects(User user, String field, String sortType) {
+    public List<Project> getAllUserProjects(User user, String field, String sortType, String whereName) {
         try {
             if (user != null) {
-                String sql = SELECT_ALL_USERS_PROJECT + " order by lower("
+                String where = null;
+                if (whereName != null && !whereName.isEmpty()){
+                    where = " name like '%" + whereName + "%' ";
+                }
+                String sql = SELECT_ALL_USERS_PROJECT
+                        + ((where != null)?" where " + where:" ")
+                        + " order by lower("
                         + ((!"name".equals(field) && !"creation_date".equals(field))?"creation_date":field) + ") "
                         + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType);
                 return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
@@ -216,10 +222,16 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<Project> getAllSharedToUserProjects(User user, String field, String sortType) {
+    public List<Project> getAllSharedToUserProjects(User user, String field, String sortType, String whereName) {
         try {
             if (user != null) {
-                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT + " order by lower("
+                String where = null;
+                if (whereName != null && !whereName.isEmpty()){
+                    where = " name like '%" + whereName + "%' ";
+                }
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT
+                                + ((where != null)?" where " + where:" ")
+                                + " order by lower("
                                 + ((!"name".equals(field) && !"creation_date".equals(field) &&!"author_name".equals(field))?"creation_date":field) + ") "
                                 + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
                                 new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
