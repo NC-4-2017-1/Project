@@ -134,7 +134,7 @@ public class ProjectController {
                                    RedirectAttributes redirectAttributes, Model model) {
         if (file.isEmpty()) {
             LOGGER.warn("File '" + file.getOriginalFilename() + "' is empty");
-            redirectAttributes.addFlashAttribute("messageFile", "Please select a file to upload");
+            redirectAttributes.addFlashAttribute("messageFile", "Select a file to upload first");
             return "redirect:/project/visualization-setup";
         }
         try {
@@ -150,12 +150,12 @@ public class ProjectController {
                 sessionScopeBean.getCustomerProject().setFileType(fileType);
                 sessionScopeBean.getCustomerProject().setFile(fileFromTomcat);
             } else {
-                redirectAttributes.addFlashAttribute("messageFormat", "Please select a correct FormatDate");
+                redirectAttributes.addFlashAttribute("messageFormat", "Please select a correct date format or File format");
                 return "redirect:/project/visualization-setup";
             }
         } catch (IOException e) {
             LOGGER.error("Uploaded temporary file '" + file.getOriginalFilename() + "' has not be retained", e);
-            redirectAttributes.addFlashAttribute("messageFile", "Please select a file to upload");
+            redirectAttributes.addFlashAttribute("messageFile", "Select a file to upload first");
             return "redirect:/project/visualization-setup";
         }
         return "redirect:/project/visualization-settings";

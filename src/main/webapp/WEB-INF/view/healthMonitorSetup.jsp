@@ -17,11 +17,12 @@
 <body>
 <jsp:include page="header.jsp"/>
 <div class = "container-hm-setup">
-    <h3 class="pageName"> HM project Connection:</h3>
     <div class="setup-error">
         <div class="alert alert-danger hide text-center" id = "error_conn"></div>
         <div class="alert alert-success hide text-center" id = "right_conn"></div>
     </div>
+    <h3 class="pageName"> Configuring the database connection</h3>
+       <br>
         <form id="connform" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-5" for="serverName">Server name:</label>

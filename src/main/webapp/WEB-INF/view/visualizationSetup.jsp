@@ -17,36 +17,45 @@
         });
     </script>
 </head>
+
 <body>
+
 <jsp:include page="header.jsp"/>
+    <div class="setup-error">
+        <div class="alert alert-danger
+            <c:if test="${messageFile == null}">
+                hide
+            </c:if>
+            text-center" >${messageFile}
+        </div>
+        <div class="alert alert-danger
+            <c:if test="${messageFormat == null}">
+                hide
+            </c:if>
+            text-center" id = "right_conn">${messageFormat}
+        </div>
+    </div>
     <div class="container">
-        <h3 class="pageName"> Visualization Setup</h3>
+       <h3 class="pageName">Setup: please select a file to upload and date format</h3>
+        <br>
         <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/upload"
               enctype="multipart/form-data">
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3">Select date format:</label>
+                <label class="control-label col-sm-2 col-sm-offset-3">Date format:</label>
                 <div class="col-sm-3">
                     <select class="form-control input-sm" id="dateFormat" name="dateFormat">
                         <c:forEach items="${dateFormat}" var="entry">
                             <option value="${entry.key}">${entry.value}</option>
                         </c:forEach>
                     </select>
-                   <span  style="color: red"> ${messageFormat}</span>
-                    <br>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3">Select File:</label>
+                <label class="control-label col-sm-2 col-sm-offset-3">File:</label>
                 <div class="col-sm-7">
                     <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file"/><br/>
-                        <span  style="color: red"> ${messageFile}</span>
-                    <br>
                 </div>
             </div>
-            <!--<div class="form-group">
-                <input class="btn btn-lg btn-primary col-sm-2 col-sm-offset-5" type="submit" value="Next"/>
-            </div>-->
-
             <div>
                 <div class="col-sm-2 col-sm-offset-3" ></div>
                 <div class="col-sm-3">
@@ -56,10 +65,6 @@
                 </div>
             </div>
         </form>
-
-        <%--<div style="text-align: center; color: red" >--%>
-            <%--${message}--%>
-        <%--</div>--%>
     </div>
 
 <jsp:include page="footer.jsp"/>
