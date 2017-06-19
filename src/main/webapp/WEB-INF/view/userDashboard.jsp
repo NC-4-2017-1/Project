@@ -43,7 +43,7 @@
                     <thead>
                     <tr>
                         <th>
-                            <c:if test = "${fn:length(userProjects) > 1}">
+                            <c:if test = "${fn:length(userProjects) > 1 && empty searchName}">
                                 <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
@@ -61,12 +61,12 @@
                                         <a href="/user/dashboard-get/name/desc/1" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
-                            <c:if test = "${fn:length(userProjects) == 1}">
+                            <c:if test = "${fn:length(userProjects) == 1 || not empty searchName}">
                                 Name
                             </c:if>
                         </th>
                         <th>
-                            <c:if test = "${fn:length(userProjects) > 1}">
+                            <c:if test = "${fn:length(userProjects) > 1 && empty searchName}">
                                 <c:if test = "${sortF == 'creation_date'}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
@@ -82,7 +82,7 @@
                                         <a href="/user/dashboard-get/creation_date/asc/1" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
-                            <c:if test = "${fn:length(userProjects) == 1}">
+                            <c:if test = "${fn:length(userProjects) == 1 || not empty searchName}">
                                 Created at
                             </c:if>
                         </th>
@@ -172,7 +172,7 @@
                     <thead>
                     <tr>
                         <th>
-                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1  && empty searchShareName}">
                                 <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
@@ -188,12 +188,12 @@
                                         <a href="/user/dashboard-get/name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
-                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1  || not empty searchShareName}">
                                 Name
                             </c:if>
                         </th>
                         <th>
-                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1 && empty searchShareName}">
                                 <c:if test = "${sortF == 'creation_date'}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
@@ -209,13 +209,13 @@
                                         <a href="/user/dashboard-get/creation_date/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
-                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1  || not empty searchShareName}">
                                 Created at
                             </c:if>
                         </th>
                         <th>Type</th>
                         <th>
-                            <c:if test = "${fn:length(sharedToUserProjects) > 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) > 1 && empty searchShareName}">
                                 <c:if test = "${sortF == 'author_name'}">
                                     <u>Created by</u>
                                     <c:if test = "${sortT == 'desc'}">
@@ -231,7 +231,7 @@
                                         <a href="/user/dashboard-get/author_name/asc/2" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
-                            <c:if test = "${fn:length(sharedToUserProjects) == 1}">
+                            <c:if test = "${fn:length(sharedToUserProjects) == 1  || not empty searchShareName}">
                                 Created by
                             </c:if>
                         </th>
