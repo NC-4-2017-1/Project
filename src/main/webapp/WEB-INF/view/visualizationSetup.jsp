@@ -56,17 +56,26 @@
                     <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file"/><br/>
                 </div>
             </div>
-            <div>
-                <div class="col-sm-2 col-sm-offset-3" ></div>
-                <div class="col-sm-3">
-                    <button class="btn btn-sm btn-primary col-sm-6" type="submit" value="Next">
-                       <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-                    </button>
-                </div>
+            <div class="pull-right">
+                <button class="btn btn-sm btn-primary" type="submit" value="Next">
+                   <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-link" type="button" id="back">
+                    <b>Back</b>
+                </button>
             </div>
         </form>
     </div>
 
-<jsp:include page="footer.jsp"/>
+<script>
+    $("#back").click(function () {
+        window.location.assign("/project/new-layout");
+    });
+</script>
+
+
+<%--<jsp:include page="footer.jsp"/>--%>
 </body>
 </html>
