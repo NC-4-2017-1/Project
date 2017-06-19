@@ -7,9 +7,10 @@
         <div class="col-sm-3">
             <input class="form-control input-sm" id="SearchProject" name="SearchProject"
                    type="text" placeholder="Project name..."
-            <c:if test = "${not empty searchName && sortTab == 1}"> value = "${searchName}" </c:if>
+            <c:if test = "${not empty searchName}"> value = "${searchName}" </c:if>
                    autofocus>
             <input type="text" name="tab" value="1" hidden>
+            <input type="text" name="SearchShareProject" <c:if test = "${not empty searchShareName}"> value = "${searchShareName}" </c:if> hidden>
         </div>
         <div class="form-group col-sm-3">
             <button type="submit" class="btn btn-sm btn-success" value="search" name="search">Search</button>

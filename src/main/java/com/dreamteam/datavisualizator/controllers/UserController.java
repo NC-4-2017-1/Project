@@ -82,30 +82,39 @@ public class UserController {
     @RequestMapping(path = "/dashboard-search", method = RequestMethod.POST)
    // @ResponseBody
     public String getUserDashboardWithSearch(@RequestParam(value = "SearchProject", defaultValue = "") String SearchProject,
+                                             @RequestParam(value = "SearchShareProject", defaultValue = "") String SearchShareProject,
                                              @RequestParam(value = "search", defaultValue = "") String search,
                                              @RequestParam(value = "cancel", defaultValue = "") String cancel,
                                              @RequestParam(value = "tab", defaultValue = "1") String tab,
                                              HttpServletRequest request,
                                              Model model) {
-        if (SearchProject.isEmpty() || !cancel.isEmpty() || search.isEmpty()){
-            //return "userDashboard";
-            //return "redirect:/user/dashboard-get/s/s/1";
+        /*if (!"1".equals(tab) && !"2".equals(tab)){
+            tab = "1";
+        }*/
+        tab = (!"1".equals(tab) && !"2".equals(tab))?"1":tab;
+        if(!cancel.isEmpty() && "1".equals(tab)){
             SearchProject = null;
         }
-        if (!"1".equals(tab) && !"2".equals(tab)){
-            tab = "1";
+        if(!cancel.isEmpty() && "2".equals(tab)){
+            SearchShareProject = null;
         }
+        if(!search.isEmpty()){
+            SearchProject = (SearchProject.isEmpty() ? null : SearchProject);
+            SearchShareProject = (SearchShareProject.isEmpty() ? null : SearchShareProject);
+        }
+
         model.addAttribute("searchName",SearchProject);
+        model.addAttribute("searchShareName",SearchShareProject);
         model.addAttribute("search",search);
         model.addAttribute("sortTab",tab);
         User user = (User) request.getSession().getAttribute("userObject");
-        List<Project> userProjects = userDAO.getAllUserProjects(user, null, null, ("1".equals(tab)?SearchProject:null));
+        List<Project> userProjects = userDAO.getAllUserProjects(user, null, null, SearchProject);
         if (userProjects == null) {
             model.addAttribute("error1", "User projects that name contained '" + SearchProject + "' wasn't find.");
         }
-        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, null, null, ("2".equals(tab)?SearchProject:null));
+        List<Project> sharedToUserProjects = userDAO.getAllSharedToUserProjects(user, null, null, SearchShareProject);
         if (sharedToUserProjects == null) {
-            model.addAttribute("error2", "User shared projects that name contained '" + SearchProject + "'  wasn't find.");
+            model.addAttribute("error2", "User shared projects that name contained '" + SearchShareProject + "'  wasn't find.");
         }
         model.addAttribute("sharedToUserProjects", sharedToUserProjects);
         model.addAttribute("userProjects", userProjects);
