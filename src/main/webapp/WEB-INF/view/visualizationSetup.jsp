@@ -21,6 +21,7 @@
 <body>
 
 <jsp:include page="header.jsp"/>
+
     <div class="setup-error">
         <div class="alert alert-danger
             <c:if test="${messageFile == null}">
@@ -35,7 +36,6 @@
             text-center" id = "right_conn">${messageFormat}
         </div>
     </div>
-    <div class="container">
        <h3 class="pageName">Setup: please select a file to upload and date format</h3>
         <br>
         <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/upload"
@@ -56,6 +56,8 @@
                     <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file"/><br/>
                 </div>
             </div>
+
+            <div class="form-group">
             <div class="pull-right">
                 <button class="btn btn-sm btn-primary" type="submit" value="Next">
                    <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -66,9 +68,8 @@
                     <b>Back</b>
                 </button>
             </div>
+            </div>
         </form>
-    </div>
-
 <script>
     $("#back").click(function () {
         window.location.assign("/project/new-layout");

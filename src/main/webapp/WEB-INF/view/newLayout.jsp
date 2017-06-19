@@ -13,8 +13,9 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-    <div class="container">
+
         <h3 class="pageName"> Please select project type</h3>
+
         <form data-toggle="validator" class="form-horizontal" role="form">
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">Type:</label>
@@ -26,24 +27,27 @@
                     </select>
                 </div>
             </div>
-        <div class="form-group">
+
+            <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="name">Name:</label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control input-sm" id="name" name="name" placeholder="name" required>
                 </div>
-         </div>
-         <div class="form-group">
+            </div>
+
+            <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
                 <div class="col-sm-3 ">
                     <textarea class="form-control input-sm" rows="5" id="description"></textarea>
                 </div>
-         </div>
-         <div class="form-group">
-            <div class="pull-right">
-                <button class="btn btn-sm btn-primary" type="button" id="submit">
-                    <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
             </div>
+
+            <div class="form-group">
+                <div class="pull-right">
+                    <button class="btn btn-sm btn-primary" type="button" id="submit">
+                        <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </div>
             <div class="pull-right">
                 <button class="btn btn-link" type="button" id="back">
                     <b>Back</b>
@@ -51,7 +55,6 @@
             </div>
         </div>
         </form>
- </div>
 
 <script>
 

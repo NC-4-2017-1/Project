@@ -18,7 +18,6 @@
 
 <h3 class="pageName">Settings: preview data table</h3>
 <%--<h4 class="text-center">Preview data table</h4>--%>
-<br>
 <c:out value="${table}" escapeXml="false"></c:out>
 <h4 class="text-center">Please select the coordinate axis for the graph and column for calculating mathematical data:</h4>
 <form data-toggle="validator" class="form-horizontal" role="form" method="POST" action="/project/save-visualization"
