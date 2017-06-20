@@ -127,7 +127,7 @@
                     </tbody>
                 </table>
 </c:if>
-<c:if test = "${empty users}">
+<c:if test = "${empty users && empty error1 }">
     <div class="alert alert-info user-list-info"><strong>Info!</strong> Users not found.</div>
 </c:if>
 
