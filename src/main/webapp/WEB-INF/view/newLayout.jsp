@@ -16,6 +16,10 @@
 <body>
 <jsp:include page="header.jsp"/>
 
+    <div class="setup-error">
+        <div class="alert alert-danger  hide text-center" id = "alert_mess"></div>
+    </div>
+
         <h3 class="pageName"> Please select project type</h3>
 
         <form  id="connform" data-toggle="validator" class="form-horizontal" role="form">
@@ -113,6 +117,7 @@
         if (data == false) {
             $("#connform").valid();
         } else {
+         /*   $("#alert_mess").addClass("hide");*/
             $.ajax({
             url: "/project/create",
             type: "POST",
@@ -122,9 +127,18 @@
             error: function (responce) {
                 if (responce.responseText == "visualization-setup") {
                     window.location.assign("/project/visualization-setup");
-                }
-                else {
+                } else  if (responce.responseText == "health-monitor-setup"){
                     window.location.assign("/project/health-monitor-setup");
+                } else{
+                    $("#alert_mess").removeClass("hide");
+                    var errorMes =  $("#alert_mess");
+                    if(responce.responseText == "emptyField"){
+                        errorMes.text("Name or description field cannot be empty");
+                    } else if (responce.responseText == "name"){
+                        errorMes.text("Name cannot contain more than 150 characters");
+                    } else if(responce.responseText == "description"){
+                        errorMes.text("Description cannot contain more than 1000 characters");
+                    }
                 }
             }
         });
@@ -134,7 +148,6 @@
     $("#back").click(function () {
         window.location.assign("/user/dashboard-get/0/s/0");
     });
-
 
     $( "#connform" ).validate( {
         rules: {

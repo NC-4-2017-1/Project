@@ -86,6 +86,16 @@ public class ProjectController {
     @PostMapping("/create")
     @ResponseBody
     public String create(@RequestBody CreateProjectRequest request, Model model) {
+        if (request.getName().isEmpty() || request.getDescription().isEmpty()) {
+            return "emptyField";
+        }
+        if (request.getName().length() > 150 || request.getDescription().length() > 1000) {
+            if (request.getName().length() > 150) {
+                return "name";
+            } else {
+                return "description";
+            }
+        }
         sessionScopeBean.getCustomerProject().setType(ProjectTypes.getRoleById(new BigInteger(request.getType())));
         sessionScopeBean.getCustomerProject().setName(Jsoup.parse(request.getName()).text());
         sessionScopeBean.getCustomerProject().setDescription(Jsoup.parse(request.getDescription()).text());
@@ -254,7 +264,7 @@ public class ProjectController {
 
         CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         Project project = new DataVisualizationProject
-                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId(),sessionScopeBean.getUser().getFullName())
+                .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId(), sessionScopeBean.getUser().getFullName())
                 .buildDescription(customerProject.getDescription())
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
@@ -318,7 +328,7 @@ public class ProjectController {
             String sid = request.getSid();
             String userName = request.getUsername();
             String password = request.getPassword();
-            if(serverName != null && port != null && sid != null && userName != null && password != null) {
+            if (serverName != null && port != null && sid != null && userName != null && password != null) {
                 int testPort = Integer.parseInt(port.trim());
                 if (testPort >= 1 && testPort <= 65000) {
                     healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
@@ -345,7 +355,7 @@ public class ProjectController {
             String sid = request.getSid();
             String userName = request.getUsername();
             String password = request.getPassword();
-            if(serverName != null && port != null && sid != null && userName != null && password != null) {
+            if (serverName != null && port != null && sid != null && userName != null && password != null) {
                 int testPort = Integer.parseInt(port.trim());
                 if (testPort >= 1 && testPort <= 65000) {
                     healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
@@ -504,7 +514,7 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
-    public String deleteProject(@PathVariable BigInteger id,@PathVariable ProjectTypes project_type) {
+    public String deleteProject(@PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {
         if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
             Project project = projectDAO.getProjectById(id);
             //LOGGER.info("Project DV we got " + project);
@@ -528,10 +538,10 @@ public class ProjectController {
                                @PathVariable String field,
                                @PathVariable String sortType, HttpServletRequest request
     ) {
-        if(!"desc".equals(sortType) && !"asc".equals(sortType)) {
+        if (!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "asc";
         }
-        if (!"first_name".equals(field) && !"last_name".equals(field) &&!"email".equals(field)){
+        if (!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) {
             field = "email";
         }
         try {
@@ -556,7 +566,7 @@ public class ProjectController {
             }
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return "redirect:/user/dashboard-get/0/s/0";
         }
     }
@@ -572,14 +582,14 @@ public class ProjectController {
     ) {
         try {
             Integer idP = Integer.parseInt(idProject.trim());
-            if(!cancel.isEmpty()){
+            if (!cancel.isEmpty()) {
                 SearchUserEmail = null;
             }
-            if(!search.isEmpty()){
+            if (!search.isEmpty()) {
                 SearchUserEmail = (SearchUserEmail.isEmpty() ? null : SearchUserEmail);
             }
-            model.addAttribute("SearchUserEmail",SearchUserEmail);
-            model.addAttribute("search",search);
+            model.addAttribute("SearchUserEmail", SearchUserEmail);
+            model.addAttribute("search", search);
             model.addAttribute("projectName", sessionScopeBean.getCustomerProject().getName());
             List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
@@ -598,7 +608,7 @@ public class ProjectController {
             }
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return "redirect:/user/dashboard-get/0/s/0";
         }
     }
@@ -615,7 +625,7 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/unshare/{id}/{user_id}", method = RequestMethod.GET)
     public boolean UnShareProject(Model model, @PathVariable BigInteger id,
-                                @PathVariable BigInteger user_id) {
+                                  @PathVariable BigInteger user_id) {
         if (id != null && user_id != null) {
             return userDAO.removeAccessToProjectFromUser(user_id, id);
         }
