@@ -75,7 +75,7 @@ public class UserControllerTest {
                 .buildUserProjects(null)
                 .buildUser();
 
-        when(userDaoMock.getAllUsersList("email", "desc")).thenReturn(Arrays.asList(user1, user2));
+        when(userDaoMock.getAllUsersList("email", "desc", null)).thenReturn(Arrays.asList(user1, user2));
 
         mockMvc.perform(get("/user/admin-panel/email/desc"))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class UserControllerTest {
                                 hasProperty("email", is("test@email2"))
                         )
                 )));
-        verify(userDaoMock, times(1)).getAllUsersList("email", "desc");
+        verify(userDaoMock, times(1)).getAllUsersList("email", "desc", null);
         verifyNoMoreInteractions(userDaoMock);
     }
 

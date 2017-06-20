@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
@@ -14,74 +15,93 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h3 class="pageName">User list for share project</h3>
-<c:if test = "${not empty error1}">
-    <div class="alert alert-danger project-share-list-error"> <strong>Warning!</strong> ${error1}</div>
-</c:if>
-<c:if test = "${empty error1}">
-
-
-<form class="form-horizontal" method="GET"  role="form" action="/project/share/">
+<h3 class="pageName">User list for share project </h3>
+<h4 class="pageName">"<i><c:out value="${projectName}"/></i>"</h4>
+<form method="POST"  action="/project/share" id="userSearchShare">
     <div class="form-group">
-        <label class="control-label col-sm-5" for="SearchUser">Search user:</label>
+        <label class="control-label pull-left search-input" for="SearchUser">Search user:</label>
         <div class="col-sm-3">
-            <input class="form-control conn-field input-sm search-in-list" id="SearchUser" name="SearchUser" type="text" placeholder="text for searching..." autofocus>
-            <%--<button class="btn btn-sm btn-primary" type="submit">
-                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </button>--%>
+            <input class="form-control input-sm" id="SearchUser" name="SearchUser"
+                   type="text" placeholder="User email..."
+            <c:if test = "${not empty SearchUserEmail}"> value = "${SearchUserEmail}" </c:if>
+                   autofocus>
+            <input type="text" name="projectId" value="${project_id}" hidden>
+        </div>
+        <div class="form-group col-sm-3">
+            <button type="submit" class="btn btn-sm btn-success" value="search" name="search">Search</button>
+            <button type="submit" class="btn btn-sm btn-danger" value="cancel" name="cancel">Cancel</button>
         </div>
     </div>
 </form>
 
+<c:if test = "${not empty error1}">
+    <div class="alert alert-danger project-share-list-error"> <strong>Warning!</strong> ${error1}</div>
+</c:if>
+<c:if test = "${empty error1 && not empty users}">
         <table class="table table-striped table-condensed table-sm">
             <thead>
             <tr>
                 <th>
-                    <c:if test = "${sortF == 'first_name'}">
-                        <u>First name</u>
-                        <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                        <c:if test = "${sortF == 'first_name'}">
+                            <u>First name</u>
+                            <c:if test = "${sortT == 'desc'}">
+                                <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            </c:if>
+                            <c:if test = "${sortT == 'asc'}">
+                                <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            </c:if>
                         </c:if>
-                        <c:if test = "${sortT == 'asc'}">
+                        <c:if test = "${sortF != 'first_name'}">
+                            First name
+                            <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                             <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 'first_name'}">
+                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
                         First name
-                        <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${sortF == 'last_name'}">
-                        <u>Last name</u>
-                        <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                        <c:if test = "${sortF == 'last_name'}">
+                            <u>Last name</u>
+                            <c:if test = "${sortT == 'desc'}">
+                                <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            </c:if>
+                            <c:if test = "${sortT == 'asc'}">
+                                <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            </c:if>
                         </c:if>
-                        <c:if test = "${sortT == 'asc'}">
+                        <c:if test = "${sortF != 'last_name'}">
+                            Last name
+                            <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                             <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 'last_name'}">
+                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
                         Last name
-                        <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${sortF == 'email'}">
-                        <u>Email</u>
-                        <c:if test = "${sortT == 'desc'}">
-                            <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                        <c:if test = "${sortF == 'email'}">
+                            <u>Email</u>
+                            <c:if test = "${sortT == 'desc'}">
+                                <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            </c:if>
+                            <c:if test = "${sortT == 'asc'}">
+                                <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            </c:if>
                         </c:if>
-                        <c:if test = "${sortT == 'asc'}">
+                        <c:if test = "${sortF != 'email'}">
+                            Email
+                            <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                             <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${sortF != 'email'}">
+                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
                         Email
-                        <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                        <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                     </c:if>
                 </th>
                 <th></th>
@@ -100,21 +120,12 @@
                                 <script>i++;</script>
                             </c:if>
                         </c:forEach>
-
                         <script>
-                <%--   if(i==0){
-                      $("#${user.id}").html("<button class=\"btn btn-xs btn-success bt-share\" type=\"button\" value=\"share\" onclick=\"shareObj(${user.id});\" >" +
-                          "Share </button>");
-                  }
-                  else {
-                      $("#${user.id}").html("<button class=\"btn btn-xs btn-danger bt-share\" type=\"button\" value=\"unshare\" onclick=\"UnShareObj(${user.id});\" >" +
-                          "UnShare </button>");
-                  }--%>
                            if(i==0){
-                                $("#${user.id}").html('<input class="btn btn-xs btn-success bt-share" type="button" value="share" onclick="shareObj(${user.id});"/>');
+                                $("#${user.id}").html('<input class="btn btn-xs btn-success bt-share pull-right" type="button" value="share" onclick="shareObj(${user.id});"/>');
                             }
                             else {
-                                $("#${user.id}").html('<input class="btn btn-xs btn-danger bt-share" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
+                                $("#${user.id}").html('<input class="btn btn-xs btn-danger bt-share pull-right" type="button" value="unshare" onclick="UnShareObj(${user.id});"/>');
                             }
                         </script>
                     </td>
@@ -123,7 +134,10 @@
             </tbody>
         </table>
 </c:if>
-<jsp:include page="footer.jsp"/>
+<c:if test = "${empty users}">
+    <div class="alert alert-info user-list-info"><strong>Info!</strong> Users not found.</div>
+</c:if>
+<%--<jsp:include page="footer.jsp"/>--%>
 
 </body>
 <script>
@@ -131,7 +145,8 @@
         var x = new XMLHttpRequest();
         x.open("GET", "/project/share/${project_id}/" + id);
         x.onreadystatechange = function () {
-            window.location.replace("/project/share/${project_id}/${sortF}/${sortT}");
+            document.getElementById("userSearchShare").submit();
+            //window.location.replace("/project/share/${project_id}/${sortF}/${sortT}");
         }
         x.send();
     }
@@ -140,12 +155,13 @@
         var x = new XMLHttpRequest();
         x.open("GET", "/project/unshare/${project_id}/" + id);
         x.onreadystatechange = function () {
-            window.location.replace("/project/share/${project_id}/${sortF}/${sortT}");
+            document.getElementById("userSearchShare").submit();
+            //window.location.replace("/project/share/${project_id}/${sortF}/${sortT}");
         }
         x.send();
     }
 
-    var searchField;
+  /*  var searchField;
     var searchFieldData  = "";
     searchField = $("#SearchUser");
     searchField.on("keydown", OnSearchKeyDown);
@@ -224,7 +240,7 @@
                 currentElement.hide();
             }
         });
-    }
+    }*/
 
 </script>
 </html>

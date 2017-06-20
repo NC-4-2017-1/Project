@@ -126,7 +126,7 @@ public class DaoTestClass {
 
     void test8() { // passed
         // public List<User> getUsersThatHaveAccessToProject(Project project)
-        List<User> users = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(57l));
+        List<User> users = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(57l), null);
         for (User user : users) {
             LOGGER.info(user);
         }

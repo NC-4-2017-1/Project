@@ -49,7 +49,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
         try {
             Project project = generalTemplate.queryForObject(SELECT_DVPROJECT_BY_ID, new Object[]{id}, new DataVisualizationProjectRowMapper());
             List<Graphic> graphics = getProjectGraphs(project);
-            List<User> usersHaveAccessToProject = userDAO.getUsersThatHaveAccessToProject(id);
+            List<User> usersHaveAccessToProject = userDAO.getUsersThatHaveAccessToProject(id, null);
             ((DataVisualizationProject) project).setGraphics(graphics);
             ((DataVisualizationProject) project).setUsersProjectAccessible(usersHaveAccessToProject);
 

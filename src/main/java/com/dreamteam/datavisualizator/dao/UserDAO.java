@@ -12,7 +12,7 @@ public interface UserDAO {
 
     User getUserByEmail(String email);
 
-    List<User> getAllUsersList(String field, String sortType);
+    List<User> getAllUsersList(String field, String sortType, String whereEmail);
 
     boolean deleteUser(User user);
 
@@ -22,7 +22,7 @@ public interface UserDAO {
 
     boolean removeAccessToProjectFromUser(BigInteger userId, BigInteger projectId);
 
-    List<User> getUsersThatHaveAccessToProject(BigInteger project);
+    List<User> getUsersThatHaveAccessToProject(BigInteger project, String whereEmail);
 
     List<Project> getAllUserProjects(User user, String field, String sortType, String whereName);
 

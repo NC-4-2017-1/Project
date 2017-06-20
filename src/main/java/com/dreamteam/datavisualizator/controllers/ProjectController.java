@@ -275,6 +275,7 @@ public class ProjectController {
         } else {
             projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
         }
+        sessionScopeBean.getCustomerProject().setName(projectToShow.getName());
 
         if (projectToShow == null) {
             LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
@@ -470,6 +471,7 @@ public class ProjectController {
             }
 
             project = healthMonitorProjectDAOImpl.getProjectById(finalProjId);
+            sessionScopeBean.getCustomerProject().setName(project.getName());
 
             Map<BigInteger, SelectorCreator> mapSelectorCreators = healthMonitorProjectDAOImpl.getSelectorCreators();
             Map<BigInteger, String> mapSelectorAttr = new HashMap<>();
@@ -536,7 +538,8 @@ public class ProjectController {
             Integer idP = Integer.parseInt(idProject.trim());
             model.addAttribute("sortF", field);
             model.addAttribute("sortT", sortType);
-            List<User> users = userDAO.getAllUsersList(field, sortType);
+            model.addAttribute("projectName", sessionScopeBean.getCustomerProject().getName());
+            List<User> users = userDAO.getAllUsersList(field, sortType, null);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();
             while (iter.hasNext()) {
@@ -547,9 +550,51 @@ public class ProjectController {
             }
             model.addAttribute("users", users);
             model.addAttribute("project_id", idProject);
-            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP));
+            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), null);
             if (users == null || users_with_access == null) {
                 model.addAttribute("error1", "Users for sharing project wasn't selected.");
+            }
+            model.addAttribute("users_with_access", users_with_access);
+            return "shareProject";
+        } catch (NumberFormatException e){
+            return "redirect:/user/dashboard-get/0/s/0";
+        }
+    }
+
+    @Secured("ROLE_REGULAR_USER")
+    @RequestMapping(path = "/share", method = RequestMethod.POST)
+    public String shareProjectSearch(Model model,
+                                     @RequestParam(value = "SearchUser", defaultValue = "") String SearchUserEmail,
+                                     @RequestParam(value = "search", defaultValue = "") String search,
+                                     @RequestParam(value = "cancel", defaultValue = "") String cancel,
+                                     @RequestParam(value = "projectId", defaultValue = "") String idProject,
+                                     HttpServletRequest request
+    ) {
+        try {
+            Integer idP = Integer.parseInt(idProject.trim());
+            if(!cancel.isEmpty()){
+                SearchUserEmail = null;
+            }
+            if(!search.isEmpty()){
+                SearchUserEmail = (SearchUserEmail.isEmpty() ? null : SearchUserEmail);
+            }
+            model.addAttribute("SearchUserEmail",SearchUserEmail);
+            model.addAttribute("search",search);
+            model.addAttribute("projectName", sessionScopeBean.getCustomerProject().getName());
+            List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);
+            BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
+            Iterator<User> iter = users.iterator();
+            while (iter.hasNext()) {
+                User author = iter.next();
+                if (userID.equals(author.getId())) {
+                    iter.remove();
+                }
+            }
+            model.addAttribute("users", users);
+            model.addAttribute("project_id", idProject);
+            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), SearchUserEmail);
+            if (users == null || users_with_access == null) {
+                model.addAttribute("error1", "Users for sharing project wasn't find.");
             }
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";

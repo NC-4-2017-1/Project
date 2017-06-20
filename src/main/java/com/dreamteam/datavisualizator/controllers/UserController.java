@@ -34,9 +34,32 @@ public class UserController {
         }
         model.addAttribute("sortF",field);
         model.addAttribute("sortT",sortType);
-        List<User> users = userDAO.getAllUsersList(field, sortType);
+        List<User> users = userDAO.getAllUsersList(field, sortType, null);
         if (users == null) {
             model.addAttribute("error1", "Users wasn't selected.");
+        }
+        model.addAttribute("users", users);
+        return "adminDashboard";
+    }
+
+    @Secured("ROLE_ADMIN")
+    @RequestMapping(path = "/admin-panel", method = RequestMethod.POST)
+    // @ResponseBody
+    public String getAdminDashboardWithSearch(@RequestParam(value = "SearchUser", defaultValue = "") String SearchUserEmail,
+                                             @RequestParam(value = "search", defaultValue = "") String search,
+                                             @RequestParam(value = "cancel", defaultValue = "") String cancel,
+                                             Model model) {
+        if(!cancel.isEmpty()){
+            SearchUserEmail = null;
+        }
+        if(!search.isEmpty()){
+            SearchUserEmail = (SearchUserEmail.isEmpty() ? null : SearchUserEmail);
+        }
+        model.addAttribute("SearchUserEmail",SearchUserEmail);
+        model.addAttribute("search",search);
+        List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);
+        if (users == null) {
+            model.addAttribute("error1", "Users wasn't find.");
         }
         model.addAttribute("users", users);
         return "adminDashboard";
@@ -88,9 +111,6 @@ public class UserController {
                                              @RequestParam(value = "tab", defaultValue = "1") String tab,
                                              HttpServletRequest request,
                                              Model model) {
-        /*if (!"1".equals(tab) && !"2".equals(tab)){
-            tab = "1";
-        }*/
         tab = (!"1".equals(tab) && !"2".equals(tab))?"1":tab;
         if(!cancel.isEmpty() && "1".equals(tab)){
             SearchProject = null;

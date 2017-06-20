@@ -131,7 +131,7 @@ public class UserDAOImplTest {
     public void getAllUsersList(){
         User user1 = dao.createUser("testFirstName1", "testLastName1", "test.email@email.com1", "testpassword1", UserTypes.REGULAR_USER);
         User user2 = dao.createUser("testFirstName2", "testLastName2", "test.email@email.com2", "testpassword2", UserTypes.REGULAR_USER);
-        List users = dao.getAllUsersList(null, null);
+        List users = dao.getAllUsersList(null, null, null);
         assertTrue(users.size()>=2);
         assertNotNull(dao.getUserById(user1.getId()));
         assertNotNull(dao.getUserById(user2.getId()));
@@ -227,7 +227,7 @@ public class UserDAOImplTest {
         dvProject = dvDao.saveProject(dvProject);
         dao.giveUserAccessToProject(user2.getId(), dvProject.getId());
 
-        List<User> usersThatHaveAccessToProject = dao.getUsersThatHaveAccessToProject(dvProject.getId());
+        List<User> usersThatHaveAccessToProject = dao.getUsersThatHaveAccessToProject(dvProject.getId(), null);
 
         assertTrue(usersThatHaveAccessToProject.size()==1);
         assertEquals(user2.getId(), usersThatHaveAccessToProject.get(0).getId());
@@ -235,7 +235,7 @@ public class UserDAOImplTest {
 
     @Test
     public void getUsersThatHaveAccessToProjectWitNullParameter(){
-        assertNull(dao.getUsersThatHaveAccessToProject(null));
+        assertNull(dao.getUsersThatHaveAccessToProject(null, null));
     }
 
     @Test

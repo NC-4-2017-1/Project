@@ -34,8 +34,8 @@
     margin-top: 10px;
 }
 
-.admin-list-users{
-    margin-top: 45px;
+.admin-list-users, .user-list-info, .project-share-list-error {
+    margin-top: 55px;
 }
 
 .bg-whole {

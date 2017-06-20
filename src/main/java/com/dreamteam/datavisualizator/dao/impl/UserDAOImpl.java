@@ -64,9 +64,15 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getAllUsersList(String field, String sortType) {
+    public List<User> getAllUsersList(String field, String sortType, String whereEmail) {
         try {
-            return generalTemplate.query(SELECT_ALL_USERS+ " order by lower("
+            String where = null;
+            if (whereEmail != null && !whereEmail.isEmpty()){
+                where = " email.value like '%" + whereEmail + "%' ";
+            }
+            return generalTemplate.query(SELECT_ALL_USERS
+                            + ((where != null)?" and " + where:" ")
+                            + " order by lower("
                             + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field))?"email":field) + ") "
                             + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
                             new UserRowMapperWithoutPassword());
@@ -177,10 +183,16 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public List<User> getUsersThatHaveAccessToProject(BigInteger projectId) {
+    public List<User> getUsersThatHaveAccessToProject(BigInteger projectId, String whereEmail) {
         try {
             if (projectId != null) {
-                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT, new Object[]{projectId}, new UserRowMapperWithoutPassword());
+                String where = null;
+                if (whereEmail != null && !whereEmail.isEmpty()){
+                    where = " email.value like '%" + whereEmail + "%' ";
+                }
+                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT
+                                                + ((where != null)?" and " + where:" "),
+                                                new Object[]{projectId}, new UserRowMapperWithoutPassword());
             } else {
                 LOGGER.error("Users that have access to project wasn't fetched because project is " + projectId);
                 return null;
