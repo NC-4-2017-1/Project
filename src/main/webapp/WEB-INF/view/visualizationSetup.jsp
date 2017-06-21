@@ -11,11 +11,7 @@
     <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.file-input.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('input[type=file]').bootstrapFileInput();
-        });
-    </script>
+
 </head>
 
 <body>
@@ -53,13 +49,13 @@
             <div class="form-group">
                 <label class="control-label col-sm-2 col-sm-offset-3">File:</label>
                 <div class="col-sm-7">
-                    <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file"/><br/>
+                    <input class="btn-sm input-sm" type="file" accept=".xml, .csv" name="file" id="browse"/><br/>
                 </div>
             </div>
 
             <div class="form-group">
             <div class="pull-right">
-                <button class="btn btn-sm btn-primary" type="submit" value="Next">
+                <button class="btn btn-sm btn-primary" type="submit" value="Next" id="next">
                    <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </div>
@@ -71,11 +67,21 @@
             </div>
         </form>
 <script>
+    $(document).ready(function () {
+        $('input[type=file]').bootstrapFileInput();
+    });
+
+    $('#next').prop('disabled', 'disabled');
+
+    $("#browse").on('change', function() {
+        $('#next').prop('disabled', false);
+    });
+
     $("#back").click(function () {
         window.location.assign("/project/new-layout");
     });
-</script>
 
+</script>
 
 <jsp:include page="footer.jsp"/>
 </body>

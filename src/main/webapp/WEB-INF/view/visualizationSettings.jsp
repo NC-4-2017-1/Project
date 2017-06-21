@@ -44,7 +44,7 @@
         <label class="control-label col-sm-2 col-sm-offset-3">MathDataColumn:</label>
         <div class="col-sm-3">
             <select class="form-control input-sm mathSelect" name="Math">
-                <option value=""></option>
+              <%--  <option value=""></option>--%>
                 <c:forEach items="${tableKeys}" var="entry">
                     <option value="${entry}">${entry}</option>
                 </c:forEach>
@@ -90,7 +90,10 @@
 
     <script>
 
+        $('#submit').prop('disabled', 'disabled');
+
         $("#addGraph").click(function () {
+            $('#submit').prop('disabled', false);
             var x = $(".xAxisSelect :selected").val();
             var y = $(".yAxisSelect :selected").val();
             var math = $(".mathSelect :selected").val();
@@ -124,6 +127,7 @@
             var removAllElements = $(".js-remove");
             if(removAllElements.length ==0 ){
                 $(".js-table").addClass("hidden");
+                $('#submit').prop('disabled', 'disabled');
             }
         });
 
