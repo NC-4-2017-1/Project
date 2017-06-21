@@ -146,7 +146,7 @@
     });
 
     $("#back").click(function () {
-        window.location.assign("/user/dashboard-get/0/s/0");
+        window.location.assign("/user/dashboard-get");
     });
 
     $( "#connform" ).validate( {

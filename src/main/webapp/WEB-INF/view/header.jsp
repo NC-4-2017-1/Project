@@ -20,14 +20,14 @@
                 <div class="collapse navbar-collapse" id="responsive-menu">
                     <ul class="nav navbar-nav">
                         <sec:authorize access="hasRole('ADMIN')">
-                            <li><a href="<c:url value="/user/admin-panel/email/desc"/>" class="nav-link">All users</a></li>
+                            <li><a href="<c:url value="/user/admin-panel"/>" class="nav-link">All users</a></li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('ADMIN')">
                             <li><a href="<c:url value="/user/create-user"/>" class="nav-link">Create user</a></li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('REGULAR_USER')">
                             <li>
-                                <a href="<c:url value="/user/dashboard-get/creation_date/desc/1"/>" class="nav-link">All projects</a>
+                                <a href="<c:url value="/user/dashboard-get"/>" class="nav-link">All projects</a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="hasRole('REGULAR_USER')">

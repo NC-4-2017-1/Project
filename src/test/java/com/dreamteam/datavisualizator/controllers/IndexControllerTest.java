@@ -55,11 +55,11 @@ public class IndexControllerTest {
 
         mockMvc.perform(get("/login").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/admin-panel/0/s"));
+                .andExpect(redirectedUrl("/user/admin-panel"));
 
         mockMvc.perform(get("/").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/admin-panel/0/s"));
+                .andExpect(redirectedUrl("/user/admin-panel"));
     }
 
     @Test
@@ -74,11 +74,11 @@ public class IndexControllerTest {
 
         mockMvc.perform(get("/login").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/dashboard-get/0/s/0"));
+                .andExpect(redirectedUrl("/user/dashboard-get"));
 
         mockMvc.perform(get("/").sessionAttr("userObject", user))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/user/dashboard-get/0/s/0"));
+                .andExpect(redirectedUrl("/user/dashboard-get"));
     }
 
     @Test

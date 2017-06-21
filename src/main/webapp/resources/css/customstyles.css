@@ -2,15 +2,34 @@
     width: 80px;
 }
 
-.conn-field + .tooltip.right .tooltip-arrow {
+.conn-field + .tooltip.right .tooltip-arrow
+{
     border-right-color: #ebccd1;
 }
 
-.conn-field + .tooltip > .tooltip-inner {
+.SearchUser + .tooltip.top .tooltip-arrow,
+.SearchProject + .tooltip.top .tooltip-arrow,
+.SearchShareProject + .tooltip.top .tooltip-arrow
+{
+    border-top-color: #ebccd1;
+}
+
+.conn-field + .tooltip > .tooltip-inner
+{
     min-width: 200px;
     color: #a94442;
     background-color: #f2dede;
     border-color: #ebccd1;
+}
+
+.SearchUser + .tooltip > .tooltip-inner,
+.SearchProject + .tooltip > .tooltip-inner,
+.SearchShareProject + .tooltip > .tooltip-inner
+{
+    min-width: 200px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #a94442;
 }
 
 .pageName{

@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/resources/js/searchForm.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -19,14 +22,16 @@
 <h4 class="pageName"><c:if test = "${not empty projectName}">
                         "<i><c:out value="${projectName}"/></i>"
                     </c:if></h4>
-<form method="POST"  action="/project/share" id="userSearchShare">
+<form method="POST"  action="/project/share" id="userSearchShare" class="searchUserForm">
     <div class="form-group">
         <label class="control-label pull-left search-input" for="SearchUser">Search user:</label>
         <div class="col-sm-3">
-            <input class="form-control input-sm" id="SearchUser" name="SearchUser"
+            <input class="form-control input-sm SearchUser" id="SearchUser" name="SearchUser"
                    type="text" placeholder="User email..."
             <c:if test = "${not empty SearchUserEmail}"> value = "${SearchUserEmail}" </c:if>
                    autofocus>
+            <input type="text" name="field" value="${sortF}" hidden>
+            <input type="text" name="sortType" value="${sortT}" hidden>
             <input type="text" name="projectId" value="${project_id}" hidden>
         </div>
         <div class="form-group col-sm-3">
@@ -44,65 +49,78 @@
             <thead>
             <tr>
                 <th>
-                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) > 1}">
                         <c:if test = "${sortF == 'first_name'}">
                             <u>First name</u>
                             <c:if test = "${sortT == 'desc'}">
-                                <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=first_name&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                    <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                             </c:if>
                             <c:if test = "${sortT == 'asc'}">
-                                <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=first_name&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                    <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                             </c:if>
                         </c:if>
                         <c:if test = "${sortF != 'first_name'}">
                             First name
-                            <a href="/project/share/${project_id}/first_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                            <a href="/project/share/${project_id}/first_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=first_name&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=first_name&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) == 1}">
                         First name
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) > 1}">
                         <c:if test = "${sortF == 'last_name'}">
                             <u>Last name</u>
                             <c:if test = "${sortT == 'desc'}">
-                                <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=last_name&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                    <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                             </c:if>
                             <c:if test = "${sortT == 'asc'}">
-                                <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=last_name&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                    <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                             </c:if>
                         </c:if>
                         <c:if test = "${sortF != 'last_name'}">
                             Last name
-                            <a href="/project/share/${project_id}/last_name/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                            <a href="/project/share/${project_id}/last_name/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=last_name&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=last_name&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) == 1}">
                         Last name
                     </c:if>
                 </th>
                 <th>
-                    <c:if test = "${fn:length(users) > 1 && empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) > 1}">
                         <c:if test = "${sortF == 'email'}">
                             <u>Email</u>
                             <c:if test = "${sortT == 'desc'}">
-                                <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=email&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                    <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+
                             </c:if>
                             <c:if test = "${sortT == 'asc'}">
-                                <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                                <a href="/project/share?idProject=${project_id}&field=email&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                    <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                             </c:if>
                         </c:if>
                         <c:if test = "${sortF != 'email'}">
                             Email
-                            <a href="/project/share/${project_id}/email/asc" class="asc">     <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                            <a href="/project/share/${project_id}/email/desc" class="desc">     <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=email&sortType=asc&whereEmail=${SearchUserEmail}" class="asc">
+                                <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
+                            <a href="/project/share?idProject=${project_id}&field=email&sortType=desc&whereEmail=${SearchUserEmail}" class="desc">
+                                <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                         </c:if>
                     </c:if>
-                    <c:if test = "${fn:length(users) == 1 || not empty SearchUserEmail}">
+                    <c:if test = "${fn:length(users) == 1}">
                         Email
                     </c:if>
                 </th>

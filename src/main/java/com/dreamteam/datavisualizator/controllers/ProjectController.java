@@ -539,15 +539,26 @@ public class ProjectController {
             }
         }
         //TODO show errors
-        return "redirect:/user/dashboard-get/4/desc/1";
+        return "redirect:/user/dashboard-get";
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/share/{idProject}/{field}/{sortType}", method = RequestMethod.GET)
+   /* @RequestMapping(path = "/share/{idProject}/{field}/{sortType}", method = RequestMethod.GET)
     public String shareProject(Model model, @PathVariable String idProject,
                                @PathVariable String field,
                                @PathVariable String sortType, HttpServletRequest request
+    ) {*/
+    @RequestMapping(path = "/share", method = RequestMethod.GET)
+    public String shareProject(Model model,
+                               @RequestParam(value = "idProject", required = false, defaultValue = "") String idProject,
+                               @RequestParam(value = "field", required = false, defaultValue = "email") String field,
+                               @RequestParam(value = "sortType", required = false, defaultValue = "asc") String sortType,
+                               @RequestParam(value = "whereEmail", required = false, defaultValue = "") String whereEmail,
+                               HttpServletRequest request
     ) {
+        if (idProject.isEmpty()){
+            return "redirect:/user/dashboard-get";
+        }
         if (!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "asc";
         }
@@ -555,7 +566,12 @@ public class ProjectController {
             field = "email";
         }
         try {
+            if (whereEmail.length() > 30){
+                model.addAttribute("error1", "Email can`t be more then 30 characters.");
+                return "shareProject";
+            }
             Integer idP = Integer.parseInt(idProject.trim());
+            model.addAttribute("SearchUserEmail",whereEmail);
             model.addAttribute("sortF", field);
             model.addAttribute("sortT", sortType);
             String projectName = null;
@@ -564,7 +580,7 @@ public class ProjectController {
                 projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);
-            List<User> users = userDAO.getAllUsersList(field, sortType, null);
+            List<User> users = userDAO.getAllUsersList(field, sortType, whereEmail.isEmpty()?null:whereEmail);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();
             while (iter.hasNext()) {
@@ -575,14 +591,14 @@ public class ProjectController {
             }
             model.addAttribute("users", users);
             model.addAttribute("project_id", idProject);
-            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), null);
+            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), whereEmail.isEmpty()?null:whereEmail);
             if (users == null || users_with_access == null) {
                 model.addAttribute("error1", "Users for sharing project wasn't selected.");
             }
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";
         } catch (NumberFormatException e) {
-            return "redirect:/user/dashboard-get/0/s/0";
+            return "redirect:/user/dashboard-get";
         }
     }
 
@@ -593,13 +609,23 @@ public class ProjectController {
                                      @RequestParam(value = "search", defaultValue = "") String search,
                                      @RequestParam(value = "cancel", defaultValue = "") String cancel,
                                      @RequestParam(value = "projectId", defaultValue = "") String idProject,
+                                     @RequestParam(value = "field", required = false, defaultValue = "email") String field,
+                                     @RequestParam(value = "sortType", required = false, defaultValue = "asc") String sortType,
                                      HttpServletRequest request
     ) {
         try {
             Integer idP = Integer.parseInt(idProject.trim());
+            if (SearchUserEmail.length() > 30){
+                model.addAttribute("error1", "Email can`t be more then 30 characters.");
+                return "shareProject";
+            }
             if (!cancel.isEmpty()) {
                 SearchUserEmail = null;
+                field = "email";
+                sortType = "asc";
             }
+            model.addAttribute("sortF", field);
+            model.addAttribute("sortT", sortType);
             if (!search.isEmpty()) {
                 SearchUserEmail = (SearchUserEmail.isEmpty() ? null : SearchUserEmail);
             }
@@ -611,7 +637,7 @@ public class ProjectController {
                 projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);
-            List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);
+            List<User> users = userDAO.getAllUsersList(field, sortType, SearchUserEmail);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();
             while (iter.hasNext()) {
@@ -629,7 +655,7 @@ public class ProjectController {
             model.addAttribute("users_with_access", users_with_access);
             return "shareProject";
         } catch (NumberFormatException e) {
-            return "redirect:/user/dashboard-get/0/s/0";
+            return "redirect:/user/dashboard-get";
         }
     }
 
