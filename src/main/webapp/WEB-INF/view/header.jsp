@@ -52,10 +52,14 @@
     </div>
 </div>
 
-<div class="page-wrap"></div>
-<div class="page-wrap"></div>
 
-<div class="container">
+<div class="page-wrap"></div>
+<div class="page-wrap"></div>
+<style>
+.container-main{min-height: calc(100vh - 121px)}
+</style>
+
+<div class="container container-main">
     <div class="row">
         <div class="content">
             <div class="col-md-12">
@@ -64,6 +68,7 @@
             </div>
         </div>
     </div>
+<%--
     <div class="row">
         <div class="content">
-            <div class="col-md-12">
+            <div class="col-md-12">--%>

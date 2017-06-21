@@ -6,14 +6,9 @@
 </div>
 </div>
 <!--Footer-->
-<br>
-<br>
-<br>
-<br>
 <div class="container" style=" bottom: 0;">
     <div class="row">
         <div class="page-wrap">
-
         </div>
         <footer class="site-footer bg-white">
             <div class="col-md-12">

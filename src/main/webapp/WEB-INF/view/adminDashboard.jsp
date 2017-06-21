@@ -131,7 +131,7 @@
     <div class="alert alert-info user-list-info"><strong>Info!</strong> Users not found.</div>
 </c:if>
 
-<%--<jsp:include page="footer.jsp"/>--%>
+<jsp:include page="footer.jsp"/>
 
 
 </body>
