@@ -193,4 +193,9 @@ $(document).ready(function () {
          $( element ).parents( ".col-sm-3" ).addClass( "has-success" ).removeClass( "has-error" );
          }
     } );
+
+    $("#back").click(function () {
+        window.location.assign("/project/new-layout");
+    });
+
 });

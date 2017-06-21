@@ -54,7 +54,28 @@
                     <input type="text" class="form-control conn-field input-sm" id="password" name="password" placeholder="Password" required>
                 </div>
             </div>
-            <div>
+
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-7">
+                     <button class="btn btn-sm btn-success" type="button" id="submit"
+                            data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Testing...">
+                        <i class="fa fa-cog" aria-hidden="true"></i><b>&nbsp;Test</b>
+                    </button>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-sm btn-primary " type="button" id="next"
+                            data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Connecting...">
+                        <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                 </div>
+                 <div class="pull-right">
+                    <button class="btn btn-link" type="button" id="back">
+                        <b>Back</b>
+                    </button>
+                </div>
+            </div>
+
+  <%--          <div>
                 <div class="col-sm-5 center-block">
                 <button class="btn btn-sm btn-primary col-sm-4 col-sm-offset-8" type="button" id="submit"
                         data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Testing...">
@@ -69,8 +90,9 @@
                 </button>
                 </div>
             </div>
+            --%>
         </form>
 </div>
-<jsp:include page="footer.jsp"/>
+<%--<jsp:include page="footer.jsp"/>--%>
 </body>
 </html>

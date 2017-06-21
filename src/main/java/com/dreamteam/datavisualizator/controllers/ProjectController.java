@@ -160,7 +160,7 @@ public class ProjectController {
                 sessionScopeBean.getCustomerProject().setFileType(fileType);
                 sessionScopeBean.getCustomerProject().setFile(fileFromTomcat);
             } else {
-                redirectAttributes.addFlashAttribute("messageFormat", "Please select a correct date format or File format");
+                redirectAttributes.addFlashAttribute("messageFormat", "Please select a correct date format or file");
                 return "redirect:/project/visualization-setup";
             }
         } catch (IOException e) {

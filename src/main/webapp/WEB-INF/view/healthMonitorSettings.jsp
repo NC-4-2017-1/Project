@@ -125,12 +125,17 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <div class="col-sm-offset-2 col-sm-10">
+                    <div class="form-group">
+                        <div class="pull-right">
                            <!-- <button type="submit" class="btn btn-primary">Create</button>-->
                             <button class="btn btn-sm btn-primary" type="submit" id="next">
-                                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <b>Finish</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
+                        </div>
+                        <div class="pull-right">
+                            <button class="btn btn-link" type="button" id="back">
+                                <b>Back</b>
+                            </button>
                         </div>
                     </div>
 
@@ -138,6 +143,12 @@
         </div>
     </div>
 
-<jsp:include page="footer.jsp"/>
+<script>
+    $("#back").click(function () {
+        window.location.assign("/project/health-monitor-setup");
+    });
+</script>
+
+<%--<jsp:include page="footer.jsp"/>--%>
 </body>
 </html>
