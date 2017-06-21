@@ -548,7 +548,12 @@ public class ProjectController {
             Integer idP = Integer.parseInt(idProject.trim());
             model.addAttribute("sortF", field);
             model.addAttribute("sortT", sortType);
-            model.addAttribute("projectName", sessionScopeBean.getCustomerProject().getName());
+            String projectName = null;
+            projectName = projectDAO.getProjectName(BigInteger.valueOf(idP));
+            if (projectName == null || projectName.isEmpty()){
+                projectName = healthMonitorProjectDAOImpl.getProjectName(BigInteger.valueOf(idP));
+            }
+            model.addAttribute("projectName", projectName);
             List<User> users = userDAO.getAllUsersList(field, sortType, null);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();
@@ -590,7 +595,12 @@ public class ProjectController {
             }
             model.addAttribute("SearchUserEmail", SearchUserEmail);
             model.addAttribute("search", search);
-            model.addAttribute("projectName", sessionScopeBean.getCustomerProject().getName());
+            String projectName = null;
+            projectName = projectDAO.getProjectName(BigInteger.valueOf(idP));
+            if (projectName == null || projectName.isEmpty()){
+                projectName = healthMonitorProjectDAOImpl.getProjectName(BigInteger.valueOf(idP));
+            }
+            model.addAttribute("projectName", projectName);
             List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();

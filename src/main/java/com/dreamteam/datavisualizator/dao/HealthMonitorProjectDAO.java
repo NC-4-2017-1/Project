@@ -36,4 +36,6 @@ public interface HealthMonitorProjectDAO {
     Project saveProject(Project project);
 
     Map<BigInteger, SelectorCreator> getSelectorCreators();
+
+    String getProjectName(BigInteger id);
 }

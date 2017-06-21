@@ -23,4 +23,5 @@ public interface DataVisualizationProjectDAO {
 
     List<Graphic> getProjectGraphs(Project project);
 
+    String getProjectName(BigInteger id);
 }

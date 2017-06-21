@@ -64,6 +64,20 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     }
 
     @Override
+    public String getProjectName(BigInteger id){
+        try {
+            String projectName = generalTemplate.queryForObject(SELECT_PROJECT_NAME_BY_ID, new Object[]{id}, String.class);
+            return projectName;
+        } catch (DataAccessException e) {
+            LOGGER.error("Project name not fetched by id " + id, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Project name not fetched by id " + id, e);
+            return null;
+        }
+    }
+
+    @Override
     public Project getProjectByName(String projectName) {
         try {
             return generalTemplate.queryForObject(SELECT_DVPROJECT_BY_NAME, new Object[]{projectName}, new DataVisualizationProjectRowMapper());
@@ -323,6 +337,8 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
             " and graph.object_id = dispersion.object_id " +
             " and dispersion.attr_id = 12 " +
             " and graph.object_id = ?";
+
+    private static final String SELECT_PROJECT_NAME_BY_ID = "select objects.name name from objects where object_type_id = 4 and object_id = ?";
 
     private enum DVProjectColumnName {
         id("id"),

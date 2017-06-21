@@ -16,7 +16,9 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h3 class="pageName">User list for share project </h3>
-<h4 class="pageName">"<i><c:out value="${projectName}"/></i>"</h4>
+<h4 class="pageName"><c:if test = "${not empty projectName}">
+                        "<i><c:out value="${projectName}"/></i>"
+                    </c:if></h4>
 <form method="POST"  action="/project/share" id="userSearchShare">
     <div class="form-group">
         <label class="control-label pull-left search-input" for="SearchUser">Search user:</label>

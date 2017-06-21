@@ -56,14 +56,14 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
     @Autowired
     private UserDAO userDAO;
 
-    @Override
+    /*@Override
     protected BigInteger createObject(String name, BigInteger objectTypeId) {
         simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("obj_type_id", objectTypeId)
                 .addValue("obj_name", name);
         return simpleCallTemplate.executeFunction(BigDecimal.class, in).toBigInteger();
-    }
+    }*/
 
     public void setDataSourceTemplate(String serverName, String port, String sid, String username, String password) {
         String url = "jdbc:oracle:thin:@" + serverName + ":" + port + "/" + sid;
@@ -195,6 +195,20 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         catch (Exception e) {
             LOGGER.error("List of buildSelectors not created", e);
             throw new SelectorCreateException("List of buildSelectors not created. Something is wrong....");
+        }
+    }
+
+    @Override
+    public String getProjectName(BigInteger id){
+        try {
+            String projectName = generalTemplate.queryForObject(SELECT_PROJECT_NAME_BY_ID, new Object[]{id}, String.class);
+            return projectName;
+        } catch (DataAccessException e) {
+            LOGGER.error("Project name not fetched by id " + id, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Project name not fetched by id " + id, e);
+            return null;
         }
     }
 
@@ -474,6 +488,7 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " and selector.object_type_id = ? and selector_ref.object_id = ?";
     private static final String GRAPHIC_QUERY_PACKAGE = "pkg_selectors";
     private static final String GRAPHIC_QUERY = "graph";
+    private static final String SELECT_PROJECT_NAME_BY_ID = "select objects.name name from objects where object_type_id = 3 and object_id = ?";
 
     private static final Map<BigInteger, String> mapSelectorsSql = new HashMap<BigInteger, String>(){{
             put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  SELECT_SIMPLE_SELECTOR_BY_PROJECTID);
