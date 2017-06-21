@@ -7,7 +7,6 @@ import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
-import com.dreamteam.datavisualizator.common.selectors.impl.*;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
@@ -22,7 +21,6 @@ import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
 import com.dreamteam.datavisualizator.services.xmlparser.XmlParser;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.util.StringUtils;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -35,7 +33,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,13 +48,13 @@ public class ProjectController {
 
     public static final Logger LOGGER = Logger.getLogger(ProjectController.class);
     @Autowired
-    DataVisualizationProjectDAO projectDAO;
+    DataVisualizationProjectDAO dataVisualizationProjectDAO;
 
     @Autowired
     UserDAO userDAO;
 
     @Autowired
-    HealthMonitorProjectDAO healthMonitorProjectDAOImpl;
+    HealthMonitorProjectDAO healthMonitorProjectDAO;
 
     @Autowired
     SessionScopeBean sessionScopeBean;
@@ -249,7 +246,7 @@ public class ProjectController {
         for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
             JsonObject jsonObj = JsonSerializer.serializeGraph(result, dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i], dvGraphicCreationRequest.getmathCol()[i]);
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
-                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size() + 2)
+                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size())
                     .buildGraphicJSON(jsonObj)
                     .buildAverage(CalculationService.calculateAverage(result, dvGraphicCreationRequest.getmathCol()[i]))
                     .buildDispersion(CalculationService.calculateDispersion(result, dvGraphicCreationRequest.getmathCol()[i]))
@@ -268,7 +265,7 @@ public class ProjectController {
                 .buildDescription(customerProject.getDescription())
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
-        Project projectFromDb = projectDAO.saveProject(project);
+        Project projectFromDb = dataVisualizationProjectDAO.saveProject(project);
         LOGGER.info(project.getName() + " " + project.getDescription() + " " + project.getAuthor() + " " + project.getType() + " passed further");
         sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
 
@@ -277,11 +274,17 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-dv", method = RequestMethod.GET)
-    public String projectView(Model model, @RequestParam(value = "projDvId", required = false) BigInteger id) {
+    public String projectView(Model model, HttpServletRequest request, @RequestParam(value = "projDvId", required = false) BigInteger id) {
+        BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
         DataVisualizationProject projectToShow = null;
 
         if (id != null) {
-            projectToShow = (DataVisualizationProject) projectDAO.getProjectById(id);
+            if (userDAO.checkIfUserHasAccessToProject(userID, id)) {
+                projectToShow = (DataVisualizationProject) dataVisualizationProjectDAO.getProjectById(id);
+            } else {
+                return "redirect:/user/admin-panel";
+                //!TODO replace this redirect with another
+            }
         } else {
             projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
         }
@@ -331,7 +334,7 @@ public class ProjectController {
             if (serverName != null && port != null && sid != null && userName != null && password != null) {
                 int testPort = Integer.parseInt(port.trim());
                 if (testPort >= 1 && testPort <= 65000) {
-                    healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
+                    healthMonitorProjectDAO.setDataSourceTemplate(serverName, port, sid, userName, password);
                     return "successful";
                 }
                 return "Port value must be between 0 and000 65000.";
@@ -358,7 +361,7 @@ public class ProjectController {
             if (serverName != null && port != null && sid != null && userName != null && password != null) {
                 int testPort = Integer.parseInt(port.trim());
                 if (testPort >= 1 && testPort <= 65000) {
-                    healthMonitorProjectDAOImpl.setDataSourceTemplate(serverName, port, sid, userName, password);
+                    healthMonitorProjectDAO.setDataSourceTemplate(serverName, port, sid, userName, password);
                     sessionScopeBean.getCustomerProject().setServerName(request.getServerName());
                     sessionScopeBean.getCustomerProject().setPort(request.getPort());
                     sessionScopeBean.getCustomerProject().setSid(request.getSid());
@@ -414,7 +417,7 @@ public class ProjectController {
                 customerProject.getPassword());
         projectBuilder.buildProject();
         try {
-            healthMonitorProjectDAOImpl.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
+            healthMonitorProjectDAO.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
                     customerProject.getUserName(), customerProject.getPassword());
             Map<BigInteger, String> selectorsType = new HashMap<>();
             selectorsType.put(S_INSTANCE_INFO_OBJTYPE_ID, null);
@@ -424,7 +427,7 @@ public class ProjectController {
                     selectorsType.put(key, selectorsParam.get(key));
                 } else {
                     try {
-                        Graphic graph = healthMonitorProjectDAOImpl.createGraph(graphHourcount);
+                        Graphic graph = healthMonitorProjectDAO.createGraph(graphHourcount);
                         if (graph != null) {
                             projectBuilder.buildGraphic(graph);
                         } else {
@@ -437,10 +440,10 @@ public class ProjectController {
                     }
                 }
             }
-            Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAOImpl.createSelectorList(selectorsType);
+            Map<BigInteger, Selector> mapSelectors = healthMonitorProjectDAO.createSelectorList(selectorsType);
             projectBuilder.buildSelectors(mapSelectors);
             Project p = projectBuilder.buildProject();
-            Project projectNew = healthMonitorProjectDAOImpl.saveProject(p);
+            Project projectNew = healthMonitorProjectDAO.saveProject(p);
             if (projectNew == null) {
                 LOGGER.error("HM DAO return null project after saving");
                 model.addAttribute("errorProject", "Project not created and saved!!!");
@@ -464,12 +467,19 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/project-hm", method = RequestMethod.GET)
-    public String openHealthMonitorProject(Model model, @RequestParam(value = "projHmId", required = false) BigInteger id) {
+    public String openHealthMonitorProject(Model model, HttpServletRequest request, @RequestParam(value = "projHmId", required = false) BigInteger id) {
         try {
+            BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             BigInteger finalProjId = null;
             Project project = null;
+
             if (id != null) {
-                finalProjId = id;
+                if (userDAO.checkIfUserHasAccessToProject(userID, id)) {
+                    finalProjId = id;
+                } else {
+                    return "redirect:/user/admin-panel";
+                    //!TODO replace this redirect with another
+                }
             } else {
                 finalProjId = sessionScopeBean.getCustomerProject().getIdProject();
             }
@@ -480,10 +490,10 @@ public class ProjectController {
                 return "index";
             }
 
-            project = healthMonitorProjectDAOImpl.getProjectById(finalProjId);
+            project = healthMonitorProjectDAO.getProjectById(finalProjId);
             sessionScopeBean.getCustomerProject().setName(project.getName());
 
-            Map<BigInteger, SelectorCreator> mapSelectorCreators = healthMonitorProjectDAOImpl.getSelectorCreators();
+            Map<BigInteger, SelectorCreator> mapSelectorCreators = healthMonitorProjectDAO.getSelectorCreators();
             Map<BigInteger, String> mapSelectorAttr = new HashMap<>();
             model.addAttribute("project", project);
             Map<BigInteger, Selector> projectSelectors = ((HealthMonitorProject) project).getSelectors();
@@ -516,16 +526,16 @@ public class ProjectController {
     @RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
     public String deleteProject(@PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {
         if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
-            Project project = projectDAO.getProjectById(id);
+            Project project = dataVisualizationProjectDAO.getProjectById(id);
             //LOGGER.info("Project DV we got " + project);
             if (project != null) {
-                projectDAO.deleteProject(project);
+                dataVisualizationProjectDAO.deleteProject(project);
             }
         } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
-            Project project = healthMonitorProjectDAOImpl.getProjectById(id);
+            Project project = healthMonitorProjectDAO.getProjectById(id);
             //LOGGER.info("Project HM we got " + project);
             if (project != null) {
-                healthMonitorProjectDAOImpl.deleteProject(project);
+                healthMonitorProjectDAO.deleteProject(project);
             }
         }
         //TODO show errors
@@ -549,9 +559,9 @@ public class ProjectController {
             model.addAttribute("sortF", field);
             model.addAttribute("sortT", sortType);
             String projectName = null;
-            projectName = projectDAO.getProjectName(BigInteger.valueOf(idP));
+            projectName = dataVisualizationProjectDAO.getProjectName(BigInteger.valueOf(idP));
             if (projectName == null || projectName.isEmpty()){
-                projectName = healthMonitorProjectDAOImpl.getProjectName(BigInteger.valueOf(idP));
+                projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);
             List<User> users = userDAO.getAllUsersList(field, sortType, null);
@@ -596,9 +606,9 @@ public class ProjectController {
             model.addAttribute("SearchUserEmail", SearchUserEmail);
             model.addAttribute("search", search);
             String projectName = null;
-            projectName = projectDAO.getProjectName(BigInteger.valueOf(idP));
+            projectName = dataVisualizationProjectDAO.getProjectName(BigInteger.valueOf(idP));
             if (projectName == null || projectName.isEmpty()){
-                projectName = healthMonitorProjectDAOImpl.getProjectName(BigInteger.valueOf(idP));
+                projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);
             List<User> users = userDAO.getAllUsersList(null, null, SearchUserEmail);

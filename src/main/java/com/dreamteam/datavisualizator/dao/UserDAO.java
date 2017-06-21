@@ -27,4 +27,6 @@ public interface UserDAO {
     List<Project> getAllUserProjects(User user, String field, String sortType, String whereName);
 
     List<Project> getAllSharedToUserProjects(User user, String field, String sortType, String whereName);
+
+    boolean checkIfUserHasAccessToProject(BigInteger userId, BigInteger projectId);
 }

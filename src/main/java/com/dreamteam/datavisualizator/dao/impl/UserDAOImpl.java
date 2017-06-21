@@ -36,6 +36,25 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Autowired
     private DataVisualizationProjectDAO dataVisualizationProjectDAO;
 
+
+    public boolean checkIfUserHasAccessToProject(BigInteger userId, BigInteger projectId) {
+        try {
+            BigInteger userIdFromDb = generalTemplate.queryForObject(CHECK_IF_USER_HAVE_ACCESS_TO_PROJECT, new Object[]{projectId, userId}, BigInteger.class);
+            LOGGER.info("Got user id from db while accessing to project = " + userIdFromDb);
+            if (userIdFromDb.equals(userId)) {
+                return true;
+            }
+        } catch (DataAccessException e) {
+            LOGGER.debug("Project " + projectId + " not accessible to user " + userId, e);
+            return false;
+        } catch (Exception e) {
+            LOGGER.error("Project " + projectId + " not accessible to user " + userId, e);
+            return false;
+        }
+        return false;
+    }
+
+
     @Override
     public User getUserById(BigInteger id) {
         try {
@@ -67,15 +86,15 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<User> getAllUsersList(String field, String sortType, String whereEmail) {
         try {
             String where = null;
-            if (whereEmail != null && !whereEmail.isEmpty()){
+            if (whereEmail != null && !whereEmail.isEmpty()) {
                 where = " email.value like '%" + whereEmail + "%' ";
             }
             return generalTemplate.query(SELECT_ALL_USERS
-                            + ((where != null)?" and " + where:" ")
+                            + ((where != null) ? " and " + where : " ")
                             + " order by lower("
-                            + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field))?"email":field) + ") "
-                            + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
-                            new UserRowMapperWithoutPassword());
+                            + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) ? "email" : field) + ") "
+                            + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType),
+                    new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;
@@ -116,8 +135,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
                 Integer refAutor = generalTemplate.queryForObject(SELECT_REF_PROJECTID_USERID, new Object[]{userId, projectId}, Integer.class);
                 if (refAutor == 0) {
                     generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_SHARED_RELATION_ATTR_ID, userId, projectId);
-                }
-                else {
+                } else {
                     LOGGER.error("Access to project was not given because user is autor project");
                     return false;
                 }
@@ -158,8 +176,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
         User user = getUserByEmail(email);
-        if (user!=null){
-            LOGGER.warn("User with '"+email+"' already exists");
+        if (user != null) {
+            LOGGER.warn("User with '" + email + "' already exists");
             return null;
         }
         BigInteger insertedObjectId;
@@ -187,12 +205,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             if (projectId != null) {
                 String where = null;
-                if (whereEmail != null && !whereEmail.isEmpty()){
+                if (whereEmail != null && !whereEmail.isEmpty()) {
                     where = " email.value like '%" + whereEmail + "%' ";
                 }
                 return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT
-                                                + ((where != null)?" and " + where:" "),
-                                                new Object[]{projectId}, new UserRowMapperWithoutPassword());
+                                + ((where != null) ? " and " + where : " "),
+                        new Object[]{projectId}, new UserRowMapperWithoutPassword());
             } else {
                 LOGGER.error("Users that have access to project wasn't fetched because project is " + projectId);
                 return null;
@@ -211,14 +229,14 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             if (user != null) {
                 String where = null;
-                if (whereName != null && !whereName.isEmpty()){
+                if (whereName != null && !whereName.isEmpty()) {
                     where = " name like '%" + whereName + "%' ";
                 }
                 String sql = SELECT_ALL_USERS_PROJECT
-                        + ((where != null)?" where " + where:" ")
+                        + ((where != null) ? " where " + where : " ")
                         + " order by lower("
-                        + ((!"name".equals(field) && !"creation_date".equals(field))?"creation_date":field) + ") "
-                        + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType);
+                        + ((!"name".equals(field) && !"creation_date".equals(field)) ? "creation_date" : field) + ") "
+                        + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType);
                 return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
@@ -238,15 +256,15 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             if (user != null) {
                 String where = null;
-                if (whereName != null && !whereName.isEmpty()){
+                if (whereName != null && !whereName.isEmpty()) {
                     where = " name like '%" + whereName + "%' ";
                 }
                 return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT
-                                + ((where != null)?" where " + where:" ")
+                                + ((where != null) ? " where " + where : " ")
                                 + " order by lower("
-                                + ((!"name".equals(field) && !"creation_date".equals(field) &&!"author_name".equals(field))?"creation_date":field) + ") "
-                                + ((!"desc".equals(sortType) && !"asc".equals(sortType))?"desc":sortType),
-                                new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                                + ((!"name".equals(field) && !"creation_date".equals(field) && !"author_name".equals(field)) ? "creation_date" : field) + ") "
+                                + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType),
+                        new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -480,6 +498,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and usertype.attr_id = 5" +
             " and usertype.list_value_id = 1" +
             " and obj_user.object_id = ?";
-    private static final String SELECT_REF_PROJECTID_USERID ="select count(*) from objreference ref_autor\n" +
+    private static final String SELECT_REF_PROJECTID_USERID = "select count(*) from objreference ref_autor\n" +
             "where ref_autor.attr_id=17 and ref_autor.reference=? and ref_autor.object_id=?";
 }

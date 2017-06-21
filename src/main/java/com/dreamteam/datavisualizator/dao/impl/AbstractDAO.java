@@ -21,7 +21,6 @@ public abstract class AbstractDAO {
     @Autowired
     private JdbcTemplate generalTemplate;
 
-
     protected BigInteger createObject(String name, BigInteger objectTypeId) {
         simpleCallTemplate.withFunctionName(INSERT_OBJECT);
         SqlParameterSource in = new MapSqlParameterSource()
@@ -39,6 +38,13 @@ public abstract class AbstractDAO {
 
 
     protected static final String DELETE_OBJECT = "delete from objects where object_id = ?";
+
+
+    protected static final String CHECK_IF_USER_HAVE_ACCESS_TO_PROJECT = "select reference from objreference " +
+            " where (attr_id = 17" + /*created by*/
+            " or attr_id = 18)" + /*shared for*/
+            " and object_id = ?" + /*project object id*/
+            " and reference = ?"; /*user object id*/
 
     protected static final String SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT = "select obj_user.object_id id, first_name.value first_name, \n" +
             " last_name.value last_name, email.value email, usertype.list_value_id usertype " +
@@ -58,7 +64,6 @@ public abstract class AbstractDAO {
             " and ref.object_id = project.object_id " +
             " and ref.reference = obj_user.object_id " +
             " and project.object_id=?";
-
 
 
 }
