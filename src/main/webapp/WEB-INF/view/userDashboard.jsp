@@ -50,21 +50,21 @@
                                 <c:if test = "${sortF == 'name'}">
                                     <u>Name</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=1&SearchProject=${searchName}" class="asc">
+                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                         <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'asc')"><i class="fa fa-long-arrow-up" aria-hidden="true"></i></button>--%>
                                      </c:if>
                                      <c:if test = "${sortT == 'asc'}">
-                                         <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=1&SearchProject=${searchName}" class="desc">
+                                         <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="desc">
                                              <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                        <%-- <button class="btn btn-sm btn-link" type="button" onclick="sort(2, 'desc')"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></button>--%>
                                     </c:if>
                                 </c:if>
                                 <c:if test = "${sortF != 'name'}">
                                     Name
-                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=1&SearchProject=${searchName}" class="asc">
+                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=1&SearchProject=${searchName}" class="desc">
+                                        <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
@@ -77,19 +77,19 @@
                                 <c:if test = "${sortF == 'creation_date'}">
                                     <u>Created at</u>
                                     <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=1&SearchProject=${searchName}" class="asc">
+                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
                                     <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=1&SearchProject=${searchName}" class="desc">
+                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
                                 <c:if test = "${sortF != 'creation_date'}">
                                     Created at
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=1&SearchProject=${searchName}" class="asc">
+                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=1&SearchProject=${searchName}" class="desc">
+                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
@@ -186,22 +186,22 @@
                     <tr>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 'name'}">
+                                <c:if test = "${sortFSP == 'name'}">
                                     <u>Name</u>
-                                    <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                    <c:if test = "${sortTSP == 'desc'}">
+                                        <a href="/user/dashboard-get?fieldSP=name&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
-                                    <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                    <c:if test = "${sortTSP == 'asc'}">
+                                        <a href="/user/dashboard-get?fieldSP=name&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 'name'}">
+                                <c:if test = "${sortFSP != 'name'}">
                                     Name
-                                        <a href="/user/dashboard-get?field=name&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                        <a href="/user/dashboard-get?fieldSP=name&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get?field=name&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                        <a href="/user/dashboard-get?fieldSP=name&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
@@ -211,22 +211,22 @@
                         </th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 'creation_date'}">
+                                <c:if test = "${sortFSP == 'creation_date'}">
                                     <u>Created at</u>
-                                    <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                    <c:if test = "${sortTSP == 'desc'}">
+                                        <a href="/user/dashboard-get?fieldSP=creation_date&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
-                                    <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                    <c:if test = "${sortTSP == 'asc'}">
+                                        <a href="/user/dashboard-get?fieldSP=creation_date&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                 </c:if>
-                                <c:if test = "${sortF != 'creation_date'}">
+                                <c:if test = "${sortFSP != 'creation_date'}">
                                     Created at
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                        <a href="/user/dashboard-get?fieldSP=creation_date&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get?field=creation_date&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                        <a href="/user/dashboard-get?fieldSP=creation_date&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>
@@ -237,22 +237,22 @@
                         <th>Type</th>
                         <th>
                             <c:if test = "${fn:length(sharedToUserProjects) > 1}">
-                                <c:if test = "${sortF == 'author_name'}">
+                                <c:if test = "${sortFSP == 'author_name'}">
                                     <u>Created by</u>
-                                    <c:if test = "${sortT == 'desc'}">
-                                        <a href="/user/dashboard-get?field=author_name&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                    <c:if test = "${sortTSP == 'desc'}">
+                                        <a href="/user/dashboard-get?fieldSP=author_name&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
                                     </c:if>
-                                    <c:if test = "${sortT == 'asc'}">
-                                        <a href="/user/dashboard-get?field=author_name&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                    <c:if test = "${sortTSP == 'asc'}">
+                                        <a href="/user/dashboard-get?fieldSP=author_name&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                     </c:if>
                                  </c:if>
-                                <c:if test = "${sortF != 'author_name'}">
+                                <c:if test = "${sortFSP != 'author_name'}">
                                     Created by
-                                        <a href="/user/dashboard-get?field=author_name&sortType=asc&sortTab=2&SearchShareProject=${searchShareName}" class="asc">
+                                        <a href="/user/dashboard-get?fieldSP=author_name&sortTypeSP=asc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="asc">
                                             <i class="fa fa-long-arrow-up" aria-hidden="true"></i></a>
-                                        <a href="/user/dashboard-get?field=author_name&sortType=desc&sortTab=2&SearchShareProject=${searchShareName}" class="desc">
+                                        <a href="/user/dashboard-get?fieldSP=author_name&sortTypeSP=desc&sortTab=2&SearchShareProject=${searchShareName}&SearchProject=${searchName}&field=${sortF}&sortType=${sortT}" class="desc">
                                             <i class="fa fa-long-arrow-down" aria-hidden="true"></i></a>
                                 </c:if>
                             </c:if>

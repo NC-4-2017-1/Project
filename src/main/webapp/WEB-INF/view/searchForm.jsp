@@ -13,6 +13,8 @@
             <input type="text" name="SearchShareProject" <c:if test = "${not empty searchShareName}"> value = "${searchShareName}" </c:if> hidden>
             <input type="text" name="field" value="${sortF}" hidden>
             <input type="text" name="sortType" value="${sortT}" hidden>
+            <input type="text" name="fieldSP" value="${sortFSP}" hidden>
+            <input type="text" name="sortTypeSP" value="${sortTSP}" hidden>
         </div>
         <div class="form-group col-sm-3">
             <button type="submit" class="btn btn-sm btn-success" value="search" name="search">Search</button>
