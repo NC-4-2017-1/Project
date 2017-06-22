@@ -36,12 +36,12 @@
     <%--<div>${search-name} </div>--%>
 
         <div class="tab-pane" id="1">
+            <jsp:include page="searchForm.jsp"/><br> <br>
             <c:if test = "${not empty error1}">
                 <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error1}</div>
             </c:if>
         <c:if test = "${empty error1}">
             <c:if test = "${not empty userProjects}">
-                <jsp:include page="searchForm.jsp"/>
                 <table id="table-sort" class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
@@ -148,11 +148,12 @@
                                      <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">
                                                     Actions <span class="caret"></span></button>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">
+                                        <%--<li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">--%>
+                                            <li><a href="/project/delete?id=${project.id}&project_type=${project.type}&field=${sortF}&sortType=${sortT}&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}">
                                                         <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
-                                        <%--<li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
+                                          <%--<li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
                                                         <i class="fa fa-share-alt"></i> Share</a></li>--%>
-                                        <li><a href="<c:url value="/project/share?idProject=${project.id}" />">
+                                        <li><a href="/project/share?idProject=${project.id}">
                                             <i class="fa fa-share-alt"></i> Share</a></li>
                                     </ul>
                                 </div>
@@ -162,10 +163,10 @@
                     </tbody>
                 </table>
             </c:if>
-            <c:if test = "${empty userProjects && not empty search}">
+            <%--<c:if test = "${empty userProjects && not empty search}">
                 <jsp:include page="searchForm.jsp"/>
                 <br> <br>
-            </c:if>
+            </c:if>--%>
             <c:if test = "${empty userProjects}">
                 <div class="alert alert-info prj-list-info"><strong>Info!</strong> User projects not found.</div>
             </c:if>
@@ -175,12 +176,12 @@
 
 
         <div class="tab-pane" id="2">
+            <jsp:include page="searchFormShareP.jsp"/><br> <br>
         <c:if test = "${not empty error2}">
             <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${error2}</div>
         </c:if>
         <c:if test = "${empty error2}">
             <c:if test = "${not empty sharedToUserProjects}">
-                <jsp:include page="searchFormShareP.jsp"/>
                 <table class="table table-striped table-condensed project-list">
                     <thead>
                     <tr>
@@ -309,10 +310,10 @@
                     </tbody>
                 </table>
             </c:if>
-            <c:if test = "${empty sharedToUserProjects && not empty search}">
+            <%--<c:if test = "${empty sharedToUserProjects && not empty search}">
                 <jsp:include page="searchFormShareP.jsp"/>
                 <br> <br>
-            </c:if>
+            </c:if>--%>
             <c:if test = "${empty sharedToUserProjects}">
                 <div class="alert alert-info prj-list-info"><strong>Info!</strong>  User shared projects not found.</div>
             </c:if>

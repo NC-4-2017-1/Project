@@ -523,23 +523,37 @@ public class ProjectController {
     }
 
     @Secured("ROLE_REGULAR_USER")
-    @RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
-    public String deleteProject(@PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {
-        if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
-            Project project = dataVisualizationProjectDAO.getProjectById(id);
-            //LOGGER.info("Project DV we got " + project);
-            if (project != null) {
-                dataVisualizationProjectDAO.deleteProject(project);
+    /*@RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
+    public String deleteProject(@PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {*/
+    @RequestMapping(path = "/delete", method = RequestMethod.GET)
+    public String deleteProject(@RequestParam(value = "id") String id, @RequestParam(value = "project_type") ProjectTypes project_type,
+                                @RequestParam(value = "field", required = false, defaultValue = "creation_date") String field,
+                                @RequestParam(value = "sortType", required = false, defaultValue = "desc") String sortType,
+                                @RequestParam(value = "fieldSP", required = false, defaultValue = "creation_date") String fieldSP,
+                                @RequestParam(value = "sortTypeSP", required = false, defaultValue = "desc") String sortTypeSP,
+                                @RequestParam(value = "SearchProject", required = false, defaultValue = "") String SearchProject,
+                                @RequestParam(value = "SearchShareProject",required = false,  defaultValue = "") String SearchShareProject
+    ) {
+        try {
+            Integer idP = Integer.parseInt(id.trim());
+            if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
+                Project project = dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(idP));
+                //LOGGER.info("Project DV we got " + project);
+                if (project != null) {
+                    dataVisualizationProjectDAO.deleteProject(project);
+                }
+            } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
+                Project project = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(idP));
+                //LOGGER.info("Project HM we got " + project);
+                if (project != null) {
+                    healthMonitorProjectDAO.deleteProject(project);
+                }
             }
-        } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
-            Project project = healthMonitorProjectDAO.getProjectById(id);
-            //LOGGER.info("Project HM we got " + project);
-            if (project != null) {
-                healthMonitorProjectDAO.deleteProject(project);
-            }
+            return "redirect:/user/dashboard-get?field="+field+"&sortType="+sortType+"&sortTab=1&SearchProject="+SearchProject+"&SearchShareProject="+SearchShareProject
+                    +"&fieldSP="+fieldSP+"&sortTypeSP="+sortTypeSP;
+        } catch (NumberFormatException e) {
+            return "redirect:/user/dashboard-get";
         }
-        //TODO show errors
-        return "redirect:/user/dashboard-get";
     }
 
     @Secured("ROLE_REGULAR_USER")
