@@ -22,8 +22,9 @@ public class CsvParserImpl implements CsvParser {
         Reader reader = new FileReader(file);
         Map<String, Object> elements;
         CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
-        CSVParser csvParser = new CSVParser(reader, csvFormat);
+        CSVParser csvParser = null;
         try {
+            csvParser = new CSVParser(reader, csvFormat);
             Map<String, Integer> headers = csvParser.getHeaderMap();
             List<CSVRecord> records = csvParser.getRecords();
             for (CSVRecord record : records) {
@@ -34,12 +35,14 @@ public class CsvParserImpl implements CsvParser {
             }
         } catch (IllegalArgumentException e) {
             LOGGER.error("File not parsed", e);
-            return null;
+            throw new IllegalArgumentException(e);
         } catch (IOException e) {
             LOGGER.error("Wrong file format", e);
             throw new IOException(e);
         } finally {
-            csvParser.close();
+            if (csvParser != null) {
+                csvParser.close();
+            }
             reader.close();
         }
         return rows;
@@ -50,14 +53,13 @@ public class CsvParserImpl implements CsvParser {
         Map<String, Object> elements;
         Reader reader = new FileReader(file);
         CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader().withDelimiter(';');
-        CSVParser csvParser = new CSVParser(reader, csvFormat);
+        CSVParser csvParser = null;
         try {
-
+            csvParser = new CSVParser(reader, csvFormat);
             Map<String, Integer> headers = csvParser.getHeaderMap();
             List<CSVRecord> records = csvParser.getRecords();
             int i = 0;
             for (CSVRecord record : records) {
-
                 elements = new LinkedHashMap<>();
                 Map<String, String> headerValue = record.toMap();
                 parseRowByType(dateFormat, elements, headers, headerValue);
@@ -70,12 +72,14 @@ public class CsvParserImpl implements CsvParser {
             }
         } catch (IllegalArgumentException e) {
             LOGGER.error("File not parsed", e);
-            return null;
+            throw new IllegalArgumentException(e);
         } catch (IOException e) {
             LOGGER.error("Wrong file format", e);
             throw new IOException(e);
         } finally {
-            csvParser.close();
+            if (csvParser != null) {
+                csvParser.close();
+            }
             reader.close();
         }
         return rows;
@@ -89,8 +93,8 @@ public class CsvParserImpl implements CsvParser {
                 elements.put(header, BigDecimal.valueOf(Double.parseDouble(value)));
             } else if (value.matches(checkStringConvert.toDateWithSec.toString()) || value.matches(checkStringConvert.toDateWithoutSec.toString())) {
                 Date date = new StringToDateConverter(dateFormat).convertDateFromString(value);
-                try{
-                    if(date==null){
+                try {
+                    if (date == null) {
                         throw new DataFormatException();
                     }
                 } catch (DataFormatException e) {
@@ -103,6 +107,7 @@ public class CsvParserImpl implements CsvParser {
             }
         }
     }
+
     private enum checkStringConvert {
         toDouble("\\-?\\d+(\\.\\d{0,})?"),
         toDateWithSec(" ^ ([0 - 9] * (\\.|-|/)[0-9]*(\\.|-|/)[0-9]*)|([0-9]*(\\.|-|/)[0-9]*(\\.|-|/)[0-9]*\\s[0-9]*:[0-9]*:[0-9]*)$"),
@@ -111,8 +116,9 @@ public class CsvParserImpl implements CsvParser {
         private final String stringConvert;
 
         checkStringConvert(String stringConvert) {
-            this.stringConvert=stringConvert;
+            this.stringConvert = stringConvert;
         }
+
         @Override
         public String toString() {
             return stringConvert;

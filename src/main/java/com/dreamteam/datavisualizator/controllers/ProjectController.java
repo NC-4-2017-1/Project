@@ -157,7 +157,7 @@ public class ProjectController {
                 sessionScopeBean.getCustomerProject().setFileType(fileType);
                 sessionScopeBean.getCustomerProject().setFile(fileFromTomcat);
             } else {
-                redirectAttributes.addFlashAttribute("messageFormat", "Please select a correct date format or file");
+                redirectAttributes.addFlashAttribute("errorParsingMessage", "Error parsing, please select a correct file or date format");
                 return "redirect:/project/visualization-setup";
             }
         } catch (IOException e) {
@@ -175,6 +175,8 @@ public class ProjectController {
                 return true;
             } catch (IOException e) {
                 LOGGER.error("IOException in parsing proj as csv", e);
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("File not parsed", e);
             }
         } else if (fileType.equals("xml")) {
             try {
@@ -207,8 +209,8 @@ public class ProjectController {
             }
         }
 
-        String tablee = HtmlSerializer.createHtmlTableForParsingFile(result, "dvtable");
-        model.addAttribute("table", tablee);
+        String table = HtmlSerializer.createHtmlTableForParsingFile(result, "dvtable");
+        model.addAttribute("table", table);
         model.addAttribute("tableKeys", result.get(0).keySet());
 
         return "visualizationSettings";
@@ -532,7 +534,7 @@ public class ProjectController {
                                 @RequestParam(value = "fieldSP", required = false, defaultValue = "creation_date") String fieldSP,
                                 @RequestParam(value = "sortTypeSP", required = false, defaultValue = "desc") String sortTypeSP,
                                 @RequestParam(value = "SearchProject", required = false, defaultValue = "") String SearchProject,
-                                @RequestParam(value = "SearchShareProject",required = false,  defaultValue = "") String SearchShareProject
+                                @RequestParam(value = "SearchShareProject", required = false, defaultValue = "") String SearchShareProject
     ) {
         try {
             Integer idP = Integer.parseInt(id.trim());
@@ -549,8 +551,8 @@ public class ProjectController {
                     healthMonitorProjectDAO.deleteProject(project);
                 }
             }
-            return "redirect:/user/dashboard-get?field="+field+"&sortType="+sortType+"&sortTab=1&SearchProject="+SearchProject+"&SearchShareProject="+SearchShareProject
-                    +"&fieldSP="+fieldSP+"&sortTypeSP="+sortTypeSP;
+            return "redirect:/user/dashboard-get?field=" + field + "&sortType=" + sortType + "&sortTab=1&SearchProject=" + SearchProject + "&SearchShareProject=" + SearchShareProject
+                    + "&fieldSP=" + fieldSP + "&sortTypeSP=" + sortTypeSP;
         } catch (NumberFormatException e) {
             return "redirect:/user/dashboard-get";
         }
@@ -570,7 +572,7 @@ public class ProjectController {
                                @RequestParam(value = "whereEmail", required = false, defaultValue = "") String whereEmail,
                                HttpServletRequest request
     ) {
-        if (idProject.isEmpty()){
+        if (idProject.isEmpty()) {
             return "redirect:/user/dashboard-get";
         }
         if (!"desc".equals(sortType) && !"asc".equals(sortType)) {
@@ -580,21 +582,21 @@ public class ProjectController {
             field = "email";
         }
         try {
-            if (whereEmail.length() > 30){
+            if (whereEmail.length() > 30) {
                 model.addAttribute("error1", "Email can`t be more then 30 characters.");
                 return "shareProject";
             }
             Integer idP = Integer.parseInt(idProject.trim());
-            model.addAttribute("SearchUserEmail",whereEmail);
+            model.addAttribute("SearchUserEmail", whereEmail);
             model.addAttribute("sortF", field);
             model.addAttribute("sortT", sortType);
             String projectName = null;
             projectName = dataVisualizationProjectDAO.getProjectName(BigInteger.valueOf(idP));
-            if (projectName == null || projectName.isEmpty()){
+            if (projectName == null || projectName.isEmpty()) {
                 projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);
-            List<User> users = userDAO.getAllUsersList(field, sortType, whereEmail.isEmpty()?null:whereEmail);
+            List<User> users = userDAO.getAllUsersList(field, sortType, whereEmail.isEmpty() ? null : whereEmail);
             BigInteger userID = ((User) request.getSession().getAttribute("userObject")).getId();
             Iterator<User> iter = users.iterator();
             while (iter.hasNext()) {
@@ -605,7 +607,7 @@ public class ProjectController {
             }
             model.addAttribute("users", users);
             model.addAttribute("project_id", idProject);
-            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), whereEmail.isEmpty()?null:whereEmail);
+            List<User> users_with_access = userDAO.getUsersThatHaveAccessToProject(BigInteger.valueOf(idP), whereEmail.isEmpty() ? null : whereEmail);
             if (users == null || users_with_access == null) {
                 model.addAttribute("error1", "Users for sharing project wasn't selected.");
             }
@@ -629,7 +631,7 @@ public class ProjectController {
     ) {
         try {
             Integer idP = Integer.parseInt(idProject.trim());
-            if (SearchUserEmail.length() > 30){
+            if (SearchUserEmail.length() > 30) {
                 model.addAttribute("error1", "Email can`t be more then 30 characters.");
                 return "shareProject";
             }
@@ -647,7 +649,7 @@ public class ProjectController {
             model.addAttribute("search", search);
             String projectName = null;
             projectName = dataVisualizationProjectDAO.getProjectName(BigInteger.valueOf(idP));
-            if (projectName == null || projectName.isEmpty()){
+            if (projectName == null || projectName.isEmpty()) {
                 projectName = healthMonitorProjectDAO.getProjectName(BigInteger.valueOf(idP));
             }
             model.addAttribute("projectName", projectName);

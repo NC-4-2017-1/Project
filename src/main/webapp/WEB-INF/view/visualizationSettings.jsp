@@ -79,12 +79,12 @@
     </div>
 
 
-    <table class="table js-table hidden tab-pane"  style="width:100%" border="1">
+    <table class="table js-table hidden tab-pane "  style="width:100%" border="1">
         <tr>
-            <th  style="width:5%; text-align:center;">Graph </th>
-            <th  style="width:30%">X-axis</th>
-            <th  style="width:30%">Y-axis</th>
-            <th  style="width:30%">MathDataColumn</th>
+            <th  class="active" style="width:5%; text-align:center;">Graph </th>
+            <th  class="active" style="width:30%">X-axis</th>
+            <th  class="active" style="width:30%">Y-axis</th>
+            <th  class="active" style="width:30%">MathDataColumn</th>
         </tr>
     </table>
 

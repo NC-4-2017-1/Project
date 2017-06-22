@@ -26,10 +26,10 @@
             text-center" >${messageFile}
         </div>
         <div class="alert alert-danger
-            <c:if test="${messageFormat == null}">
+            <c:if test="${errorParsingMessage == null}">
                 hide
             </c:if>
-            text-center" id = "right_conn">${messageFormat}
+            text-center" id = "right_conn">${errorParsingMessage}
         </div>
     </div>
        <h3 class="pageName">Setup: please select a file to upload and date format</h3>
