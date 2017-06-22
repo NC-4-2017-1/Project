@@ -72,7 +72,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Override
     public User getUserByEmail(String email) {
         try {
-            return generalTemplate.queryForObject(SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
+            if (email != null){
+                email = email.toLowerCase();
+                return generalTemplate.queryForObject(SELECT_USER_FOR_EMAIL_FOR_AUTHORIZATION, new Object[]{email}, new UserRowMapper());
+            }
+            return null;
         } catch (DataAccessException e) {
             LOGGER.debug("User not fetched by email for authorization" + email, e);
             return null;
@@ -175,6 +179,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Override
     @Transactional(transactionManager = "transactionManager", rollbackFor = {DataAccessException.class, Exception.class})
     public User createUser(String firstName, String lastName, String email, String password, UserTypes type) {
+        email = email.toLowerCase();
         User user = getUserByEmail(email);
         if (user != null) {
             LOGGER.warn("User with '" + email + "' already exists");
