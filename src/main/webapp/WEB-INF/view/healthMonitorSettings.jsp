@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script type="text/javascript" src="/resources/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/resources/js/selectorsForm.js"></script>
 </head>
 
 <body>
@@ -19,7 +22,7 @@
 
         <div class="col-sm-offset-3">
 
-                <form method="POST"  role="form" action="/project/health-monitor-settings-post">
+                <form method="POST"  role="form" action="/project/health-monitor-settings-post" class="selectors">
 
                     <div class="row col-sm-12">
                         <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
@@ -71,7 +74,7 @@
                             <label for="activesessioncheck" class="custom-control custom-checkbox">Active sessions</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activesession" name="activesession" placeholder="Top(default: 10)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="activesession" name="activesession" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -81,7 +84,7 @@
                             <label for="activequeriescheck" class="custom-control custom-checkbox">Active queries</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activequeries" name="activequeries" placeholder="Top(default: 10)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="activequeries" name="activequeries" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -91,7 +94,7 @@
                             <label for="queriesrescheck" class="custom-control custom-checkbox">Queries results</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="queriesres" name="queriesres" placeholder="Top(default: 10)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="queriesres" name="queriesres" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -101,7 +104,7 @@
                             <label for="sqlmonitorcheck" class="custom-control custom-checkbox">SQL queries monitor</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="sqlmonitor" name="sqlmonitor" placeholder="Top(default: 10)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="sqlmonitor" name="sqlmonitor" placeholder="Top(default: 10)">
                         </div>
                     </div>
 
@@ -111,7 +114,7 @@
                             <label for="activejobscheck" class="custom-control custom-checkbox">Active jobs</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="activejobs" name="activejobs" placeholder="Hour count(default: 24)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="activejobs" name="activejobs" placeholder="Hour count(default: 24)">
                         </div>
                     </div>
 
@@ -121,7 +124,7 @@
                             <label for="graphcheck" class="custom-control custom-checkbox">Graph</label>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" id="graph" name="graph" placeholder="Hour count(default: 24)">
+                            <input type="text" class="form-control input-sm selectorsPar" id="graph" name="graph" placeholder="Hour count(default: 24)">
                         </div>
                     </div>
 

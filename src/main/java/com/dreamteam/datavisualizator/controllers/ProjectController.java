@@ -396,10 +396,22 @@ public class ProjectController {
                                             @RequestParam(value = "queriesres", defaultValue = "10") String queriesResultsTop,
                                             @RequestParam(value = "sqlmonitor", defaultValue = "10") String queriesMonitorTop,
                                             @RequestParam(value = "activejobs", defaultValue = "24") String activeJobsPastHours,
-                                            @RequestParam(value = "graph", defaultValue = "24") int graphHourcount,
+                                            @RequestParam(value = "graph", defaultValue = "24") String graphHourcount,
                                             @RequestParam(value = "selectors[]", defaultValue = "") String[] selectors,
                                             Model model
     ) {
+        try {
+            Integer.parseInt(activeSessionsTop.trim());
+            Integer.parseInt(activeQueriesTop.trim());
+            Integer.parseInt(queriesResultsTop.trim());
+            Integer.parseInt(queriesMonitorTop.trim());
+            Integer.parseInt(activeJobsPastHours.trim());
+            Integer.parseInt(graphHourcount.trim());
+        } catch (NumberFormatException e){
+            LOGGER.error("Selectors parameters are wrong.", e);
+            model.addAttribute("errorSelector", "<strong>Selectors parameter error.</strong> Please, enter valid number for selectors parameters.");
+            return "healthMonitorSettings";
+        }
         Map<BigInteger, String> selectorsParam = new HashMap<>();
         selectorsParam.put(S_SIZE_TABLESPACE_OBJTYPE_ID, null);
         selectorsParam.put(S_SIZE_INDEX_LOB_OBJTYPE_ID, tableIndexLobSize);
@@ -429,7 +441,7 @@ public class ProjectController {
                     selectorsType.put(key, selectorsParam.get(key));
                 } else {
                     try {
-                        Graphic graph = healthMonitorProjectDAO.createGraph(graphHourcount);
+                        Graphic graph = healthMonitorProjectDAO.createGraph(Integer.parseInt(graphHourcount.trim()));
                         if (graph != null) {
                             projectBuilder.buildGraphic(graph);
                         } else {
@@ -438,7 +450,7 @@ public class ProjectController {
                         }
                     } catch (Exception e) {
                         LOGGER.error("HM DAO return null graphic after create", e);
-                        throw new HMGraphException("Graph not created from HM data base. " + e.getLocalizedMessage());
+                        throw new HMGraphException(e.getLocalizedMessage());
                     }
                 }
             }

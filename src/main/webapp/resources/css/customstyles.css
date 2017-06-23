@@ -2,7 +2,8 @@
     width: 80px;
 }
 
-.conn-field + .tooltip.right .tooltip-arrow
+.conn-field + .tooltip.right .tooltip-arrow,
+.selectorsPar + .tooltip.right .tooltip-arrow
 {
     border-right-color: #ebccd1;
 }
@@ -14,7 +15,8 @@
     border-top-color: #ebccd1;
 }
 
-.conn-field + .tooltip > .tooltip-inner
+.conn-field + .tooltip > .tooltip-inner,
+.selectorsPar + .tooltip > .tooltip-inner
 {
     min-width: 200px;
     color: #a94442;
