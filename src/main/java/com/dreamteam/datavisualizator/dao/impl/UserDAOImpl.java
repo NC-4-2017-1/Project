@@ -91,14 +91,17 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             String where = null;
             if (whereEmail != null && !whereEmail.isEmpty()) {
-                where = " email.value like '%" + whereEmail + "%' ";
+                where = " lower(email.value) like ? ";//"%" + whereEmail.toLowerCase() + "%";
             }
-            return generalTemplate.query(SELECT_ALL_USERS
-                            + ((where != null) ? " and " + where : " ")
-                            + " order by lower("
-                            + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) ? "email" : field) + ") "
-                            + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType),
-                    new UserRowMapperWithoutPassword());
+            String sql = SELECT_ALL_USERS
+                    + ((where != null) ? " and " + where : " ")
+                    + " order by lower("
+                    + ((!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) ? "email" : field) + ") "
+                    + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType);
+            if (where != null){
+                return generalTemplate.query(sql, new Object[]{"%" + whereEmail.toLowerCase() + "%"}, new UserRowMapperWithoutPassword());
+            }
+            return generalTemplate.query(sql, new UserRowMapperWithoutPassword());
         } catch (DataAccessException e) {
             LOGGER.error("List of all users not fetched", e);
             return null;
@@ -210,12 +213,14 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             if (projectId != null) {
                 String where = null;
+                Object[] sqlPar = new Object[]{projectId};
+                Object[] sqlParWhere = null;
                 if (whereEmail != null && !whereEmail.isEmpty()) {
-                    where = " email.value like '%" + whereEmail + "%' ";
+                    where = " lower(email.value) like ? "; //"'%" + whereEmail.toLowerCase() + "%' ";
+                    sqlParWhere  = new Object[]{projectId, "%" + whereEmail.toLowerCase() + "%"};
                 }
-                return generalTemplate.query(SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT
-                                + ((where != null) ? " and " + where : " "),
-                        new Object[]{projectId}, new UserRowMapperWithoutPassword());
+                String sql = SELECT_USERS_THAT_HAVE_ACCESS_TO_PROJECT + ((where != null) ? " and " + where : " ");
+                return generalTemplate.query(sql, ((where != null) ? sqlParWhere : sqlPar),  new UserRowMapperWithoutPassword());
             } else {
                 LOGGER.error("Users that have access to project wasn't fetched because project is " + projectId);
                 return null;
@@ -233,16 +238,29 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<Project> getAllUserProjects(User user, String field, String sortType, String whereName) {
         try {
             if (user != null) {
-                String where = null;
+                /*String where = null;
                 if (whereName != null && !whereName.isEmpty()) {
-                    where = " name like '%" + whereName + "%' ";
+                    where = " lower(name) like '%" + whereName.toLowerCase() + "%' ";
                 }
                 String sql = SELECT_ALL_USERS_PROJECT
                         + ((where != null) ? " where " + where : " ")
                         + " order by lower("
                         + ((!"name".equals(field) && !"creation_date".equals(field)) ? "creation_date" : field) + ") "
                         + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType);
-                return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                return generalTemplate.query(sql, new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());*/
+                String where = null;
+                Object[] sqlPar = new Object[]{user.getId(), user.getId()};
+                Object[] sqlParWhere = null;
+                if (whereName != null && !whereName.isEmpty()) {
+                    where = " lower(name) like ? ";
+                    sqlParWhere  = new Object[]{user.getId(), user.getId(), "%" + whereName.toLowerCase() + "%"};
+                }
+                String sql = SELECT_ALL_USERS_PROJECT
+                        + ((where != null) ? " where " + where : " ")
+                        + " order by lower("
+                        + ((!"name".equals(field) && !"creation_date".equals(field)) ? "creation_date" : field) + ") "
+                        + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType);
+                return generalTemplate.query(sql,  ((where != null) ? sqlParWhere : sqlPar),     new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;
@@ -260,16 +278,29 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     public List<Project> getAllSharedToUserProjects(User user, String field, String sortType, String whereName) {
         try {
             if (user != null) {
-                String where = null;
+                /*String where = null;
                 if (whereName != null && !whereName.isEmpty()) {
-                    where = " name like '%" + whereName + "%' ";
+                    where = " lower(name) like '%" + whereName.toLowerCase() + "%' ";
                 }
                 return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT
                                 + ((where != null) ? " where " + where : " ")
                                 + " order by lower("
                                 + ((!"name".equals(field) && !"creation_date".equals(field) && !"author_name".equals(field)) ? "creation_date" : field) + ") "
                                 + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType),
-                        new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());
+                        new Object[]{user.getId(), user.getId()}, new ProjectSimpleRowMapper());*/
+                String where = null;
+                Object[] sqlPar = new Object[]{user.getId(), user.getId()};
+                Object[] sqlParWhere = null;
+                if (whereName != null && !whereName.isEmpty()) {
+                    where = " lower(name) like ? ";
+                    sqlParWhere  = new Object[]{user.getId(), user.getId(), "%" + whereName.toLowerCase() + "%"};
+                }
+                return generalTemplate.query(SELECT_ALL_SHARED_TO_USER_PROJECT
+                                + ((where != null) ? " where " + where : " ")
+                                + " order by lower("
+                                + ((!"name".equals(field) && !"creation_date".equals(field) && !"author_name".equals(field)) ? "creation_date" : field) + ") "
+                                + ((!"desc".equals(sortType) && !"asc".equals(sortType)) ? "desc" : sortType),
+                                ((where != null) ? sqlParWhere : sqlPar),     new ProjectSimpleRowMapper());
             } else {
                 LOGGER.error("Projects for user wasn't selected because of user " + user);
                 return null;

@@ -5,7 +5,7 @@
     <div class="form-group">
         <label class="control-label pull-left search-input" for="SearchProject">Search project:</label>
         <div class="col-sm-3">
-            <input class="form-control input-sm" id="SearchProject" name="SearchProject"
+            <input class="form-control input-sm SearchProject" id="SearchProject" name="SearchProject"
                    type="text" placeholder="Project name..."
             <c:if test = "${not empty searchName}"> value = "${searchName}" </c:if>
                    autofocus>
