@@ -108,7 +108,9 @@ footer {
     padding-top: 20px;
 }
 
-
+#dvTableBlock{
+    overflow-x: auto;
+}
 /*  navbar  */
 
 .navbar-default .navbar-nav>li>a:hover,
