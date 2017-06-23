@@ -1,6 +1,7 @@
 package com.dreamteam.datavisualizator.services;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 
@@ -21,8 +22,25 @@ public class JsonSerializer {
 
             jsonWithValuesForGraphic.add(arrayWithData);
         }
+        jsonWithValuesForGraphic = new JsonSerializer().sortingArray(jsonWithValuesForGraphic);
 
         return jsonWithValuesForGraphic;
+    }
+
+    private JsonArray sortingArray(JsonArray jsonWithValuesForGraphic){
+        for(int i = jsonWithValuesForGraphic.size()-1 ; i > 0 ; i--){
+            for(int j = 0 ; j < i ; j++){
+                JsonArray firstElement = jsonWithValuesForGraphic.get(j).getAsJsonArray();
+                JsonArray secondElement = jsonWithValuesForGraphic.get(j+1).getAsJsonArray();
+                if( new BigDecimal(firstElement.get(0).toString()).compareTo(new BigDecimal(secondElement.get(0).toString()))>0){
+                    JsonArray tmp = jsonWithValuesForGraphic.get(j).getAsJsonArray();
+                    jsonWithValuesForGraphic.set(j, jsonWithValuesForGraphic.get(j+1).getAsJsonArray());
+                    jsonWithValuesForGraphic.set(j+1, tmp);
+                }
+            }
+        }
+
+        return  jsonWithValuesForGraphic;
     }
 
     public static JsonObject serializeGraph(List<Map<String, Object>> dataForSerialize,
