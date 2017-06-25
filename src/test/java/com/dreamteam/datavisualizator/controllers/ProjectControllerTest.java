@@ -32,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
@@ -152,12 +153,8 @@ public class ProjectControllerTest {
         request.setxAxis(yArr);
         request.setmathCol(math);
         String json = new Gson().toJson(request);
-        String name = "projectName";
-        BigInteger authorId = BigInteger.valueOf(2L);
-        String authorFullName = "author";
-        BigInteger id = BigInteger.valueOf(1L);
-        String description = "description";
         sessionScopeBean.getCustomerProject().setName("projectName");
+        sessionScopeBean.getCustomerProject().setDescription("projectDescription");
         sessionScopeBean.getCustomerProject().setDateFormat(DateFormat.getDateFormatById(new BigInteger("13")));
         User user = Mockito.mock(User.class);
         sessionScopeBean.setUser(user);
@@ -171,26 +168,32 @@ public class ProjectControllerTest {
         List<Graphic> actual = sessionScopeBean.getCustomerProject().getGraphics();
 
         Assert.assertEquals(1, actual.size());
-//        Assert.assertEquals(new BigInteger("1"), actual.get(0).getId());
+//      Assert.assertEquals(new BigInteger("1"), actual.get(0).getId());
         Assert.assertEquals("Graph #1 - X axis: 'DB_LOAD'; Y axis: 'PROCESS_COUNT'", actual.get(0).getName());
         Assert.assertTrue(actual.get(0) instanceof GraphicDVImpl);
         GraphicDVImpl graphicDV = (GraphicDVImpl) actual.get(0);
-//        Assert.assertEquals(52.5, graphicDV.getAverage());
+        Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getAverage());
+        Assert.assertEquals(new BigDecimal("4512.5"),graphicDV.getDispersion());
+        Assert.assertEquals(new BigDecimal("52.5"),graphicDV.getMathExpectation());
+        Assert.assertEquals(new BigDecimal("52.5"),graphicDV.getOlympicAverage());
 
-
-        Project project = new DataVisualizationProject.Builder(name, null, authorId, authorFullName)
+/*        Project project = new DataVisualizationProject.Builder(name, null, authorId, authorFullName)
                 .buildDescription(description)
                 .buildId(id)
                 .buildGraphics(actual)
-                .buildProject();
+                .buildProject();*/
 
-        ArgumentCaptor<Project> argumentCaptor = ArgumentCaptor.forClass(Project.class);
+        ArgumentCaptor<DataVisualizationProject> argumentCaptor = ArgumentCaptor.forClass(DataVisualizationProject.class);
         Mockito.verify(dataVisualizationProjectDAO)
                 .saveProject(argumentCaptor.capture());
 
-        Project actualProject = argumentCaptor.getValue();
+        DataVisualizationProject actualProject = argumentCaptor.getValue();
         Assert.assertEquals("projectName",actualProject.getName());
+        Assert.assertEquals("projectDescription",actualProject.getDescription());
+        Assert.assertEquals(null, actualProject.getAuthor());
     }
+
+
 
 }
 
