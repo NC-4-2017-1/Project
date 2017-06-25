@@ -60,14 +60,18 @@ public class JsonSerializer {
                 "                    'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'" +
                 "        }," +
                 "        xAxis: {" +
-                "            type: '"+typeOfAxisX+"'," +
+                "            type: '" + typeOfAxisX + "'," +
                 "            title: {" +
-                "                text: '"+columnNameAxisX+"'" +
+                "                text: '" + (columnNameAxisX.length() < 25 ?
+                                                columnNameAxisX :
+                                                columnNameAxisX.substring(0,24) + "...")/*columnNameAxisX*/ + "'" +
                 "            }" +
                 "        }," +
                 "        yAxis: {" +
                 "            title: {" +
-                "                text: '"+columnNameAxisY+"'" +
+                "                text: '" + (columnNameAxisY.length() < 25 ?
+                                                columnNameAxisY :
+                                                columnNameAxisY.substring(0,24) + "...")/*columnNameAxisY*/ + "'" +
                 "            }" +
                 "        }," +
                 "        legend: {" +
@@ -101,7 +105,11 @@ public class JsonSerializer {
                 "        }," +
                 "        series: [{" +
                 "            type: 'area'," +
-                "            name: '"+columnNameAxisY+" at "+columnNameAxisX+"'," +
+                "            name: '" + (columnNameAxisY.length() < 25 ?
+                                            columnNameAxisY :
+                                            columnNameAxisY.substring(0,24) + "...") + " at " + (columnNameAxisX.length() < 25 ?
+                                                                                                    columnNameAxisX :
+                                                                                                    columnNameAxisX.substring(0,24) + "...") + "'," +
                 "            data:"+ arrayForGraph + " " +
                 "        }]" +
                 "    });");

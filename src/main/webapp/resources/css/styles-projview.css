@@ -34,6 +34,12 @@
 .graphname {
     padding: 20px;
     text-align: center;
+    width: inherit;
+    word-wrap: break-word;
+}
+
+.mathName{
+    word-wrap: break-word;
 }
 
 .graphmath {

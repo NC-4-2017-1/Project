@@ -79,15 +79,16 @@
     </div>
 
 
-    <table class="table js-table hidden tab-pane table-bordered table-condensed table-striped"  style="width:100%" border="1">
-        <tr>
-            <th  class="active" style="width:5%; text-align:center;">Graph </th>
-            <th  class="active" style="width:30%">X-axis</th>
-            <th  class="active" style="width:30%">Y-axis</th>
-            <th  class="active" style="width:30%">MathDataColumn</th>
-        </tr>
-    </table>
-
+    <div id="dvTableBlock">
+        <table class="table js-table hidden tab-pane table-bordered table-condensed table-striped "  style="width:100%" border="1">
+            <tr>
+                <th  class="active" style="width:5%; text-align:center;">Graph </th>
+                <th  class="active" style="width:30%">X-axis</th>
+                <th  class="active" style="width:30%">Y-axis</th>
+                <th  class="active" style="width:30%">MathDataColumn</th>
+            </tr>
+        </table>
+    </div>
     <script>
 
         $('#submit').prop('disabled', 'disabled');

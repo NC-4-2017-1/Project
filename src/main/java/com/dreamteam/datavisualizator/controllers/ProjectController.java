@@ -246,11 +246,20 @@ public class ProjectController {
         }
 
         List<Graphic> graphicList = new ArrayList<>();
-
         for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
             JsonObject jsonObj = JsonSerializer.serializeGraph(result, dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i], dvGraphicCreationRequest.getmathCol()[i]);
+
+            int xLength = dvGraphicCreationRequest.getxAxis()[i].length();
+            int yLength = dvGraphicCreationRequest.getyAxis()[i].length();
+            String xAxisString =  dvGraphicCreationRequest.getxAxis()[i];
+            String yAxisString =  dvGraphicCreationRequest.getyAxis()[i];
+
+            String xAxisName = (xLength < 32 ? xAxisString.substring(0, xLength) : xAxisString.substring(0,30) + "...");
+            String yAxisName = (yLength < 32 ? yAxisString.substring(0, yLength) : yAxisString.substring(0,30) + "...");
+            String graphName = "Graph #" + (i + 1) + " - X axis: '" + xAxisName + "'; Y axis: '" + yAxisName + "'";
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
-                    .buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size())
+                    //.buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size())
+                    .buildName(graphName)
                     .buildGraphicJSON(jsonObj)
                     .buildAverage(CalculationService.calculateAverage(result, dvGraphicCreationRequest.getmathCol()[i]))
                     .buildDispersion(CalculationService.calculateDispersion(result, dvGraphicCreationRequest.getmathCol()[i]))

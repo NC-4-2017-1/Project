@@ -74,15 +74,16 @@
         <div class="graphitem">
             <div class="graphname"><h4><c:out value="${graph.name}"/></h4></div>
             <div id="${graph.id}"
-                 style="min-width: 310px; height: 400px; margin: 0 auto; background-color: #5BE870"></div>
+                 style="min-width: 310px; height: 400px; margin: 0 auto;"></div>
             <script>
                 var container_name = "${graph.id}";
                 var t = ${graph.graphicJSON};
                 eval(t.jsCodeForGraph);
             </script>
             <div class="graphmath">
-                <span id="mathName${graph.id}"><script>$("#mathName${graph.id}").text("Calculate by "+t.math+" column");
-                </script></span>
+                <span id="mathName${graph.id}" class = "mathName">
+                    <script>$("#mathName${graph.id}").text("Calculate by "+t.math+" column"); </script>
+                </span>
                 <div class="graphmathitem">
                     <b> Average:</b> <c:out value="${graph.average}"/>
                 </div>
