@@ -79,4 +79,21 @@ public class DataVisualizationProject extends AbstractProject {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataVisualizationProject that = (DataVisualizationProject) o;
+
+        if (graphics != null ? !graphics.equals(that.graphics) : that.graphics != null) return false;
+        return authorFullName != null ? authorFullName.equals(that.authorFullName) : that.authorFullName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = graphics != null ? graphics.hashCode() : 0;
+        result = 31 * result + (authorFullName != null ? authorFullName.hashCode() : 0);
+        return result;
+    }
 }

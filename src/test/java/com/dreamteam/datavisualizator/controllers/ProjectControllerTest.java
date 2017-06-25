@@ -3,19 +3,26 @@ package com.dreamteam.datavisualizator.controllers;
 
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
+import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
-import com.dreamteam.datavisualizator.models.CreateProjectRequest;
+import com.dreamteam.datavisualizator.models.*;
+import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
+import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
+import com.dreamteam.datavisualizator.models.impl.UserImpl;
+import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
+import com.dreamteam.datavisualizator.services.csvparser.CsvParserImpl;
 import com.google.gson.Gson;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,6 +30,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
@@ -33,8 +41,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -57,11 +70,13 @@ public class ProjectControllerTest {
     private UserDAO userDaoMock;
 
     @Mock
-    private DataVisualizationProjectDAO dataVisualizationDaoMock;
+    private DataVisualizationProjectDAO dataVisualizationProjectDAO;
 
     @Mock
     private HealthMonitorProjectDAO healthMonitorDaoMock;
 
+    @Spy
+    private CsvParser csvParser = new CsvParserImpl();
 
     @Before
     public void init() {
@@ -129,6 +144,60 @@ public class ProjectControllerTest {
     }
 
 
+   // @Ignore
+    @Test
+    public void createDVProjectInDB() throws Exception {
+        DataVisualizationGraphicCreationRequest request = new DataVisualizationGraphicCreationRequest();
+        URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
+        File file = new File(url.getPath());
+        sessionScopeBean.getCustomerProject().setFileType("csv");
+        sessionScopeBean.getCustomerProject().setFile(file);
+        String[] xArr = new String[]{"PROCESS_COUNT"};
+        String[] yArr = new String[]{"DB_LOAD"};
+        String[] math = new String[]{"DB_LOAD"};
+        request.setyAxis(xArr);
+        request.setxAxis(yArr);
+        request.setmathCol(math);
+        String json = new Gson().toJson(request);
+        String name = "projectName";
+        BigInteger authorId = BigInteger.valueOf(2L);
+        String authorFullName = "author";
+        BigInteger id = BigInteger.valueOf(1L);
+        String description = "description";
+        sessionScopeBean.getCustomerProject().setName("projectName");
+        sessionScopeBean.getCustomerProject().setDateFormat(DateFormat.getDateFormatById(new BigInteger("13")));
+        User user = Mockito.mock(User.class);
+        sessionScopeBean.setUser(user);
+
+
+        mockMvc.perform(post("/project/save-visualization")
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk())
+                .andExpect(content().string("successful"));
+
+        List<Graphic> actual = sessionScopeBean.getCustomerProject().getGraphics();
+
+        Assert.assertEquals(1, actual.size());
+//        Assert.assertEquals(new BigInteger("1"), actual.get(0).getId());
+        Assert.assertEquals("Graph #1 - X axis: 'DB_LOAD'; Y axis: 'PROCESS_COUNT'", actual.get(0).getName());
+        Assert.assertTrue(actual.get(0) instanceof GraphicDVImpl);
+        GraphicDVImpl graphicDV = (GraphicDVImpl) actual.get(0);
+//        Assert.assertEquals(52.5, graphicDV.getAverage());
+
+
+        Project project = new DataVisualizationProject.Builder(name, null, authorId, authorFullName)
+                .buildDescription(description)
+                .buildId(id)
+                .buildGraphics(actual)
+                .buildProject();
+
+        ArgumentCaptor<Project> argumentCaptor = ArgumentCaptor.forClass(Project.class);
+        Mockito.verify(dataVisualizationProjectDAO)
+                .saveProject(argumentCaptor.capture());
+
+        Project actualProject = argumentCaptor.getValue();
+        Assert.assertEquals("projectName",actualProject.getName());
+    }
 
 }
 

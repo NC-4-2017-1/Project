@@ -194,22 +194,10 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-settings", method = RequestMethod.GET)
     public String visualizationProjectSettings(Model model) {
-        List<Map<String, Object>> result = null;
-        if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
-            try {
-                File file = sessionScopeBean.getCustomerProject().getFile();
-                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 5);
-            } catch (IOException e) {
-                LOGGER.error("IOException in parsing proj as csv", e);
-            }
-        } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
-            try {
-                File file = sessionScopeBean.getCustomerProject().getFile();
-                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat(), 5);
-            } catch (IOException e) {
-                LOGGER.error("IOException in parsing proj as xml", e);
-            }
-        }
+        FileType fileType = FileType.getType(sessionScopeBean.getCustomerProject().getFileType());
+        File file = sessionScopeBean.getCustomerProject().getFile();
+        DateFormat dateFormat = sessionScopeBean.getCustomerProject().getDateFormat();
+        List<Map<String, Object>> result = parseFile(file, dateFormat, fileType, 5);
 
         String table = HtmlSerializer.createHtmlTableForParsingFile(result, "dvtable");
         model.addAttribute("table", table);
@@ -228,22 +216,10 @@ public class ProjectController {
         LOGGER.info("Got y axis from client: " + Arrays.toString(dvGraphicCreationRequest.getyAxis()));
         LOGGER.info("Got columns for math from client: " + Arrays.toString(dvGraphicCreationRequest.getmathCol()));
 
-        List<Map<String, Object>> result = null;
-        if (sessionScopeBean.getCustomerProject().getFileType().equals("csv")) {
-            try {
-                File file = sessionScopeBean.getCustomerProject().getFile();
-                result = csvParser.parseCsvFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
-            } catch (IOException e) {
-                LOGGER.error("IOException in parsing proj as csv", e);
-            }
-        } else if (sessionScopeBean.getCustomerProject().getFileType().equals("xml")) {
-            try {
-                File file = sessionScopeBean.getCustomerProject().getFile();
-                result = xmlParser.parseXmlFile(file, sessionScopeBean.getCustomerProject().getDateFormat());
-            } catch (IOException e) {
-                LOGGER.error("IOException in parsing proj as xml", e);
-            }
-        }
+        FileType fileType = FileType.getType(sessionScopeBean.getCustomerProject().getFileType());
+        File file = sessionScopeBean.getCustomerProject().getFile();
+        DateFormat dateFormat = sessionScopeBean.getCustomerProject().getDateFormat();
+        List<Map<String, Object>> result = parseFile(file, dateFormat, fileType);
 
         List<Graphic> graphicList = new ArrayList<>();
         for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
@@ -271,7 +247,6 @@ public class ProjectController {
         }
         sessionScopeBean.getCustomerProject().setGraphics(graphicList);
 
-
         CustomerProject customerProject = sessionScopeBean.getCustomerProject();
         Project project = new DataVisualizationProject
                 .Builder(customerProject.getName(), null, sessionScopeBean.getUser().getId(), sessionScopeBean.getUser().getFullName())
@@ -283,6 +258,25 @@ public class ProjectController {
         sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
 
         return "successful";
+    }
+
+    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType){
+        return parseFile(file,dateFormat,fileType,Integer.MAX_VALUE);
+    }
+
+    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType, int rows){
+        try {
+            switch (fileType){
+                case CSV:
+                    return csvParser.parseCsvFile(file, dateFormat, rows);
+                case XML:
+                    return xmlParser.parseXmlFile(file,dateFormat, rows);
+            }
+        }catch (Exception e){
+            LOGGER.error("IOException in parsing proj as "+fileType.getName(), e);
+            return Collections.emptyList();
+        }
+        return Collections.emptyList();
     }
 
     @Secured("ROLE_REGULAR_USER")
