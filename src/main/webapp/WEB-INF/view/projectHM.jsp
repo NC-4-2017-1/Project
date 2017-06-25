@@ -29,7 +29,7 @@
 </div>
 <c:if test = "${not empty project}">
     <div class="projtype"><h3 class="pageName"><c:out value="${project.type}"/></h3></div>
-    <div class="projname"><h4><c:out value="${project.name}"/></h4></div>
+    <div class="projname"><p><c:out value="${project.name}"/></p></div>
 
     <div class="row col-sm-12">
         <div class="btn-group col-sm-1 col-sm-offset-11">
@@ -54,14 +54,16 @@
             <u>Port</u> - <c:out value="${project.port}"/>;  <u>SID</u> - <c:out value="${project.sid}"/>;
             <u>User name</u> - <c:out value="${project.userName}"/>;  <u>Password</u>  - <c:out value="${project.password}"/>;</h5>
         <h5><b>Description:</b></h5>
-        <p class="text-muted">
-            <c:if test = "${not empty fn:trim(project.description)}">
-                ${project.description}
-            </c:if>
-            <c:if test = "${empty fn:trim(project.description)}">
-                not defined
-            </c:if>
-        </p>
+        <div class="descriptionP">
+            <p class="text-muted">
+                <c:if test = "${not empty fn:trim(project.description)}">
+                    ${project.description}
+                </c:if>
+                <c:if test = "${empty fn:trim(project.description)}">
+                    not defined
+                </c:if>
+            </p>
+        </div>
     </div>
 
 

@@ -89,11 +89,11 @@ public class HtmlSerializer {
 
     public static String createHtmlTableForParsingFile(List<Map<String, Object>> resultPrepareParsing, String cssId) {
         StringBuffer htmlTable = new StringBuffer();
-        htmlTable.append("<div id=\"dvTableBlock\"><table class=\"table table-condensed table-striped \" id=\"" + cssId + "\" >");
+        htmlTable.append("<div id=\"dvTableBlock\"><table class=\"table table-bordered table-condensed table-striped \" id=\"" + cssId + "\" >");
         htmlTable.append("<thead><tr>");
         Set<String> headers = resultPrepareParsing.get(0).keySet();
         for (String header : headers) {
-            htmlTable.append("<th>" + header + "</th>");
+            htmlTable.append("<th class=\"text-center\">" + header + "</th>");
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
         htmlTable.append("</tr></thead><tbody>");
@@ -101,9 +101,9 @@ public class HtmlSerializer {
             htmlTable.append("<tr>");
             for (String header : headers) {
                 if (row.get(header) instanceof Date) {
-                    htmlTable.append("<td>" + dateFormat.format((Date) row.get(header)) + "</td>");
+                    htmlTable.append("<td class=\"text-center\">" + dateFormat.format((Date) row.get(header)) + "</td>");
                 } else {
-                    htmlTable.append("<td>" + row.get(header) + "</td>");
+                    htmlTable.append("<td class=\"text-center\">" + row.get(header) + "</td>");
                 }
             }
             htmlTable.append("</tr>");

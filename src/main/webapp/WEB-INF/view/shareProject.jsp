@@ -19,9 +19,9 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h3 class="pageName">User list for share project </h3>
-<h4 class="pageName"><c:if test = "${not empty projectName}">
+<div class="projname"><c:if test = "${not empty projectName}">
                         "<i><c:out value="${projectName}"/></i>"
-                    </c:if></h4>
+                    </c:if></div>
 <form method="POST"  action="/project/share" id="userSearchShare" class="searchUserForm">
     <div class="form-group">
         <label class="control-label pull-left search-input" for="SearchUser">Search user:</label>
@@ -35,7 +35,7 @@
             <input type="text" name="projectId" value="${project_id}" hidden>
         </div>
         <div class="form-group col-sm-3">
-            <button type="submit" class="btn btn-sm btn-success" value="search" name="search">Search</button>
+            <button type="submit" class="btn btn-sm btn-primary" value="search" name="search">Search</button>
             <button type="submit" class="btn btn-sm btn-danger" value="cancel" name="cancel">Cancel</button>
         </div>
     </div>

@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>User dasboard</title>
+    <title>User dashboard</title>
     <jsp:include page="headFragment.jsp"/>
     <link href="<c:url value="/resources/css/styles-dashboard.css" />" rel="stylesheet">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
@@ -110,26 +110,38 @@
                                         <form role="form" method="GET" action="/project/project-dv">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
-                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 99)}
+                                                        <c:if test ="${fn:length(project.description) > 100}" >
                                                             ...
                                                          </c:if>
                                                          " data-placement="right"
                                                     </c:if>
-                                                    name="projDvId" value="${project.id}">${project.name}</button>
+                                                    name="projDvId" value="${project.id}">
+                                                    ${fn:substring(project.name, 0, 29)}
+                                                        <c:if test ="${fn:length(project.name) > 30}" >
+                                                            ...
+                                                        </c:if>
+                                                   <%-- ${project.name}--%>
+                                            </button>
                                         </form>
                                     </c:when>
                                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
                                         <form role="form" method="GET" action="/project/project-hm">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
-                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 99)}
+                                                        <c:if test ="${fn:length(project.description) > 100}" >
                                                             ...
                                                         </c:if>
                                                         " data-placement="right"
                                                     </c:if>
-                                                    name="projHmId" value="${project.id}">${project.name}</button>
+                                                    name="projHmId" value="${project.id}">
+                                                    ${fn:substring(project.name, 0, 29)}
+                                                    <c:if test ="${fn:length(project.name) > 30}" >
+                                                        ...
+                                                    </c:if>
+                                            <%--        ${project.name}--%>
+                                            </button>
                                         </form>
                                     </c:when>
                                 </c:choose>
@@ -272,26 +284,36 @@
                                         <form role="form" method="GET" action="/project/project-dv">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
-                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 99)}
+                                                        <c:if test ="${fn:length(project.description) > 100}" >
                                                             ...
                                                         </c:if>
                                                         " data-placement="right"
                                                     </c:if>
-                                                    name="projDvId" value="${project.id}">${project.name}</button>
+                                                    name="projDvId" value="${project.id}">
+                                                    ${fn:substring(project.name, 0, 29)}
+                                                    <c:if test ="${fn:length(project.name) > 30}" >
+                                                        ...
+                                                    </c:if>
+                                            </button>
                                         </form>
                                     </c:when>
                                     <c:when test="${project.type.name().equals('HEALTH_MONITORING')}">
                                         <form role="form" method="GET" action="/project/project-hm">
                                             <button type="submit" class="btn btn-link btn-xs pr-name"
                                                     <c:if test = "${not empty fn:trim(project.description)}">
-                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 150)}
-                                                        <c:if test ="${fn:length(project.description) > 149}" >
+                                                        data-toggle="tooltip" title="${fn:substring(project.description, 0, 99)}
+                                                        <c:if test ="${fn:length(project.description) > 100}" >
                                                             ...
                                                         </c:if>
                                                         " data-placement="right"
                                                     </c:if>
-                                                    name="projHmId" value="${project.id}">${project.name}</button>
+                                                    name="projHmId" value="${project.id}">
+                                                    ${fn:substring(project.name, 0, 29)}
+                                                    <c:if test ="${fn:length(project.name) > 30}" >
+                                                        ...
+                                                    </c:if>
+                                            </button>
                                         </form>
                                     </c:when>
                                 </c:choose>

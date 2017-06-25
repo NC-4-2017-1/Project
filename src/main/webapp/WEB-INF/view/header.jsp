@@ -39,7 +39,7 @@
                     <c:if test="${sessionScope.userObject!=null}">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#" class="nav-link lobster-style">${sessionScope.userObject.getFullName()}</a>
+                            <div class = "nav-div">${sessionScope.userObject.getFullName()}</div>
                         </li>
                         <li>
                             <a href="<c:url value="/logout" />" class="nav-link">Log out</a>

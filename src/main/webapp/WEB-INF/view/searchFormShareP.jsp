@@ -17,7 +17,7 @@
             <input type="text" name="sortTypeSP" value="${sortTSP}" hidden>
         </div>
         <div class="form-group col-sm-3">
-            <button type="submit" class="btn btn-sm btn-success" value="search" name="search">Search</button>
+            <button type="submit" class="btn btn-sm btn-primary" value="search" name="search">Search</button>
             <button type="submit" class="btn btn-sm btn-danger" value="cancel" name="cancel">Cancel</button>
         </div>
     </div>

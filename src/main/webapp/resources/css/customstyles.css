@@ -2,6 +2,17 @@
     width: 80px;
 }
 
+.projname,
+.descriptionP{
+    width: inherit;
+    word-wrap: break-word;
+}
+
+.projname {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .conn-field + .tooltip.right .tooltip-arrow,
 .selectorsPar + .tooltip.right .tooltip-arrow,
 .userCreateInput + .tooltip.right .tooltip-arrow
@@ -73,6 +84,9 @@
     margin: 25px;
 }
 
+.selectorsTable td{
+    padding: 5px;
+}
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus {
     background-color: rgb(245,245,245);
@@ -101,8 +115,9 @@
 }
 
 footer {
-    border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 6px 6px;
 }
+
 .padding-text-footer {
     padding-left: 20px;
     padding-top: 20px;
@@ -130,9 +145,14 @@ footer {
 .navbar-default .navbar-brand:focus {
     color: lightgrey;
 }
-.navbar-inverse .navbar-nav>li>a{
+.navbar-inverse .navbar-nav>li>a,
+.navbar-inverse .navbar-nav>li>div{
     padding-top: 20px;
     padding-bottom: 0;
+}
+
+.navbar-inverse .navbar-nav>li>div{
+    color: #9d9d9d;
 }
 
 .input-xlarge{
@@ -160,7 +180,7 @@ footer {
 .navbar-default .navbar-text {
     color: lightgrey;
 }
-.navbar-default .navbar-nav > li > a {
+.navbar-default .navbar-nav > li > a{
     color: lightgrey;
 }
 .navbar-default .navbar-nav > li > a:hover,
@@ -193,7 +213,7 @@ footer {
 .navbar-default .navbar-form {
     border-color: #ecf0f1;
 }
-.navbar-default .navbar-link {
+.navbar-default .navbar-link, .nav-div {
     color: lightgrey;
 }
 .navbar-default .navbar-link:hover {
@@ -217,13 +237,13 @@ footer {
     margin: 3px;
 }
 
-.nav-link{
-    font-family: 'Lobster', cursive;
+.nav-link, .nav-div{
+    font-family: 'Arial', cursive;
     font-size: 1.14em;
 }
 
 .footer-text{
-    font-family: 'Lobster', cursive;
+    font-family: 'Arial', cursive;
     font-size: 14px;
     text-align: right;
 }

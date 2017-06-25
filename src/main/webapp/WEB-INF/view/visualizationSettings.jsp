@@ -56,12 +56,12 @@
         <div class="pull-left">
             <div class="col-sm-5">
                 <button class="btn btn-sm btn-success"  type="button"
-                id="addGraph"><i class="fa fa-plus-square"><b>&nbsp;Add graph</b></i>
+                id="addGraph"><i class="fa fa-plus-square"></i><b>&nbsp;Add graph</b>
                 </button>
             </div>
             <div class="col-sm-5">
                 <button class="btn btn-sm btn-danger"  type="button"
-                id="removeGraph"><i class="fa fa-minus-square"><b>&nbsp;Remove graph</b></i>
+                id="removeGraph"><i class="fa fa-minus-square"></i><b>&nbsp;Remove graph</b>
                 </button>
             </div>
         </div>
@@ -79,7 +79,7 @@
     </div>
 
 
-    <table class="table js-table hidden tab-pane "  style="width:100%" border="1">
+    <table class="table js-table hidden tab-pane table-bordered table-condensed table-striped"  style="width:100%" border="1">
         <tr>
             <th  class="active" style="width:5%; text-align:center;">Graph </th>
             <th  class="active" style="width:30%">X-axis</th>

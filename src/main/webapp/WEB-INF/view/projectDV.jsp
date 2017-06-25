@@ -19,7 +19,7 @@
 <body>
 <jsp:include page="header.jsp"/>
 <div class="projtype"><h3 class="pageName"><c:out value="${project.type}"/></h3></div>
-<div class="projname"><h4><c:out value="${project.name}"/></h4></div>
+<div class="projname"><p><c:out value="${project.name}"/></p></div>
 <div class="row col-sm-12">
     <div class="btn-group col-sm-1 col-sm-offset-11">
         <c:if test="${author.id == sessionScope.userObject.getId()}">
@@ -46,14 +46,16 @@
 <div class="row">
     <h5><b>Author: </b><u><c:out value="${author.fullName}"/></u></h5>
     <h5><b>Description:</b></h5>
-    <p class="text-muted">
-        <c:if test = "${not empty fn:trim(project.description)}">
-            ${project.description}
-        </c:if>
-        <c:if test = "${empty fn:trim(project.description)}">
-            not defined
-        </c:if>
-    </p>
+    <div class="descriptionP">
+        <p class="text-muted">
+            <c:if test = "${not empty fn:trim(project.description)}">
+                ${project.description}
+            </c:if>
+            <c:if test = "${empty fn:trim(project.description)}">
+                not defined
+            </c:if>
+        </p>
+    </div>
 </div>
 
 <!--<div class="author"><h4>Author: <c:out value="${author.fullName}"/></h4></div>
