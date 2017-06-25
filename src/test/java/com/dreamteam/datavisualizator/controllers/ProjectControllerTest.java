@@ -9,21 +9,31 @@ import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.CreateProjectRequest;
 import com.google.gson.Gson;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -34,6 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProjectControllerTest {
 
     private MockMvc mockMvc;
+
+    @Autowired
+    WebApplicationContext webApplicationContext;
 
     @InjectMocks
     private ProjectController controller;
@@ -66,12 +79,11 @@ public class ProjectControllerTest {
             field.set(controller, sessionScopeBean);
         } catch (Exception e) {
         }
-
     }
 
 
     @Test
-    public void tryToCreateProject_redirectToHealthMonitor() throws Exception {
+    public void tryToCreateDataVisualizationAndHealthMonitorProject_isOk() throws Exception {
         CreateProjectRequest request = new CreateProjectRequest();
         request.setName("Project Test Name");
         request.setDescription("Project Test Description");
@@ -83,7 +95,45 @@ public class ProjectControllerTest {
                 post("/project/create").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk());
 
+
+        request.setType("4");
+        json = gson.toJson(request);
+        mockMvc.perform(
+                post("/project/create").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk());
     }
+
+    @Ignore
+    @Test
+    public void uploadFileForDV_isOk() throws Exception {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
+        File file = new File(url.getPath());
+
+        String name = "svt_sample.csv";
+        String originalFileName = "svt_sample.csv";
+        String contentType = "text/plain";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+        } catch (IOException e) {
+        }
+        MockMultipartFile csvFile = new MockMultipartFile(name,
+                originalFileName, contentType, content);
+
+
+/*      mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
+                .file(csvFile)
+                .requestAttr("dateFormat", "13"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-settings"));
+
+*/
+        mockMvc.perform(post("/project/upload").requestAttr("dateFormat", "13"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-settings"));
+
+    }
+
 
 }
 

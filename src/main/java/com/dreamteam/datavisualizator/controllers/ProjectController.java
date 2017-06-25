@@ -82,7 +82,7 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @PostMapping("/create")
     @ResponseBody
-    public String create(@RequestBody CreateProjectRequest request, Model model) {
+    public String create(@RequestBody CreateProjectRequest request) {
         if (request.getName().isEmpty() || request.getDescription().isEmpty()) {
             return "emptyField";
         }
@@ -98,8 +98,10 @@ public class ProjectController {
         sessionScopeBean.getCustomerProject().setDescription(Jsoup.parse(request.getDescription()).text());
         if (ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(request.getType())) {
             return "visualization-setup";
-        } else {
+        } else if ((ProjectTypes.HEALTH_MONITORING.getId().toString().equals(request.getType()))) {
             return "health-monitor-setup";
+        } else {
+            return "emptyField";
         }
     }
 
@@ -138,7 +140,7 @@ public class ProjectController {
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String singleFileUpload(@RequestParam("dateFormat") String dateFormat,
                                    @RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes, Model model) {
+                                   RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
             LOGGER.warn("File '" + file.getOriginalFilename() + "' is empty");
             redirectAttributes.addFlashAttribute("messageFile", "Select a file to upload first");
@@ -407,7 +409,7 @@ public class ProjectController {
             Integer.parseInt(queriesMonitorTop.trim());
             Integer.parseInt(activeJobsPastHours.trim());
             Integer.parseInt(graphHourcount.trim());
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             LOGGER.error("Selectors parameters are wrong.", e);
             model.addAttribute("errorSelector", "<strong>Selectors parameter error.</strong> Please, enter valid number for selectors parameters.");
             return "healthMonitorSettings";
@@ -587,10 +589,10 @@ public class ProjectController {
         if (idProject.isEmpty()) {
             return "redirect:/user/dashboard-get";
         }
-        if (!"desc".equals(sortType) && !"asc".equals(sortType)) {
+        if (!"desc" .equals(sortType) && !"asc" .equals(sortType)) {
             sortType = "asc";
         }
-        if (!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) {
+        if (!"first_name" .equals(field) && !"last_name" .equals(field) && !"email" .equals(field)) {
             field = "email";
         }
         try {

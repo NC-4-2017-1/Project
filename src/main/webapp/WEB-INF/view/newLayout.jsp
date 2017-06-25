@@ -16,56 +16,60 @@
 <body>
 <jsp:include page="header.jsp"/>
 
-    <div class="setup-error">
-        <div class="alert alert-danger  hide text-center" id = "alert_mess"></div>
+
+<div class="setup-error">
+    <div class="alert alert-danger  hide text-center" id="alert_mess">
+    </div>
+</div>
+
+<h3 class="pageName"> Please select project type</h3>
+
+<form id="connform" data-toggle="validator" class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-sm-offset-3">Type:</label>
+        <div class="col-sm-3">
+            <select class="form-control input-sm" id="type" name="type">
+                <c:forEach items="${projectTypes}" var="entry">
+                    <option value="${entry.key}">${entry.value}</option>
+                </c:forEach>
+            </select>
+        </div>
     </div>
 
-        <h3 class="pageName"> Please select project type</h3>
-
-        <form  id="connform" data-toggle="validator" class="form-horizontal" role="form">
-            <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3">Type:</label>
-                <div class="col-sm-3">
-                    <select class="form-control input-sm" id="type" name="type">
-                        <c:forEach items="${projectTypes}" var="entry">
-                            <option value="${entry.key}">${entry.value}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="name">Name:</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control conn-field input-sm" id="name" name="name" placeholder="name" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
-                <div class="col-sm-3 ">
-                    <textarea  class="form-control conn-field input-sm" rows="5" id="description"  name="description" placeholder="description" required></textarea>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="pull-right">
-                    <button class="btn btn-sm btn-primary" type="button" id="next">
-                        <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-                    </button>
-                </div>
-            <div class="pull-right">
-                <button class="btn btn-link" type="button" id="back">
-                    <b>Back</b>
-                </button>
-            </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-sm-offset-3" for="name">Name:</label>
+        <div class="col-sm-3">
+            <input type="text" class="form-control conn-field input-sm" id="name" name="name" placeholder="name"
+                   required>
         </div>
-        </form>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-sm-offset-3" for="description">Description:</label>
+        <div class="col-sm-3 ">
+            <textarea class="form-control conn-field input-sm" rows="5" id="description" name="description"
+                      placeholder="description" required></textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="pull-right">
+            <button class="btn btn-sm btn-primary" type="button" id="next">
+                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="pull-right">
+            <button class="btn btn-link" type="button" id="back">
+                <b>Back</b>
+            </button>
+        </div>
+    </div>
+</form>
 
 <script>
 
     $('#next').prop('disabled', 'disabled');
-    $("#next").on('click', function() {
+    $("#next").on('click', function () {
         $("#connform").valid();
     });
 
@@ -73,12 +77,12 @@
     checkField('#description');
 
     $('#name').on('keyup blur', function () {
-      if ($('#connform').valid()) {
-          $('#next').prop('disabled', false);
-      } else {
-          $('#next').prop('disabled', 'disabled');
-      }
-  });
+        if ($('#connform').valid()) {
+            $('#next').prop('disabled', false);
+        } else {
+            $('#next').prop('disabled', 'disabled');
+        }
+    });
 
     $('#description').on('keyup blur', function () {
         if ($('#connform').valid()) {
@@ -117,39 +121,39 @@
         if (data == false) {
             $("#connform").valid();
         } else {
-         /*   $("#alert_mess").addClass("hide");*/
+            /*   $("#alert_mess").addClass("hide");*/
             $.ajax({
-            url: "/project/create",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            error: function (responce) {
-                if (responce.responseText == "visualization-setup") {
-                    window.location.assign("/project/visualization-setup");
-                } else  if (responce.responseText == "health-monitor-setup"){
-                    window.location.assign("/project/health-monitor-setup");
-                } else{
-                    $("#alert_mess").removeClass("hide");
-                    var errorMes =  $("#alert_mess");
-                    if(responce.responseText == "emptyField"){
-                        errorMes.text("Name or description field cannot be empty");
-                    } else if (responce.responseText == "name"){
-                        errorMes.text("Name cannot contain more than 150 characters");
-                    } else if(responce.responseText == "description"){
-                        errorMes.text("Description cannot contain more than 1000 characters");
+                url: "/project/create",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                error: function (responce) {
+                    if (responce.responseText == "visualization-setup") {
+                        window.location.assign("/project/visualization-setup");
+                    } else if (responce.responseText == "health-monitor-setup") {
+                        window.location.assign("/project/health-monitor-setup");
+                    } else {
+                        $("#alert_mess").removeClass("hide");
+                        var errorMes = $("#alert_mess");
+                        if (responce.responseText == "emptyField") {
+                            errorMes.text("Name or description field cannot be empty");
+                        } else if (responce.responseText == "name") {
+                            errorMes.text("Name cannot contain more than 150 characters");
+                        } else if (responce.responseText == "description") {
+                            errorMes.text("Description cannot contain more than 1000 characters");
+                        }
                     }
                 }
-            }
-        });
-       }
+            });
+        }
     });
 
     $("#back").click(function () {
         window.location.assign("/user/dashboard-get");
     });
 
-    $( "#connform" ).validate( {
+    $("#connform").validate({
         rules: {
             name: {
                 required: true,
@@ -171,10 +175,10 @@
             }
         },
         tooltip_options: {
-            name: {placement:'right'},
-            description: {placement:'right'}
+            name: {placement: 'right'},
+            description: {placement: 'right'}
         }
-    } );
+    });
 
 </script>
 
