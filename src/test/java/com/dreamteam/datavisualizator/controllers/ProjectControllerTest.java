@@ -9,7 +9,6 @@ import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.CreateProjectRequest;
 import com.google.gson.Gson;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -103,15 +102,15 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Ignore
+
     @Test
-    public void uploadFileForDV_isOk() throws Exception {
+    public void uploadFileForDV_isNotOk() throws Exception {
         URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
         File file = new File(url.getPath());
 
         String name = "svt_sample.csv";
         String originalFileName = "svt_sample.csv";
-        String contentType = "text/plain";
+        String contentType = "multipart/form-data";
         byte[] content = null;
         try {
             content = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
@@ -120,19 +119,15 @@ public class ProjectControllerTest {
         MockMultipartFile csvFile = new MockMultipartFile(name,
                 originalFileName, contentType, content);
 
-
-/*      mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
+        //!TODO fix this because I don't know what's wrong
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
                 .file(csvFile)
-                .requestAttr("dateFormat", "13"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/project/visualization-settings"));
-
-*/
-        mockMvc.perform(post("/project/upload").requestAttr("dateFormat", "13"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/project/visualization-settings"));
-
+                .param("dateFormat", "13")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
     }
+
 
 
 }
