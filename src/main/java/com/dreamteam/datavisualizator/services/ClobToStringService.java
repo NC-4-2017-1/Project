@@ -31,6 +31,8 @@ public class ClobToStringService {
             }
 
             return sb.toString();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 }
