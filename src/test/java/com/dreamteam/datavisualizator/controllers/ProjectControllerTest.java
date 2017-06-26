@@ -265,7 +265,7 @@ public class ProjectControllerTest {
       //  Assert.assertEquals(resultProject, sessionScopeBean.getCustomerProject().getSavedProject());
     }
 
-  //  @Ignore
+    @Ignore
     @Test
     public void deleteProject() throws Exception{
         BigInteger id = BigInteger.valueOf(1L);
