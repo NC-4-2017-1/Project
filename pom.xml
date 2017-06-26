@@ -8,6 +8,7 @@
     <name>NC_4_2017_1_project</name>
     <url>http://maven.apache.org</url>
 
+    <!-- Test comment -->
     <properties>
         <java.version>1.7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
