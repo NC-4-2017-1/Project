@@ -440,9 +440,11 @@ public class ProjectController {
         HealthMonitorProject.Builder projectBuilder = new HealthMonitorProject.Builder(null, customerProject.getName(),
                 null, customerProject.getDescription(), customerProject.getAuthor(), sessionScopeBean.getUser().getFullName(),
                 customerProject.getSid(),
-                customerProject.getPort(), customerProject.getServerName(), customerProject.getUserName(),
+                customerProject.getPort(),
+                customerProject.getServerName(),
+                customerProject.getUserName(),
                 customerProject.getPassword());
-        projectBuilder.buildProject();
+            projectBuilder.buildProject();
         try {
             healthMonitorProjectDAO.setDataSourceTemplate(customerProject.getServerName(), customerProject.getPort(), customerProject.getSid(),
                     customerProject.getUserName(), customerProject.getPassword());

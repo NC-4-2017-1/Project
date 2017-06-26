@@ -11,6 +11,7 @@ import com.dreamteam.datavisualizator.dao.UserDAO;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
+import com.dreamteam.datavisualizator.models.impl.HealthMonitorProject;
 import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParserImpl;
@@ -40,8 +41,10 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -197,7 +200,7 @@ public class ProjectControllerTest {
 
 
     @Test
-    public void createDVProjectInDB() throws Exception {
+    public void createDVProjectInDB_isOk() throws Exception {
         DataVisualizationGraphicCreationRequest request = new DataVisualizationGraphicCreationRequest();
         URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
         File file = new File(url.getPath());
@@ -213,43 +216,78 @@ public class ProjectControllerTest {
         sessionScopeBean.getCustomerProject().setName("projectName");
         sessionScopeBean.getCustomerProject().setDescription("projectDescription");
         sessionScopeBean.getCustomerProject().setDateFormat(DateFormat.getDateFormatById(new BigInteger("13")));
-        User user = Mockito.mock(User.class);
-        sessionScopeBean.setUser(user);
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        UserTypes type = UserTypes.REGULAR_USER;
 
+        Project resultProject = Mockito.mock(Project.class);
+
+      /*  Mockito.when(dataVisualizationProjectDAO.saveProject(Mockito.any(Project.class)))
+                .thenReturn(resultProject);*/
+
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
+                .buildUser();
+        sessionScopeBean.setUser(user);
 
         mockMvc.perform(post("/project/save-visualization")
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk())
                 .andExpect(content().string("successful"));
 
-        List<Graphic> actual = sessionScopeBean.getCustomerProject().getGraphics();
+        List<Graphic> graph = sessionScopeBean.getCustomerProject().getGraphics();
 
-        Assert.assertEquals(1, actual.size());
+        Assert.assertEquals(1, graph.size());
 //      Assert.assertEquals(new BigInteger("1"), actual.get(0).getId());
-        Assert.assertEquals("Graph #1 - X axis: 'DB_LOAD'; Y axis: 'PROCESS_COUNT'", actual.get(0).getName());
-        Assert.assertTrue(actual.get(0) instanceof GraphicDVImpl);
-        GraphicDVImpl graphicDV = (GraphicDVImpl) actual.get(0);
+        Assert.assertEquals("Graph #1 - X axis: 'DB_LOAD'; Y axis: 'PROCESS_COUNT'", graph.get(0).getName());
+        Assert.assertTrue(graph.get(0) instanceof GraphicDVImpl);
+        GraphicDVImpl graphicDV = (GraphicDVImpl) graph.get(0);
         Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getAverage());
         Assert.assertEquals(new BigDecimal("4512.5"), graphicDV.getDispersion());
         Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getMathExpectation());
         Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getOlympicAverage());
 
-/*        Project project = new DataVisualizationProject.Builder(name, null, authorId, authorFullName)
-                .buildDescription(description)
-                .buildId(id)
-                .buildGraphics(actual)
-                .buildProject();*/
-
-        ArgumentCaptor<DataVisualizationProject> argumentCaptor = ArgumentCaptor.forClass(DataVisualizationProject.class);
+        ArgumentCaptor<Project> argumentCaptor = ArgumentCaptor.forClass(Project.class);
         Mockito.verify(dataVisualizationProjectDAO)
                 .saveProject(argumentCaptor.capture());
 
-        DataVisualizationProject actualProject = argumentCaptor.getValue();
+        Project actualProject = argumentCaptor.getValue();
         Assert.assertEquals("projectName", actualProject.getName());
         Assert.assertEquals("projectDescription", actualProject.getDescription());
-        Assert.assertEquals(null, actualProject.getAuthor());
+        Assert.assertEquals(new BigInteger("1"), actualProject.getAuthor());
+        Assert.assertEquals("firstName lastName", actualProject.getAuthorFullName());
+
+      //  Assert.assertEquals(resultProject, sessionScopeBean.getCustomerProject().getSavedProject());
     }
 
+  //  @Ignore
+    @Test
+    public void deleteProject() throws Exception{
+        BigInteger id = BigInteger.valueOf(1L);
+        String email = "test@email";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String description = "description";
+        UserTypes type = UserTypes.REGULAR_USER;
+
+        User user = new UserImpl.Builder(email, null)
+                .buildId(id)
+                .buildFirstName(firstName)
+                .buildLastName(lastName)
+                .buildType(type)
+                .buildUser();
+
+        String nameDV = "projectDV";
+        String nameHM = "projectHM";
+        Project projectDV = new DataVisualizationProject.Builder(nameDV, null, id, user.getFullName()).buildProject();
+        Project projectHM = new HealthMonitorProject.Builder(id, nameHM, null, description, user.getId(), user.getFullName(), null, null, null, null, null ).buildProject();
+
+    }
 
     @Test
     public void healthMonitorConnectionTest_allTypesOfParameters() throws Exception {

@@ -290,4 +290,5 @@ public class UserControllerTest {
         verify(userDaoMock, times(1)).getAllUserProjects(user, "creation_date", "desc", null);
         verifyNoMoreInteractions(userDaoMock);
     }
+
 }
