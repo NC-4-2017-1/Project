@@ -13,6 +13,10 @@
     margin-bottom: 20px;
 }
 
+.userCreateInput{
+    width: 250px;
+}
+
 .conn-field + .tooltip.right .tooltip-arrow,
 .selectorsPar + .tooltip.right .tooltip-arrow,
 .userCreateInput + .tooltip.right .tooltip-arrow
@@ -84,9 +88,11 @@
     margin: 25px;
 }
 
-.selectorsTable td{
+.selectorsTable td,
+.userCreateTable td{
     padding: 5px;
 }
+
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus {
     background-color: rgb(245,245,245);
