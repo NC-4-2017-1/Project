@@ -7,7 +7,10 @@ import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
-import com.dreamteam.datavisualizator.models.*;
+import com.dreamteam.datavisualizator.models.CreateProjectRequest;
+import com.dreamteam.datavisualizator.models.DataVisualizationGraphicCreationRequest;
+import com.dreamteam.datavisualizator.models.Graphic;
+import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
@@ -15,7 +18,6 @@ import com.dreamteam.datavisualizator.services.csvparser.CsvParserImpl;
 import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -112,33 +115,28 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Ignore
     @Test
-    public void uploadFileForDV_isOk() throws Exception {
+    public void uploadFileForDV_isOkRedirection() throws Exception {
         URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
         File file = new File(url.getPath());
 
-        String name = "svt_sample.csv";
+        String name = "file";
         String originalFileName = "svt_sample.csv";
-        String contentType = "multipart/form-data";
+        String contentType = "text/plain";
         byte[] content = null;
         try {
             content = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
         } catch (IOException e) {
         }
-        MockMultipartFile csvFile = new MockMultipartFile(name,
-                originalFileName, contentType, content);
+        MockMultipartFile csvFile = new MockMultipartFile(name, originalFileName, contentType, content);
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
                 .file(csvFile)
-                .param("dateFormat", "13")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .param("dateFormat", "13"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-settings"));
     }
-
-
-   // @Ignore
+    
     @Test
     public void createDVProjectInDB() throws Exception {
         DataVisualizationGraphicCreationRequest request = new DataVisualizationGraphicCreationRequest();
@@ -173,9 +171,9 @@ public class ProjectControllerTest {
         Assert.assertTrue(actual.get(0) instanceof GraphicDVImpl);
         GraphicDVImpl graphicDV = (GraphicDVImpl) actual.get(0);
         Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getAverage());
-        Assert.assertEquals(new BigDecimal("4512.5"),graphicDV.getDispersion());
-        Assert.assertEquals(new BigDecimal("52.5"),graphicDV.getMathExpectation());
-        Assert.assertEquals(new BigDecimal("52.5"),graphicDV.getOlympicAverage());
+        Assert.assertEquals(new BigDecimal("4512.5"), graphicDV.getDispersion());
+        Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getMathExpectation());
+        Assert.assertEquals(new BigDecimal("52.5"), graphicDV.getOlympicAverage());
 
 /*        Project project = new DataVisualizationProject.Builder(name, null, authorId, authorFullName)
                 .buildDescription(description)
@@ -188,11 +186,10 @@ public class ProjectControllerTest {
                 .saveProject(argumentCaptor.capture());
 
         DataVisualizationProject actualProject = argumentCaptor.getValue();
-        Assert.assertEquals("projectName",actualProject.getName());
-        Assert.assertEquals("projectDescription",actualProject.getDescription());
+        Assert.assertEquals("projectName", actualProject.getName());
+        Assert.assertEquals("projectDescription", actualProject.getDescription());
         Assert.assertEquals(null, actualProject.getAuthor());
     }
-
 
 
 }
