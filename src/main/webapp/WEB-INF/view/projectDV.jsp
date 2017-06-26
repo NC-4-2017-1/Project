@@ -81,10 +81,32 @@
                 eval(t.jsCodeForGraph);
             </script>
             <div class="graphmath">
-                <span id="mathName${graph.id}" class = "mathName">
-                    <script>$("#mathName${graph.id}").text("Calculate by "+t.math+" column"); </script>
-                </span>
-                <div class="graphmathitem">
+
+                <table class="table table-condensed">
+                    <caption>
+                        <span id="mathName${graph.id}" class = "mathName">
+                              <script>$("#mathName${graph.id}").html("Calculate by '<b><u>" + t.math + "</u></b>' column"); </script>
+                        </span>
+                    </caption>
+                    <thead>
+                    <tr>
+                        <th>Average</th>
+                        <th>Olympic average</th>
+                        <th>Dispersion</th>
+                        <th>Mathematical Expectation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class = "active">
+                        <td><c:out value="${graph.average}"/></td>
+                        <td><c:out value="${graph.olympicAverage}"/></td>
+                        <td><c:out value="${graph.dispersion}"/></td>
+                        <td><c:out value="${graph.mathExpectation}"/></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <%--<div class="graphmathitem">
                     <b> Average:</b> <c:out value="${graph.average}"/>
                 </div>
                 <div class="graphmathitem">
@@ -95,9 +117,10 @@
                 </div>
                 <div class="graphmathitem">
                     <b> Mathematical Expectation:</b> <c:out value="${graph.mathExpectation}"/>
-                </div>
+                </div>--%>
             </div>
         </div>
+        <br>
     </c:forEach>
 
 </div>

@@ -389,13 +389,26 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
             " AND ref.reference = author.object_id" +
             " AND author.object_id=?" +
             " ORDER BY creation_date.date_value";
-    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "SELECT hmproject.object_id id, hmproject.name name, creation_date.date_value creation_date, author.object_id author, author.name author_name,description.value description" +
-            " FROM objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access" +
+    private static final String SELECT_HMPROJECTS_USER_HAVE_ACCESS_TO = "SELECT hmproject.object_id id, hmproject.name name, " +
+            "creation_date.date_value creation_date, author.object_id author, author.name author_name,description.value description, " +
+            " sid.value sid, port.value port, server_name.value server_name, user_name.value user_name, password.value password" +
+            " FROM objects hmproject, attributes creation_date, objects have_access, attributes description, objects author, objreference ref_author, objreference ref_access, " +
+            " attributes sid,  attributes port, attributes server_name, attributes user_name, attributes password" +
             " WHERE hmproject.object_type_id = 3" +
             " AND hmproject.object_id = creation_date.object_id" +
             " AND creation_date.attr_id = 6" +
             " AND hmproject.object_id = description.object_id" +
             " AND description.attr_id = 7" +
+            " AND hmproject.object_id = sid.object_id" +
+            " AND sid.attr_id = 25" +
+            " AND hmproject.object_id = port.object_id" +
+            " AND port.attr_id = 24" +
+            " AND hmproject.object_id =  server_name.object_id" +
+            " AND server_name.attr_id = 23" +
+            " AND hmproject.object_id = user_name.object_id" +
+            " AND user_name.attr_id = 26" +
+            " AND hmproject.object_id = password.object_id" +
+            " AND password.attr_id = 4" +
             " AND ref_author.attr_id = 17" +
             " AND ref_author.object_id = hmproject.object_id" +
             " AND ref_author.reference = author.object_id" +

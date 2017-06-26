@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.dreamteam.datavisualizator.common.IdList.*;
+import static java.math.BigDecimal.ROUND_CEILING;
 
 @Repository
 public class DataVisualizationProjectDAOImpl extends AbstractDAO implements DataVisualizationProjectDAO {
@@ -195,10 +196,10 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
 
             BigInteger graphicId = createObject(graphicName, IdList.GRAPHIC_OBJTYPE_ID);
 
-            generalTemplate.update(INSERT_ATTR_VALUE, IdList.AVERAGE_DVPROJECT_ATTR_ID, graphicId, avg);
-            generalTemplate.update(INSERT_ATTR_VALUE, IdList.OLYMPIC_AVERAGE_DVPROJECT_ATTR_ID, graphicId, olympicAvg);
-            generalTemplate.update(INSERT_ATTR_VALUE, IdList.DISPERSION_DVPROJECT_ATTR_ID, graphicId, dispersion);
-            generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation);
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.AVERAGE_DVPROJECT_ATTR_ID, graphicId, avg.setScale(3, ROUND_CEILING));
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.OLYMPIC_AVERAGE_DVPROJECT_ATTR_ID, graphicId, olympicAvg.setScale(3, ROUND_CEILING));
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.DISPERSION_DVPROJECT_ATTR_ID, graphicId, dispersion.setScale(3, ROUND_CEILING));
+            generalTemplate.update(INSERT_ATTR_VALUE, IdList.MATH_EXPECTATION_DVPROJECT_ATTR_ID, graphicId, mathExpectation.setScale(3, ROUND_CEILING));
             generalTemplate.update(INSERT_OBJREFERENCE_RELATION, IdList.PROJECT_GRAPHICS_RELATION_ATTR_ID, graphicId, projectId);
             generalTemplate.update(INSERT_ATTR_BIG_VALUE, IdList.JSON_RESULT_ATTR_ID, graphicId, graphicJSON.toString());
             if (graphic.getCorrelation() != null) {
