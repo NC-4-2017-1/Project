@@ -138,7 +138,7 @@ public class ProjectController {
 
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public String singleFileUpload(@RequestParam("dateFormat") String dateFormat,
+    public String singleFileUpload(@RequestParam("dateFormat") BigInteger dateFormat,
                                    @RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
@@ -146,11 +146,19 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("messageFile", "Select a file to upload first");
             return "redirect:/project/visualization-setup";
         }
+
+        if (!(dateFormat.intValue() <= DateFormat.values().length && dateFormat.intValue() > 0)) {
+            LOGGER.warn("Wrong date format " + dateFormat);
+            redirectAttributes.addFlashAttribute("messageFile", "You've chosen wrong date format, please try again.");
+            return "redirect:/project/visualization-setup";
+        }
+
+
         try {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename());
             Files.write(path, bytes);
-            DateFormat dateFormatById = DateFormat.getDateFormatById(new BigInteger(dateFormat));
+            DateFormat dateFormatById = DateFormat.getDateFormatById(dateFormat);
             String fileType = file.getOriginalFilename().split("\\.")[1];
             File fileFromTomcat = new File(Paths.get(System.getProperty("java.io.tmpdir")).resolve(file.getOriginalFilename()).toUri());
             boolean checkFormatDate = checkDateFormat(fileFromTomcat, dateFormatById, fileType);
@@ -227,11 +235,11 @@ public class ProjectController {
 
             int xLength = dvGraphicCreationRequest.getxAxis()[i].length();
             int yLength = dvGraphicCreationRequest.getyAxis()[i].length();
-            String xAxisString =  dvGraphicCreationRequest.getxAxis()[i];
-            String yAxisString =  dvGraphicCreationRequest.getyAxis()[i];
+            String xAxisString = dvGraphicCreationRequest.getxAxis()[i];
+            String yAxisString = dvGraphicCreationRequest.getyAxis()[i];
 
-            String xAxisName = (xLength < 32 ? xAxisString.substring(0, xLength) : xAxisString.substring(0,30) + "...");
-            String yAxisName = (yLength < 32 ? yAxisString.substring(0, yLength) : yAxisString.substring(0,30) + "...");
+            String xAxisName = (xLength < 32 ? xAxisString.substring(0, xLength) : xAxisString.substring(0, 30) + "...");
+            String yAxisName = (yLength < 32 ? yAxisString.substring(0, yLength) : yAxisString.substring(0, 30) + "...");
             String graphName = "Graph #" + (i + 1) + " - X axis: '" + xAxisName + "'; Y axis: '" + yAxisName + "'";
             Graphic graphic = new GraphicDVImpl.DVGraphBuilder()
                     //.buildName("Data Visualization graph: " + sessionScopeBean.getCustomerProject().getName() + " " + graphicList.size())
@@ -260,20 +268,20 @@ public class ProjectController {
         return "successful";
     }
 
-    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType){
-        return parseFile(file,dateFormat,fileType,Integer.MAX_VALUE);
+    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType) {
+        return parseFile(file, dateFormat, fileType, Integer.MAX_VALUE);
     }
 
-    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType, int rows){
+    private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType, int rows) {
         try {
-            switch (fileType){
+            switch (fileType) {
                 case CSV:
                     return csvParser.parseCsvFile(file, dateFormat, rows);
                 case XML:
-                    return xmlParser.parseXmlFile(file,dateFormat, rows);
+                    return xmlParser.parseXmlFile(file, dateFormat, rows);
             }
-        }catch (Exception e){
-            LOGGER.error("IOException in parsing proj as "+fileType.getName(), e);
+        } catch (Exception e) {
+            LOGGER.error("IOException in parsing proj as " + fileType.getName(), e);
             return Collections.emptyList();
         }
         return Collections.emptyList();
@@ -592,10 +600,10 @@ public class ProjectController {
         if (idProject.isEmpty()) {
             return "redirect:/user/dashboard-get";
         }
-        if (!"desc" .equals(sortType) && !"asc" .equals(sortType)) {
+        if (!"desc".equals(sortType) && !"asc".equals(sortType)) {
             sortType = "asc";
         }
-        if (!"first_name" .equals(field) && !"last_name" .equals(field) && !"email" .equals(field)) {
+        if (!"first_name".equals(field) && !"last_name".equals(field) && !"email".equals(field)) {
             field = "email";
         }
         try {

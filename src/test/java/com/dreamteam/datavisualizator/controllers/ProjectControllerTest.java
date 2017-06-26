@@ -1,23 +1,23 @@
 package com.dreamteam.datavisualizator.controllers;
 
 
+import com.dreamteam.datavisualizator.common.beans.CustomerProject;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
 import com.dreamteam.datavisualizator.dao.DataVisualizationProjectDAO;
 import com.dreamteam.datavisualizator.dao.HealthMonitorProjectDAO;
 import com.dreamteam.datavisualizator.dao.UserDAO;
-import com.dreamteam.datavisualizator.models.CreateProjectRequest;
-import com.dreamteam.datavisualizator.models.DataVisualizationGraphicCreationRequest;
-import com.dreamteam.datavisualizator.models.Graphic;
-import com.dreamteam.datavisualizator.models.User;
+import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.DataVisualizationProject;
 import com.dreamteam.datavisualizator.models.impl.GraphicDVImpl;
+import com.dreamteam.datavisualizator.models.impl.UserImpl;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParser;
 import com.dreamteam.datavisualizator.services.csvparser.CsvParserImpl;
 import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -43,9 +43,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -115,8 +113,8 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void uploadFileForDV_isOkRedirection() throws Exception {
+
+    private MockMultipartFile getMockCsvFile() {
         URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/svt_sample.csv");
         File file = new File(url.getPath());
 
@@ -129,6 +127,29 @@ public class ProjectControllerTest {
         } catch (IOException e) {
         }
         MockMultipartFile csvFile = new MockMultipartFile(name, originalFileName, contentType, content);
+        return csvFile;
+    }
+
+    private MockMultipartFile getMockXmlFile() {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("testdocuments/test_xml_document.xml");
+        File file = new File(url.getPath());
+
+        String name = "file";
+        String originalFileName = "test_xml_document.xml";
+        String contentType = "text/xml";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+        } catch (IOException e) {
+        }
+        MockMultipartFile xmlFile = new MockMultipartFile(name, originalFileName, contentType, content);
+        return xmlFile;
+    }
+
+
+    @Test
+    public void uploadCsvFileForDV_isOkRedirection() throws Exception {
+        MockMultipartFile csvFile = getMockCsvFile();
 
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
                 .file(csvFile)
@@ -136,7 +157,45 @@ public class ProjectControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/visualization-settings"));
     }
-    
+
+    @Ignore
+    @Test
+    public void uploadXmlFileForDV_isOkRedirection() throws Exception {
+        MockMultipartFile xmlFile = getMockXmlFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
+                .file(xmlFile)
+                .param("dateFormat", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-settings"));
+        //!TODO Don't know why, but xml parser is not getting autowired
+    }
+
+
+    @Test
+    public void uploadCsvFileForDV_isErrorAndRedirectBack_withWrongDateFormat() throws Exception {
+        MockMultipartFile csvFile = getMockCsvFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
+                .file(csvFile)
+                .param("dateFormat", "600"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-setup"));
+    }
+
+
+    @Test
+    public void uploadXmlFileForDV_isErrorAndRedirectBack_withWrongDateFormat() throws Exception {
+        MockMultipartFile xmlFile = getMockXmlFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/project/upload")
+                .file(xmlFile)
+                .param("dateFormat", "322"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/visualization-setup"));
+    }
+
+
     @Test
     public void createDVProjectInDB() throws Exception {
         DataVisualizationGraphicCreationRequest request = new DataVisualizationGraphicCreationRequest();
@@ -189,6 +248,83 @@ public class ProjectControllerTest {
         Assert.assertEquals("projectName", actualProject.getName());
         Assert.assertEquals("projectDescription", actualProject.getDescription());
         Assert.assertEquals(null, actualProject.getAuthor());
+    }
+
+
+    @Test
+    public void healthMonitorConnectionTest_allTypesOfParameters() throws Exception {
+        DataSourceRequest request = new DataSourceRequest();
+        request.setServerName("94.158.152.89");
+        request.setPort("8080");
+        request.setSid("ORCL");
+        request.setUsername(System.getenv("TEST_SQL_LOGIN"));
+        request.setPassword(System.getenv("TEST_SQL_PASSWORD"));
+
+        Gson gson = new Gson();
+        String json = gson.toJson(request);
+
+        mockMvc.perform(
+                post("/project/health-monitor-setup-test-conn").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(content().string("successful"));
+
+        request.setPort("90000");
+        json = gson.toJson(request);
+        mockMvc.perform(
+                post("/project/health-monitor-setup-test-conn").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(content().string("Port value must be between 0 and000 65000."));
+
+
+        request.setPort("port");
+        json = gson.toJson(request);
+        mockMvc.perform(
+                post("/project/health-monitor-setup-test-conn").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(content().string("Enter number for port."));
+
+        request.setPort(null);
+        request.setServerName(null);
+        request.setSid(null);
+        json = gson.toJson(request);
+        mockMvc.perform(
+                post("/project/health-monitor-setup-test-conn").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(content().string("Connection fields can not be empty!"));
+    }
+
+    @Test
+    public void healthMonitorSettingsPostTest_returnsOk_allValidParams() throws Exception {
+        String tableIndexLobSize = "user";
+        String activeSessionsTop = "10";
+        String activeQueriesTop = "10";
+        String queriesResultsTop = "10";
+        String queriesMonitorTop = "10";
+        String activeJobsPastHours = "24";
+        String graphHourcount = "24";
+        String[] selectors = new String[]{""};
+
+        CustomerProject customerProject = sessionScopeBean.getCustomerProject();
+        customerProject.setSid("ORCL");
+        customerProject.setPort("8080");
+        customerProject.setServerName("94.158.152.89");
+        customerProject.setPassword(System.getenv("TEST_SQL_PASSWORD"));
+        customerProject.setUserName(System.getenv("TEST_SQL_LOGIN"));
+
+        customerProject.setDescription("Description");
+        customerProject.setAuthor(BigInteger.valueOf(1));
+        customerProject.setName("Test");
+
+        User user = new UserImpl.Builder("email", null).buildFirstName("first").buildLastName("last").buildUser();
+        sessionScopeBean.setUser(user);
+
+        mockMvc.perform(
+                post("/project//health-monitor-settings-post")
+                        .requestAttr("tableindexlob", tableIndexLobSize)
+                        .requestAttr("activesession", activeSessionsTop)
+                        .requestAttr("activequeries", activeQueriesTop)
+                        .requestAttr("queriesres", queriesResultsTop)
+                        .requestAttr("sqlmonitor", queriesMonitorTop)
+                        .requestAttr("activejobs", activeJobsPastHours)
+                        .requestAttr("graph", graphHourcount)
+                        .requestAttr("selectors[]", selectors))
+                .andExpect(status().isOk());
     }
 
 
