@@ -296,13 +296,20 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/project/delete")
                 .param("id", id.toString())
                 .param("project_type", ProjectTypes.DATA_VISUALIZATION.getId().toString()))
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
 
         mockMvc.perform(get("/project/delete")
                 .param("id", id.toString())
                 .param("project_type", ProjectTypes.HEALTH_MONITORING.getId().toString()))
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
 
+        verify(dataVisualizationProjectDAO, times(1)).getProjectById(id);
+        verify(dataVisualizationProjectDAO, times(1)).deleteProject(projectDV);
+        verifyNoMoreInteractions(dataVisualizationProjectDAO);
+
+        verify(healthMonitorDaoMock, times(1)).getProjectById(id);
+        verify(healthMonitorDaoMock, times(1)).deleteProject(projectHM);
+        verifyNoMoreInteractions(healthMonitorDaoMock);
     }
 
     @Test
