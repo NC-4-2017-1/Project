@@ -44,6 +44,8 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -222,10 +224,10 @@ public class ProjectControllerTest {
         String lastName = "lastName";
         UserTypes type = UserTypes.REGULAR_USER;
 
-        Project resultProject = Mockito.mock(Project.class);
+        Project resultProject = Mockito.mock(DataVisualizationProject.class);
 
-      /*  Mockito.when(dataVisualizationProjectDAO.saveProject(Mockito.any(Project.class)))
-                .thenReturn(resultProject);*/
+        when(dataVisualizationProjectDAO.saveProject(Mockito.any(DataVisualizationProject.class)))
+                .thenReturn(resultProject);
 
         User user = new UserImpl.Builder(email, null)
                 .buildId(id)
@@ -261,11 +263,9 @@ public class ProjectControllerTest {
         Assert.assertEquals("projectDescription", actualProject.getDescription());
         Assert.assertEquals(new BigInteger("1"), actualProject.getAuthor());
         Assert.assertEquals("firstName lastName", actualProject.getAuthorFullName());
-
-      //  Assert.assertEquals(resultProject, sessionScopeBean.getCustomerProject().getSavedProject());
+        Assert.assertEquals(resultProject, sessionScopeBean.getCustomerProject().getSavedProject());
     }
 
-    @Ignore
     @Test
     public void deleteProject() throws Exception{
         BigInteger id = BigInteger.valueOf(1L);
@@ -274,6 +274,9 @@ public class ProjectControllerTest {
         String lastName = "lastName";
         String description = "description";
         UserTypes type = UserTypes.REGULAR_USER;
+        String projDV = "4";
+        String projHM = "3";
+
 
         User user = new UserImpl.Builder(email, null)
                 .buildId(id)
@@ -286,6 +289,11 @@ public class ProjectControllerTest {
         String nameHM = "projectHM";
         Project projectDV = new DataVisualizationProject.Builder(nameDV, null, id, user.getFullName()).buildProject();
         Project projectHM = new HealthMonitorProject.Builder(id, nameHM, null, description, user.getId(), user.getFullName(), null, null, null, null, null ).buildProject();
+
+        when(dataVisualizationProjectDAO.getProjectById(id)).thenReturn(projectDV);
+        when(dataVisualizationProjectDAO.deleteProject(projectDV)).thenReturn(true);
+        when(healthMonitorDaoMock.getProjectById(id)).thenReturn(projectHM);
+        when(healthMonitorDaoMock.deleteProject(projectHM)).thenReturn(true);
 
     }
 
