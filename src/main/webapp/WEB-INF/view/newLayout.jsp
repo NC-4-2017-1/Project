@@ -51,10 +51,6 @@
                       placeholder="description" required></textarea>
         </div>
     </div>
-
-
-</form>
-
     <div class="pull-right">
         <button class="btn btn-sm btn-primary" type="button" id="next">
             <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -65,6 +61,10 @@
             <b>Back</b>
         </button>
     </div>
+
+</form>
+
+
 
 <script>
 

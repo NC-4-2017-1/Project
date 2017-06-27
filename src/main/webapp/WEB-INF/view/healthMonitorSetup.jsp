@@ -80,19 +80,19 @@
                 </button>
                 </div>
             </div>
-            --%>
+            --%>    <div class="pull-right">
+            <button class="btn btn-sm btn-primary " type="button" id="next"
+                    data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Connecting...">
+                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+            <div class="pull-right">
+                <button class="btn btn-link" type="button" id="back">
+                    <b>Back</b>
+                </button>
+            </div>
         </form>
 
-</div>    <div class="pull-right">
-    <button class="btn btn-sm btn-primary " type="button" id="next"
-            data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Connecting...">
-        <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-    </button>
-</div>
-<div class="pull-right">
-    <button class="btn btn-link" type="button" id="back">
-        <b>Back</b>
-    </button>
 </div>
 <jsp:include page="footer.jsp"/>
 </body>
