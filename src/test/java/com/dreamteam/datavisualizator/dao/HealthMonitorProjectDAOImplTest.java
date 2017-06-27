@@ -1,5 +1,6 @@
 package com.dreamteam.datavisualizator.dao;
 
+import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
 import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
@@ -55,6 +56,7 @@ public class HealthMonitorProjectDAOImplTest {
             return dataSource;
         }
     }
+
 
     private Project hmProject;
 
@@ -257,4 +259,37 @@ public class HealthMonitorProjectDAOImplTest {
         project.setSelectors(null);
         assertNull(dao.saveProject(project));
     }
+
+    @Test
+    public void createSelectorsWithCorrectSettings(){
+        Map<BigInteger, String> mapSelectors = new HashMap<BigInteger, String>();
+        mapSelectors.put(IdList.S_INSTANCE_INFO_OBJTYPE_ID,  null);
+        mapSelectors.put(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID,null);
+        mapSelectors.put(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID, "user");
+        mapSelectors.put(IdList.S_LAST_ERRORS_OBJTYPE_ID,    null);
+        mapSelectors.put(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID,"10");
+        mapSelectors.put(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID, "10");
+        dao.setDataSourceTemplate("94.158.152.89","8080", "ORCL", System.getenv("TEST_SQL_LOGIN"), System.getenv("TEST_SQL_PASSWORD"));
+        Map<BigInteger, Selector> actualMapSelectors =  dao.createSelectorList(mapSelectors);
+        assertTrue(actualMapSelectors.size() == 6);
+        assertNotNull(actualMapSelectors.get(IdList.S_INSTANCE_INFO_OBJTYPE_ID));
+        assertNotNull(actualMapSelectors.get(IdList.S_SIZE_TABLESPACE_OBJTYPE_ID));
+        assertNotNull(actualMapSelectors.get(IdList.S_SIZE_INDEX_LOB_OBJTYPE_ID));
+        assertNotNull(actualMapSelectors.get(IdList.S_LAST_ERRORS_OBJTYPE_ID));
+        assertNotNull(actualMapSelectors.get(IdList.S_ACTIVE_SESSIONS_OBJTYPE_ID));
+        assertNotNull(actualMapSelectors.get(IdList.S_ACTIVE_QUERIES_OBJTYPE_ID));
+    }
+
+    @Test(expected = SelectorCreateException.class)
+    public void createSelectorsWithNullSettings(){
+          Map<BigInteger, Selector> actualMapSelectors =  dao.createSelectorList(null);
+    }
+
+    @Test
+    public void createGraphWithCorrectSettings(){
+        dao.setDataSourceTemplate("94.158.152.89","8080", "ORCL", System.getenv("TEST_SQL_LOGIN"), System.getenv("TEST_SQL_PASSWORD"));
+        Graphic actualGraph =  dao.createGraph(1000);
+        assertNotNull(actualGraph);
+    }
+
 }
