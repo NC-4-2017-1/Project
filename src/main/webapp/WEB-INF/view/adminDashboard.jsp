@@ -124,9 +124,9 @@
                     <c:forEach items="${users}" var="user">
                         <tr>
 
-                            <td><p>${user.firstName}</p></td>
-                            <td><p>${user.lastName}</p></td>
-                            <td><p>${user.email}</p></td>
+                            <td>${user.firstName}</td>
+                            <td>${user.lastName}</td>
+                            <td>${user.email}</td>
                             <td>
                                 <input class="btn btn-danger btn-xs  pull-right" type="button" value="delete"
                                        onclick="deleteObj(${user.id});"/>
