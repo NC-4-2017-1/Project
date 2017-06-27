@@ -90,18 +90,6 @@
                         <input type="text" class="form-control input-sm selectorsPar" id="graph" name="graph" placeholder="Hour count(default: 24)">
                     </td></tr>
                 </table>
-                    <div class="pull-right">
-                        <!-- <button type="submit" class="btn btn-primary">Create</button>-->
-                        <button class="btn btn-sm btn-primary" type="submit" id="next">
-                            <b>Finish</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-link" type="button" id="back">
-                            <b>Back</b>
-                        </button>
-                    </div>
-
 
             </form>
                 <%--<form method="POST"  role="form" action="/project/health-monitor-settings-post" class="selectors">
@@ -227,7 +215,17 @@
                 </form>--%>
         </div>
     </div>
-
+<div class="pull-right">
+    <!-- <button type="submit" class="btn btn-primary">Create</button>-->
+    <button class="btn btn-sm btn-primary" type="submit" id="next">
+        <b>Finish</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </button>
+</div>
+<div class="pull-right">
+    <button class="btn btn-link" type="button" id="back">
+        <b>Back</b>
+    </button>
+</div>
 <script>
     $("#back").click(function () {
         window.location.assign("/project/health-monitor-setup");

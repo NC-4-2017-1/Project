@@ -52,19 +52,19 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="pull-right">
-            <button class="btn btn-sm btn-primary" type="button" id="next">
-                <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </button>
-        </div>
-        <div class="pull-right">
-            <button class="btn btn-link" type="button" id="back">
-                <b>Back</b>
-            </button>
-        </div>
-    </div>
+
 </form>
+
+    <div class="pull-right">
+        <button class="btn btn-sm btn-primary" type="button" id="next">
+            <b>Next</b>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="pull-right">
+        <button class="btn btn-link" type="button" id="back">
+            <b>Back</b>
+        </button>
+    </div>
 
 <script>
 
