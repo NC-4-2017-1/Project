@@ -274,8 +274,6 @@ public class ProjectControllerTest {
         String lastName = "lastName";
         String description = "description";
         UserTypes type = UserTypes.REGULAR_USER;
-        String projDV = "4";
-        String projHM = "3";
 
 
         User user = new UserImpl.Builder(email, null)
@@ -294,6 +292,16 @@ public class ProjectControllerTest {
         when(dataVisualizationProjectDAO.deleteProject(projectDV)).thenReturn(true);
         when(healthMonitorDaoMock.getProjectById(id)).thenReturn(projectHM);
         when(healthMonitorDaoMock.deleteProject(projectHM)).thenReturn(true);
+
+        mockMvc.perform(get("/project/delete")
+                .param("id", id.toString())
+                .param("project_type", ProjectTypes.DATA_VISUALIZATION.getId().toString()))
+                .andReturn();
+
+        mockMvc.perform(get("/project/delete")
+                .param("id", id.toString())
+                .param("project_type", ProjectTypes.HEALTH_MONITORING.getId().toString()))
+                .andReturn();
 
     }
 
@@ -372,7 +380,6 @@ public class ProjectControllerTest {
                         .requestAttr("selectors[]", selectors))
                 .andExpect(status().isOk());
     }
-
 
 }
 

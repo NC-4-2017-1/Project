@@ -161,7 +161,7 @@
                                                     Actions <span class="caret"></span></button>
                                     <ul class="dropdown-menu" role="menu">
                                         <%--<li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">--%>
-                                            <li><a href="/project/delete?id=${project.id}&project_type=${project.type}&field=${sortF}&sortType=${sortT}&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}">
+                                            <li><a href="/project/delete?id=${project.id}&project_type=${project.type.id}&field=${sortF}&sortType=${sortT}&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}">
                                                         <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
                                           <%--<li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
                                                         <i class="fa fa-share-alt"></i> Share</a></li>--%>

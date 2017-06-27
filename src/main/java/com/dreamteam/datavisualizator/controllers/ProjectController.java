@@ -555,7 +555,9 @@ public class ProjectController {
     /*@RequestMapping(path = "/delete/{id}/{project_type}", method = RequestMethod.GET)
     public String deleteProject(@PathVariable BigInteger id, @PathVariable ProjectTypes project_type) {*/
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
-    public String deleteProject(@RequestParam(value = "id") String id, @RequestParam(value = "project_type") ProjectTypes project_type,
+    public String deleteProject(@RequestParam(value = "id") String id,
+                                @RequestParam(value = "project_type") BigInteger  projectTypeId,
+                                //@RequestParam(value = "project_type") ProjectTypes project_type,
                                 @RequestParam(value = "field", required = false, defaultValue = "creation_date") String field,
                                 @RequestParam(value = "sortType", required = false, defaultValue = "desc") String sortType,
                                 @RequestParam(value = "fieldSP", required = false, defaultValue = "creation_date") String fieldSP,
@@ -565,6 +567,7 @@ public class ProjectController {
     ) {
         try {
             Integer idP = Integer.parseInt(id.trim());
+            ProjectTypes project_type = ProjectTypes.getRoleById(projectTypeId) ;
             if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
                 Project project = dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(idP));
                 //LOGGER.info("Project DV we got " + project);
