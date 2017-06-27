@@ -18,16 +18,17 @@
 <body>
 <jsp:include page="header.jsp"/>
 <c:url value="/user/create" var="create"/>
-<form:form class="form-horizontal col-sm-offset-3 createUser" modelAttribute="user" action="${create}" method="post">
+<c:if test="${errorMessage!=null}">
+    <div class="alert alert-danger text-center" style="padding: 5px;" role="alert">
+        <p>${errorMessage}</p>
+    </div>
+</c:if>
+<form:form class="form-horizontal col-sm-offset-4 createUser" modelAttribute="user" action="${create}" method="post">
     <fieldset>
         <%--<div id="legend">
             <legend class="">Registration</legend>
         </div>--%>
-        <c:if test="${errorMessage!=null}">
-            <div class="alert alert-danger center-block" style="padding: 5px;" role="alert">
-                <p>${errorMessage}</p>
-            </div>
-        </c:if>
+
         <div class="row col-sm-12">
             <h3 class="pageName col-sm-6"> Registration</h3>
         </div>
