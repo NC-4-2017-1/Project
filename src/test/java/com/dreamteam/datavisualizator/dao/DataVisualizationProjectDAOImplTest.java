@@ -152,4 +152,35 @@ public class DataVisualizationProjectDAOImplTest {
         assertNull(actual);
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void deleteDVProject_withCorrectParameter(){
+        user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
+        Project project = setUpProjectDV();
+        assertTrue(dvDao.deleteProject(project));
+        assertNull(dvDao.getProjectById(project.getId()));
+    }
+
+    @Test
+    public void deleteDVProject_withNullProject(){
+        assertFalse(dvDao.deleteProject(null));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void saveProjectWithCorrectParameter(){
+        user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
+        Project expectedProject = setUpProjectDV();
+        Project actualProject = dvDao.getProjectById(expectedProject.getId());
+        assertEquals(expectedProject.getId(), actualProject.getId());
+    }
+
+    @Ignore
+    @Test
+    public void saveProjectWithInCorrectParameter(){
+        assertNull(dvDao.saveProject(null));
+    }
+
 }
