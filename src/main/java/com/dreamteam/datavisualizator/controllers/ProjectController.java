@@ -108,6 +108,9 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-setup", method = RequestMethod.GET)
     public String visualizationProjectSetup(Model model) {
+        if (sessionScopeBean.getCustomerProject().getName() == null) {
+            return "redirect:/project/new-layout";
+        }
         Map<String, String> dateFormat = new LinkedHashMap<>();
         dateFormat.put(DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER.getId().toString(), DateFormat.EET_WITH_TIME_AND_DOT_DELIMITER.toString());
         dateFormat.put(DateFormat.EET_WITH_DOT_DELIMITER.getId().toString(), DateFormat.EET_WITH_DOT_DELIMITER.toString());
@@ -202,6 +205,9 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/visualization-settings", method = RequestMethod.GET)
     public String visualizationProjectSettings(Model model) {
+        if (sessionScopeBean.getCustomerProject().getFileType() == null) {
+            return "redirect:/project/new-layout";
+        }
         FileType fileType = FileType.getType(sessionScopeBean.getCustomerProject().getFileType());
         File file = sessionScopeBean.getCustomerProject().getFile();
         DateFormat dateFormat = sessionScopeBean.getCustomerProject().getDateFormat();
@@ -329,6 +335,9 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-setup", method = RequestMethod.GET)
     public String healthMonitorSetup(Model model) {
+        if (sessionScopeBean.getCustomerProject().getName() == null) {
+            return "redirect:/project/new-layout";
+        }
         return "healthMonitorSetup";
     }
 
@@ -394,6 +403,9 @@ public class ProjectController {
     @Secured("ROLE_REGULAR_USER")
     @RequestMapping(path = "/health-monitor-settings", method = RequestMethod.GET)
     public String healthMonitorSettings(Model model) {
+        if (sessionScopeBean.getCustomerProject().getServerName() == null) {
+            return "redirect:/project/new-layout";
+        }
         return "healthMonitorSettings";
     }
 
