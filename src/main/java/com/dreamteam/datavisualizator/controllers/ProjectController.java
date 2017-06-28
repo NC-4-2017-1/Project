@@ -297,7 +297,7 @@ public class ProjectController {
             if (userDAO.checkIfUserHasAccessToProject(userID, id)) {
                 projectToShow = (DataVisualizationProject) dataVisualizationProjectDAO.getProjectById(id);
             } else {
-                return "redirect:/user/admin-panel";
+                return "redirect:/user/dashboard-get";
                 //!TODO replace this redirect with another
             }
         } else {
@@ -506,7 +506,7 @@ public class ProjectController {
                 if (userDAO.checkIfUserHasAccessToProject(userID, id)) {
                     finalProjId = id;
                 } else {
-                    return "redirect:/user/admin-panel";
+                    return "redirect:/user/dashboard-get";
                     //!TODO replace this redirect with another
                 }
             } else {
