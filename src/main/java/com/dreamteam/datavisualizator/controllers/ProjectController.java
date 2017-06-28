@@ -572,27 +572,38 @@ public class ProjectController {
                                 @RequestParam(value = "fieldSP", required = false, defaultValue = "creation_date") String fieldSP,
                                 @RequestParam(value = "sortTypeSP", required = false, defaultValue = "desc") String sortTypeSP,
                                 @RequestParam(value = "SearchProject", required = false, defaultValue = "") String SearchProject,
-                                @RequestParam(value = "SearchShareProject", required = false, defaultValue = "") String SearchShareProject
+                                @RequestParam(value = "SearchShareProject", required = false, defaultValue = "") String SearchShareProject,
+                                RedirectAttributes redir
     ) {
         try {
             Integer idP = Integer.parseInt(id.trim());
+            Boolean deletingP = false;
+            String projectName = null;
             ProjectTypes project_type = ProjectTypes.getRoleById(projectTypeId) ;
             if (project_type != null && project_type.equals(ProjectTypes.DATA_VISUALIZATION)) {
                 Project project = dataVisualizationProjectDAO.getProjectById(BigInteger.valueOf(idP));
+                projectName = project.getName();
                 //LOGGER.info("Project DV we got " + project);
                 if (project != null) {
-                    dataVisualizationProjectDAO.deleteProject(project);
+                    deletingP = dataVisualizationProjectDAO.deleteProject(project);
                 }
             } else if (project_type != null && project_type.equals(ProjectTypes.HEALTH_MONITORING)) {
                 Project project = healthMonitorProjectDAO.getProjectById(BigInteger.valueOf(idP));
+                projectName = project.getName();
                 //LOGGER.info("Project HM we got " + project);
                 if (project != null) {
-                    healthMonitorProjectDAO.deleteProject(project);
+                    deletingP = healthMonitorProjectDAO.deleteProject(project);
                 }
+            }
+            if (deletingP){
+                redir.addFlashAttribute("deleteMessageTrue", "Project '" + projectName + "' was delete.");
+            } else {
+                redir.addFlashAttribute("deleteMessageFalse","Project '" + projectName + "' was not deleted.");
             }
             return "redirect:/user/dashboard-get?field=" + field + "&sortType=" + sortType + "&sortTab=1&SearchProject=" + SearchProject + "&SearchShareProject=" + SearchShareProject
                     + "&fieldSP=" + fieldSP + "&sortTypeSP=" + sortTypeSP;
         } catch (NumberFormatException e) {
+            redir.addFlashAttribute("deleteMessageFalse","Project deleting error.");
             return "redirect:/user/dashboard-get";
         }
     }

@@ -22,6 +22,13 @@
 <jsp:include page="header.jsp"/>
 
 <h3 class="pageName">Project list</h3>
+
+<c:if test = "${not empty deleteMessageTrue}">
+    <div class="alert alert-info prj-list-info"><strong>Info!</strong> ${deleteMessageTrue}</div>
+</c:if>
+<c:if test = "${not empty deleteMessageFalse}">
+    <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${deleteMessageFalse}</div>
+</c:if>
 <div class="pull-right">
     <button class="btn btn-sm btn-success add-project" onclick="myFunction()">
         <i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;<b>Add Project</b>
