@@ -298,19 +298,17 @@ public class ProjectController {
                 projectToShow = (DataVisualizationProject) dataVisualizationProjectDAO.getProjectById(id);
             } else {
                 return "redirect:/user/dashboard-get";
-                //!TODO replace this redirect with another
             }
         } else {
             projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
         }
-        sessionScopeBean.getCustomerProject().setName(projectToShow.getName());
 
         if (projectToShow == null) {
             LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
                     + "\nId we got from request: " + id);
-            return "index";
+            return "redirect:/user/dashboard-get";
         }
-
+        sessionScopeBean.getCustomerProject().setName(projectToShow.getName());
         LOGGER.info(projectToShow + " is what we got.");
         model.addAttribute("project", projectToShow);
 
