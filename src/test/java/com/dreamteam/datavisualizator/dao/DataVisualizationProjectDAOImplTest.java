@@ -177,7 +177,6 @@ public class DataVisualizationProjectDAOImplTest {
         assertEquals(expectedProject.getId(), actualProject.getId());
     }
 
-    @Ignore
     @Test
     public void saveProjectWithInCorrectParameter(){
         assertNull(dvDao.saveProject(null));

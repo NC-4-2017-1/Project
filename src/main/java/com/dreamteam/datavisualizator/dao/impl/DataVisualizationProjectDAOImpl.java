@@ -65,7 +65,7 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     }
 
     @Override
-    public String getProjectName(BigInteger id){
+    public String getProjectName(BigInteger id) {
         try {
             String projectName = generalTemplate.queryForObject(SELECT_PROJECT_NAME_BY_ID, new Object[]{id}, String.class);
             return projectName;
@@ -163,16 +163,22 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
     public Project saveProject(Project project) {
         Date projectCreationDate = new Date();
         try {
-            BigInteger insertedObjectId = createObject(project.getName(), DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
-            generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, project.getDescription());
-            generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
-            generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, project.getAuthor(), insertedObjectId);
-            DataVisualizationProject projectDV = (DataVisualizationProject) project;
-            for (Graphic graphic : projectDV.getGraphics()) {
-                GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
-                saveGraphic(graphicDV, insertedObjectId);
+            if (project != null) {
+                BigInteger insertedObjectId = createObject(project.getName(), DATA_VISUALIZATION_PROJECT_OBJTYPE_ID);
+                generalTemplate.update(INSERT_ATTR_VALUE, PROJECT_DESCRIPTION_ATTR_ID, insertedObjectId, project.getDescription());
+                generalTemplate.update(INSERT_ATTR_DATE_VALUE, PROJECT_DATE_ATTR_ID, insertedObjectId, projectCreationDate);
+                generalTemplate.update(INSERT_OBJREFERENCE_RELATION, PROJECT_AUTHOR_RELATION_ATTR_ID, project.getAuthor(), insertedObjectId);
+                DataVisualizationProject projectDV = (DataVisualizationProject) project;
+                for (Graphic graphic : projectDV.getGraphics()) {
+                    GraphicDVImpl graphicDV = (GraphicDVImpl) graphic;
+                    saveGraphic(graphicDV, insertedObjectId);
+                }
+                project = getProjectById(insertedObjectId);
+                return project;
+            } else {
+                LOGGER.error("Project was not save because it's null");
+                return null;
             }
-            project = getProjectById(insertedObjectId);
         } catch (DataAccessException e) {
             LOGGER.error("Project not saved with input params name:" + project.getName() + ", author_id:" +
                     project.getAuthor() + ", description:" + project.getDescription() + ", graphics:" + ((DataVisualizationProject) project).getGraphics(), e);
@@ -182,12 +188,11 @@ public class DataVisualizationProjectDAOImpl extends AbstractDAO implements Data
                     project.getAuthor() + ", description:" + project.getDescription() + ", graphics:" + ((DataVisualizationProject) project).getGraphics(), e);
             return null;
         }
-        return project;
     }
 
     private GraphicDVImpl saveGraphic(GraphicDVImpl graphic, BigInteger projectId) {
         try {
-            String graphicName =  graphic.getName();
+            String graphicName = graphic.getName();
             JsonObject graphicJSON = graphic.getGraphicJSON();
             BigDecimal avg = graphic.getAverage();
             BigDecimal olympicAvg = graphic.getOlympicAverage();
