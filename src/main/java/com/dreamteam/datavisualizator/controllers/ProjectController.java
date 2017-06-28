@@ -324,8 +324,6 @@ public class ProjectController {
             graphicsDV.add((GraphicDVImpl) graphic);
         }
         model.addAttribute("graphics", graphicsDV);
-
-
         return "projectDV";
     }
 
@@ -507,16 +505,14 @@ public class ProjectController {
                     finalProjId = id;
                 } else {
                     return "redirect:/user/dashboard-get";
-                    //!TODO replace this redirect with another
                 }
             } else {
                 finalProjId = sessionScopeBean.getCustomerProject().getIdProject();
             }
-
             if (finalProjId == null) {
                 LOGGER.error("Error in printing out project. Project we got from session: " + sessionScopeBean.getCustomerProject().getSavedProject()
                         + "\nId we got from request: " + id);
-                return "index";
+                return "redirect:/user/dashboard-get";
             }
 
             project = healthMonitorProjectDAO.getProjectById(finalProjId);
