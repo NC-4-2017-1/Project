@@ -142,6 +142,10 @@
                             errorMes.text("Name cannot contain more than 150 characters");
                         } else if (responce.responseText == "description") {
                             errorMes.text("Description cannot contain more than 1000 characters");
+                        } else if (responce.responseText == "nameHtmlTag") {
+                            errorMes.text("Wrong project name. Please, enter other name.");
+                        } else if (responce.responseText == "descHtmlTag") {
+                            errorMes.text("Wrong project description. Please, enter other description.");
                         }
                     }
                 }

@@ -96,6 +96,12 @@ public class ProjectController {
         sessionScopeBean.getCustomerProject().setType(ProjectTypes.getRoleById(new BigInteger(request.getType())));
         sessionScopeBean.getCustomerProject().setName(Jsoup.parse(request.getName()).text());
         sessionScopeBean.getCustomerProject().setDescription(Jsoup.parse(request.getDescription()).text());
+        if (sessionScopeBean.getCustomerProject().getName() == null || sessionScopeBean.getCustomerProject().getName().isEmpty()){
+            return "nameHtmlTag";
+        }
+        if (sessionScopeBean.getCustomerProject().getDescription() == null || sessionScopeBean.getCustomerProject().getDescription().isEmpty()){
+            return "descHtmlTag";
+        }
         if (ProjectTypes.DATA_VISUALIZATION.getId().toString().equals(request.getType())) {
             return "visualization-setup";
         } else if ((ProjectTypes.HEALTH_MONITORING.getId().toString().equals(request.getType()))) {
