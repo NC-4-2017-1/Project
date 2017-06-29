@@ -498,6 +498,11 @@ public class ProjectController {
             model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>" + e.getLocalizedMessage());
             sessionScopeBean.setCustomerProject(new CustomerProject());
             return "healthMonitorSettings";
+        } catch (Exception e) {
+            LOGGER.error("Project not created - HM DAO error. ", e);
+            model.addAttribute("errorProject", "<strong>Project not created.</strong>" + e.getLocalizedMessage());
+            sessionScopeBean.setCustomerProject(new CustomerProject());
+            return "healthMonitorSettings";
         }
     }
 

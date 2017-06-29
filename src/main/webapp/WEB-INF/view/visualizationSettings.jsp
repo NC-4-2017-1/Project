@@ -15,9 +15,9 @@
 <body>
 
 <jsp:include page="header.jsp"/>
-
-<h3 class="pageName">Settings: preview data table</h3>
 <div class="alert alert-danger hide text-center" id = "error"><strong>Warning!</strong> Project not created! </div>
+<h3 class="pageName">Settings: preview data table</h3>
+
 <%--<h4 class="text-center">Preview data table</h4>--%>
 <c:out value="${table}" escapeXml="false"></c:out>
 <h4 class="text-center">Please select the coordinate axis for the graph and column for calculating mathematical data:</h4>

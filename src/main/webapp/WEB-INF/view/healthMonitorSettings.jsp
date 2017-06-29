@@ -19,20 +19,20 @@
 <body>
 <jsp:include page="header.jsp"/>
     <div class="container">
-
+        <div class="row col-sm-12">
+            <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
+                <div class="alert alert-danger" role="alert">
+                    <div>${errorProject} </div>
+                    <div>${errorSelector}</div>
+                    <div>${errorGraphic}</div>
+                </div>
+            </c:if>
+        </div>
         <div class="col-sm-offset-3">
 
             <form method="POST"  role="form" action="/project/health-monitor-settings-post" class="selectors">
 
-                <div class="row col-sm-12">
-                    <c:if test = "${(errorSelector != null) || (errorGraphic != null) || (errorProject != null)}">
-                        <div class="alert alert-danger col-sm-6" role="alert">
-                            <div>${errorProject} </div>
-                            <div>${errorSelector}</div>
-                            <div>${errorGraphic}</div>
-                        </div>
-                    </c:if>
-                </div>
+
                 <div class="row col-sm-12">
                     <h3 class="pageName col-sm-6"> Select parameters:</h3>
                 </div>
