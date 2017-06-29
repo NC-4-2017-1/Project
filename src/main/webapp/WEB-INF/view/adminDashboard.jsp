@@ -14,11 +14,19 @@
     <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>
     <script type="text/javascript" src="/resources/js/searchForm.js"></script>
+    <script type="text/javascript" src="/resources/js/bootbox.min.js"></script>
 </head>
 
 <body>
 <jsp:include page="header.jsp"/>
 <h3 class="pageName">User list</h3>
+<c:if test = "${not empty deleteMessageTrue}">
+    <div class="alert alert-info "><div class="wordWrap"><strong>Info!</strong> ${deleteMessageTrue}</div></div>
+</c:if>
+<c:if test = "${not empty deleteMessageFalse}">
+    <div class="alert alert-danger "><div class="wordWrap"><strong>Warning!</strong> ${deleteMessageFalse}</div></div>
+</c:if>
+
 <form method="POST"  action="/user/admin-panel" class="searchUserForm">
     <div class="form-group">
         <label class="control-label pull-left search-input" for="SearchUser">Search user:</label>
@@ -126,10 +134,13 @@
 
                             <td>${user.firstName}</td>
                             <td>${user.lastName}</td>
-                            <td>${user.email}</td>
+                            <td class = "${user.id}">${user.email}</td>
                             <td>
-                                <input class="btn btn-danger btn-xs  pull-right" type="button" value="delete"
-                                       onclick="deleteObj(${user.id});"/>
+                               <%-- <input class="btn btn-danger btn-xs  pull-right" type="button" value="delete" id="${user.id}"
+                                       class="deleteUser"
+                                       onclick="deleteObj(${user.id});"/>--%>
+                                   <a class = "userDelete btn btn-danger btn-xs  pull-right" id ="${user.id}"
+                                      href="/user/delete?id=${user.id}">Delete</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -145,14 +156,40 @@
 
 </body>
 <script>
-    function deleteObj(id) {
-        var x = new XMLHttpRequest();
-        x.open("DELETE", "/user/delete/" + id);
-        x.onreadystatechange = function () {
-            window.location.replace("/user/admin-panel?field=${sortF}&sortType=${sortT}&whereEmail=${SearchUserEmail}");
-        }
-        x.send();
-    }
+    $(document).ready(function () {
+        $(".userDelete").click(function (event) {
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var id = $(this).attr("id");
+            var email = $('td[class=' + id + ']').text().trim();
+            bootbox.confirm({
+                title: "Delete user",
+                message: "Do you want delete user with email '" + email + "'?",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result){
+                        window.location = href;
+                    }
+                }
+            });
+        });
+       <%-- function deleteObj(id) {
+            var x = new XMLHttpRequest();
+            x.open("DELETE", "/user/delete/" + id);
+            x.onreadystatechange = function () {
+                window.location.replace("/user/admin-panel?field=${sortF}&sortType=${sortT}&whereEmail=${SearchUserEmail}");
+            }
+            x.send();
+        }--%>
+
+    });
     function createUser() {
         window.location.href = "/user/create-user";
     }

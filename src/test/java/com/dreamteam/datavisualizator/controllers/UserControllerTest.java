@@ -231,8 +231,8 @@ public class UserControllerTest {
         when(userDaoMock.getUserById(id)).thenReturn(user);
         when(userDaoMock.deleteUser(user)).thenReturn(true);
 
-        mockMvc.perform(delete("/user/delete/{id}", id))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/user/delete?id=" + id))
+                .andExpect(redirectedUrl("/user/admin-panel"))
                 .andReturn();
 
         verify(userDaoMock, times(1)).getUserById(id);

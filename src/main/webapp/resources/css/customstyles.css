@@ -2,6 +2,10 @@
     width: 80px;
 }
 
+.wordWrap{
+    word-wrap: break-word;
+}
+
 .projname,
 .descriptionP{
     width: inherit;

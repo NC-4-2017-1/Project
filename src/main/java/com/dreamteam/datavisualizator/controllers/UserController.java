@@ -5,11 +5,13 @@ import com.dreamteam.datavisualizator.models.Project;
 import com.dreamteam.datavisualizator.models.User;
 import com.dreamteam.datavisualizator.models.UserRequest;
 import com.dreamteam.datavisualizator.models.UserTypes;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
@@ -20,6 +22,9 @@ import static com.dreamteam.datavisualizator.common.util.UserRequestValidator.is
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    public static final Logger LOGGER = Logger.getLogger(UserController.class);
+
     @Autowired
     private UserDAO userDAO;
 
@@ -156,6 +161,7 @@ public class UserController {
                                              @RequestParam(value = "sortTypeSP", required = false, defaultValue = "desc") String sortTypeSP,
                                              HttpServletRequest request,
                                              Model model) {
+
         tab = (!"1".equals(tab) && !"2".equals(tab))?"1":tab;
         if(!cancel.isEmpty() && "1".equals(tab)){
             SearchProject = null;
@@ -221,10 +227,30 @@ public class UserController {
     }
 
     @Secured("ROLE_ADMIN")
-    @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
-    public void deleteUser(@PathVariable BigInteger id) {
-        User user = userDAO.getUserById(id);
-        userDAO.deleteUser(user);
+    @RequestMapping(path = "/delete", method = RequestMethod.GET)
+    public String deleteUser(@RequestParam(value = "id") String idUser, RedirectAttributes redir) {
+        try {
+            Integer id = Integer.parseInt(idUser.trim());
+            User user = userDAO.getUserById(BigInteger.valueOf(id));
+            Boolean deleteUser = false;
+            deleteUser = userDAO.deleteUser(user);
+            if (deleteUser){
+                redir.addFlashAttribute("deleteMessageTrue", "User " + user.getFullName() + " with email: " +
+                        user.getEmail()+ " was delete.");
+            } else {
+                redir.addFlashAttribute("deleteMessageFalse","User " + user.getFullName() + " with email: " +
+                        user.getEmail()+ " was not deleted.");
+            }
+            return "redirect:/user/admin-panel";
+        } catch (NumberFormatException e) {
+            LOGGER.error("User delete error - user id '" + idUser + "' is wrong. Can not parsed this id to number.", e);
+            redir.addFlashAttribute("deleteMessageFalse","User delete error - user id '" + idUser + "' is wrong.");
+            return "redirect:/user/admin-panel";
+        } catch (Exception e) {
+            LOGGER.error("User delete error - user with id '" + idUser + "' is broken.", e);
+            redir.addFlashAttribute("deleteMessageFalse","User delete error - user with id '" + idUser + "' is broken.");
+            return "redirect:/user/admin-panel";
+        }
     }
 }
 
