@@ -85,7 +85,7 @@ public class DataVisualizationProjectDAOImplTest {
 
     }
 
-    public DataVisualizationProject setUpProjectDV(){
+    public DataVisualizationProject setUpProjectDV() {
         DataVisualizationProject project = (DataVisualizationProject) dvProject;
         project.setAuthor(user.getId());
         project.setAuthorFullName(user.getFullName());
@@ -95,7 +95,7 @@ public class DataVisualizationProjectDAOImplTest {
     @Test
     @Transactional
     @Rollback
-    public void getProjectByIdWithCorrectId(){
+    public void getProjectByIdWithCorrectId() {
         user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
         Project expectedProject = setUpProjectDV();
         Project actualProject = dvDao.getProjectById(expectedProject.getId());
@@ -103,13 +103,13 @@ public class DataVisualizationProjectDAOImplTest {
     }
 
     @Test
-    public void getProjectByIdWithNullId(){
+    public void getProjectByIdWithNullId() {
         Project actual = dvDao.getProjectById(null);
         assertNull(actual);
     }
 
     @Test
-    public void getProjectByIdWithIncorrectId(){
+    public void getProjectByIdWithIncorrectId() {
         Project actual = dvDao.getProjectById(BigInteger.valueOf(500L));
         assertNull(actual);
     }
@@ -117,7 +117,7 @@ public class DataVisualizationProjectDAOImplTest {
     @Test
     @Transactional
     @Rollback
-    public void getProjectNameWithCorrectId(){
+    public void getProjectNameWithCorrectId() {
         user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
         DataVisualizationProject savedProject = setUpProjectDV();
         String expected = savedProject.getName();
@@ -126,28 +126,27 @@ public class DataVisualizationProjectDAOImplTest {
     }
 
     @Test
-    public void getProjectNameWithIncorrectId(){
+    public void getProjectNameWithIncorrectId() {
         String actual = dvDao.getProjectName(null);
         assertNull(actual);
     }
 
 
-
     @Test
     @Transactional
     @Rollback
-    public void getProjectsByAuthorWithCorrectData(){
+    public void getProjectsByAuthorWithCorrectData() {
         user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
         Project project1 = setUpProjectDV();
         Project project2 = setUpProjectDV();
         List<DataVisualizationProject> actualProjects = dvDao.getProjectsByAuthor(userDAO.getUserById(project1.getAuthor()));
-        assertTrue(actualProjects.size()>=2);
+        assertTrue(actualProjects.size() >= 2);
         assertNotNull(dvDao.getProjectById(project1.getId()));
         assertNotNull(dvDao.getProjectById(project2.getId()));
     }
 
     @Test
-    public void getProjectsByAuthorWithInCorrectData(){
+    public void getProjectsByAuthorWithInCorrectData() {
         List<DataVisualizationProject> actual = dvDao.getProjectsByAuthor(null);
         assertNull(actual);
     }
@@ -155,7 +154,7 @@ public class DataVisualizationProjectDAOImplTest {
     @Test
     @Transactional
     @Rollback
-    public void deleteDVProject_withCorrectParameter(){
+    public void deleteDVProject_withCorrectParameter() {
         user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
         Project project = setUpProjectDV();
         assertTrue(dvDao.deleteProject(project));
@@ -163,14 +162,14 @@ public class DataVisualizationProjectDAOImplTest {
     }
 
     @Test
-    public void deleteDVProject_withNullProject(){
+    public void deleteDVProject_withNullProject() {
         assertFalse(dvDao.deleteProject(null));
     }
 
     @Test
     @Transactional
     @Rollback
-    public void saveProjectWithCorrectParameter(){
+    public void saveProjectWithCorrectParameter() {
         user = userDAO.createUser("testFirstName", "testLastName", "test.email@email.com", "testpassword", UserTypes.REGULAR_USER);
         Project expectedProject = setUpProjectDV();
         Project actualProject = dvDao.getProjectById(expectedProject.getId());
@@ -178,8 +177,14 @@ public class DataVisualizationProjectDAOImplTest {
     }
 
     @Test
-    public void saveProjectWithInCorrectParameter(){
+    public void saveProjectWithInCorrectParameter() {
         assertNull(dvDao.saveProject(null));
+    }
+
+    @Test
+    public void getProjectGraphsWithInCorrectParameter() {
+        List<Graphic> actual = dvDao.getProjectGraphs(null);
+        assertNull(actual);
     }
 
 }
