@@ -268,11 +268,12 @@ public class ProjectController {
                 .buildGraphics(customerProject.getGraphics())
                 .buildProject();
         Project projectFromDb = dataVisualizationProjectDAO.saveProject(project);
+        sessionScopeBean.setCustomerProject(new CustomerProject());
         LOGGER.info(project.getName() + " " + project.getDescription() + " " + project.getAuthor() + " " + project.getType() + " passed further");
-        sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
+        //sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
        // return "redirect:/project/project-dv?projDvId=" + projectFromDb.getId();
-        return "successful";
-        //return projectFromDb.getId().toString();
+        //return "successful";
+        return projectFromDb.getId().toString();
     }
 
     private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType) {
@@ -307,15 +308,10 @@ public class ProjectController {
                 return "redirect:/user/dashboard-get";
             }
         } else {
-            projectToShow = sessionScopeBean.getCustomerProject().getSavedProject();
-            sessionScopeBean.setCustomerProject(new CustomerProject());
-        }
-
-        if (projectToShow == null) {
             LOGGER.error("Error in printing out project. Id we got from request: " + id);
             return "redirect:/user/dashboard-get";
         }
-        //sessionScopeBean.getCustomerProject().setName(projectToShow.getName());
+
         LOGGER.info(projectToShow + " is what we got.");
         model.addAttribute("project", projectToShow);
 
@@ -482,6 +478,7 @@ public class ProjectController {
             projectBuilder.buildSelectors(mapSelectors);
             Project p = projectBuilder.buildProject();
             Project projectNew = healthMonitorProjectDAO.saveProject(p);
+            sessionScopeBean.setCustomerProject(new CustomerProject());
             if (projectNew == null) {
                 LOGGER.error("HM DAO return null project after saving");
                 model.addAttribute("errorProject", "Project not created and saved!!!");
@@ -494,10 +491,12 @@ public class ProjectController {
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not created", e);
             model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> " + e.getLocalizedMessage());
+            sessionScopeBean.setCustomerProject(new CustomerProject());
             return "healthMonitorSettings";
         } catch (HMGraphException e) {
             LOGGER.error("Graph not created from HM data base. ", e);
             model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>" + e.getLocalizedMessage());
+            sessionScopeBean.setCustomerProject(new CustomerProject());
             return "healthMonitorSettings";
         }
     }
@@ -518,16 +517,12 @@ public class ProjectController {
                     return "redirect:/user/dashboard-get";
                 }
             } else {
-                finalProjId = sessionScopeBean.getCustomerProject().getIdProject();
-                sessionScopeBean.setCustomerProject(new CustomerProject());
-            }
-            if (finalProjId == null) {
                 LOGGER.error("Error in printing out project. Id we got from request: " + id);
                 return "redirect:/user/dashboard-get";
+               // finalProjId = sessionScopeBean.getCustomerProject().getIdProject();
+                //sessionScopeBean.setCustomerProject(new CustomerProject());
             }
-
             project = healthMonitorProjectDAO.getProjectById(finalProjId);
-            //sessionScopeBean.getCustomerProject().setName(project.getName());
 
             Map<BigInteger, SelectorCreator> mapSelectorCreators = healthMonitorProjectDAO.getSelectorCreators();
             Map<BigInteger, String> mapSelectorAttr = new HashMap<>();
@@ -546,17 +541,17 @@ public class ProjectController {
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not fetched for project. ", e);
             model.addAttribute("errorSelector", "<strong>Selectors error.</strong> " + e.getLocalizedMessage());
-            sessionScopeBean.setCustomerProject(new CustomerProject());
+            //sessionScopeBean.setCustomerProject(new CustomerProject());
             return "projectHM";
         } catch (HMGraphException e) {
             LOGGER.error("Graph not selected. ", e);
             model.addAttribute("errorGraphic", "<strong>Graphic error.</strong> " + e.getLocalizedMessage());
-            sessionScopeBean.setCustomerProject(new CustomerProject());
+            //sessionScopeBean.setCustomerProject(new CustomerProject());
             return "projectHM";
         } catch (Exception e) {
             LOGGER.error("Project open error. ", e);
             model.addAttribute("errorProject", "<strong>Project open error.</strong> " + e.getLocalizedMessage());
-            sessionScopeBean.setCustomerProject(new CustomerProject());
+           // sessionScopeBean.setCustomerProject(new CustomerProject());
             return "projectHM";
         }
     }
