@@ -15,6 +15,7 @@
     <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery-validate.bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/resources/js/bootbox.min.js"></script>
     <script type="text/javascript" src="/resources/js/searchForm.js"></script>
 </head>
 <body>
@@ -23,11 +24,12 @@
 
 <h3 class="pageName">Project list</h3>
 
+
 <c:if test = "${not empty deleteMessageTrue}">
-    <div class="alert alert-info prj-list-info"><strong>Info!</strong> ${deleteMessageTrue}</div>
+    <div class="alert alert-info prj-list-info"><div class="projdel"> <strong>Info!</strong> ${deleteMessageTrue}</div></div>
 </c:if>
 <c:if test = "${not empty deleteMessageFalse}">
-    <div class="alert alert-danger prj-list-info"> <strong>Warning!</strong> ${deleteMessageFalse}</div>
+    <div class="alert alert-danger prj-list-info"><div class="projdel">  <strong>Warning!</strong> ${deleteMessageFalse}</div></div>
 </c:if>
 <div class="pull-right">
     <button class="btn btn-sm btn-success add-project" onclick="myFunction()">
@@ -168,7 +170,8 @@
                                                     Actions <span class="caret"></span></button>
                                     <ul class="dropdown-menu" role="menu">
                                         <%--<li><a href="<c:url value="/project/delete/${project.id}/${project.type}"  />">--%>
-                                            <li><a href="/project/delete?id=${project.id}&project_type=${project.type.id}&field=${sortF}&sortType=${sortT}&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}">
+                                            <li><a class = "projectDelete" id ="${project.id}"
+                                                    href="/project/delete?id=${project.id}&project_type=${project.type.id}&field=${sortF}&sortType=${sortT}&sortTab=1&SearchProject=${searchName}&SearchShareProject=${searchShareName}&fieldSP=${sortFSP}&sortTypeSP=${sortTSP}">
                                                         <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
                                           <%--<li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
                                                         <i class="fa fa-share-alt"></i> Share</a></li>--%>
@@ -374,6 +377,31 @@
             //$('#projectTab a[href="#1"]').tab('show');
             $('.nav-tabs a[class = "first"]').tab('show');
         }
+        $(".projectDelete").click(function (event) {
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var id = $(this).attr("id");
+            //alert(id);
+            var name = $('button[value=' + id + ']').text().trim();
+           // var name = $(this).parent().parent().parent().parent().prev('td').prev('td').prev('td').text().trim();
+            bootbox.confirm({
+                title: "Delete project",
+                message: "Do you want delete project '" + name + "'?",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result){
+                        window.location = href;
+                    }
+                }
+            });
+        });
     });
 
 

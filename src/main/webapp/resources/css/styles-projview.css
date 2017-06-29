@@ -38,7 +38,7 @@
     word-wrap: break-word;
 }
 
-.mathName{
+.mathName, .wordWrap{
     word-wrap: break-word;
 }
 

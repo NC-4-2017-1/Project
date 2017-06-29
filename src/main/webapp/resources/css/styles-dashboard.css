@@ -2,6 +2,10 @@
     margin-top: 15px;
 }
 
+.projdel{
+    word-wrap: break-word;
+}
+
 /*.tooltip-arrow,*/
 .pr-name + .tooltip > .tooltip-inner {
    /*background-color: #12b7ff;*/

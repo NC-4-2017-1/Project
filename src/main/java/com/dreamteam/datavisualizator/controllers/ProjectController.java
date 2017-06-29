@@ -270,8 +270,9 @@ public class ProjectController {
         Project projectFromDb = dataVisualizationProjectDAO.saveProject(project);
         LOGGER.info(project.getName() + " " + project.getDescription() + " " + project.getAuthor() + " " + project.getType() + " passed further");
         sessionScopeBean.getCustomerProject().setSavedProject((DataVisualizationProject) projectFromDb);
-
+       // return "redirect:/project/project-dv?projDvId=" + projectFromDb.getId();
         return "successful";
+        //return projectFromDb.getId().toString();
     }
 
     private List<Map<String, Object>> parseFile(File file, DateFormat dateFormat, FileType fileType) {
@@ -489,6 +490,7 @@ public class ProjectController {
                 return "healthMonitorSettings";
             }
             customerProject.setIdProject(projectNew.getId());
+            return "redirect:/project/project-hm?projHmId=" + projectNew.getId();
         } catch (SelectorCreateException e) {
             LOGGER.error("Selectors not created", e);
             model.addAttribute("errorSelector", "<strong>Selectors not created for project.</strong> " + e.getLocalizedMessage());
@@ -498,7 +500,6 @@ public class ProjectController {
             model.addAttribute("errorGraphic", "<strong>Graph not created for project.</strong>" + e.getLocalizedMessage());
             return "healthMonitorSettings";
         }
-        return "redirect:/project/project-hm";
     }
 
 
@@ -603,7 +604,12 @@ public class ProjectController {
             return "redirect:/user/dashboard-get?field=" + field + "&sortType=" + sortType + "&sortTab=1&SearchProject=" + SearchProject + "&SearchShareProject=" + SearchShareProject
                     + "&fieldSP=" + fieldSP + "&sortTypeSP=" + sortTypeSP;
         } catch (NumberFormatException e) {
-            redir.addFlashAttribute("deleteMessageFalse","Project deleting error.");
+            LOGGER.error("Project delete error - project id '" + id + "' is wrong. Can not parsed this id to number.", e);
+            redir.addFlashAttribute("deleteMessageFalse","Project delete error - project id '" + id + "' is wrong.");
+            return "redirect:/user/dashboard-get";
+        } catch (Exception e) {
+            LOGGER.error("Project delete error - project with id '" + id + "' is broken.", e);
+            redir.addFlashAttribute("deleteMessageFalse","Project delete error - project with id '" + id + "' is broken.");
             return "redirect:/user/dashboard-get";
         }
     }

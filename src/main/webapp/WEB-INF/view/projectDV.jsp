@@ -15,6 +15,7 @@
     <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js"></script>
     <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="/resources/js/bootbox.min.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -26,7 +27,7 @@
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             Actions <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="/project/delete?id=${project.id}&project_type=${project.type}">
+            <li><a href="/project/delete?id=${project.id}&project_type=${project.type.id}" class = "projectDelete">
                 <i class="fa fa-trash-o fa-lg"></i> Delete</a></li>
                 <%--<c:url value="/project/delete/${project.id}/${project.type}"  />--%>
             <%--<li><a href="<c:url value="/project/share/${project.id}/3/desc" />">
@@ -122,11 +123,33 @@
         </div>
         <br>
     </c:forEach>
-
 </div>
-
-
 <jsp:include page="footer.jsp"/>
-
 </body>
+<script>
+    $(document).ready(function () {
+        $(".projectDelete").click(function (event) {
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var name = $('.projname p').text().trim();
+            bootbox.confirm({
+                title: "Delete project",
+                message: "Do you want delete project <span class='wordWrap'>'" + name + "'? <\span>",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result){
+                        window.location = href;
+                    }
+                }
+            });
+        });
+    });
+</script>
 </html>

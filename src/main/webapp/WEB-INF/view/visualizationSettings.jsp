@@ -178,9 +178,13 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 error: function (response) {
+                    //alert(response.responseText);
                     if (response.responseText == "successful") {
                         window.location.assign("/project/project-dv");
                     }
+                    //if (response) {
+                     //   window.location.assign("/project/project-dv?projDvId=" + response.responseText);
+                   // }
                 }
             });
         });
