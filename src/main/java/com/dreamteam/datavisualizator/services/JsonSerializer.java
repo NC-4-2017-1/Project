@@ -9,8 +9,6 @@ import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static java.math.BigDecimal.ROUND_CEILING;
-
 public class JsonSerializer {
     private static final Logger LOGGER = Logger.getLogger(JsonSerializer.class);
     private static String jsStringForDvGraph;
@@ -132,7 +130,7 @@ public class JsonSerializer {
 
         if (!(dataForSerialize.get(0).get(yAxis) instanceof Data) && !(dataForSerialize.get(0).get(correlationCol) instanceof Data)) {
             BigDecimal correlationResult = CalculationService.calculateCorrelation(dataForSerialize, yAxis, correlationCol);
-            oneElementOfCorrelation.addProperty(correlationCol, (correlationResult.setScale(3, ROUND_CEILING)).toString());
+            oneElementOfCorrelation.addProperty(correlationCol, correlationResult.toString());
         }
         else{
             oneElementOfCorrelation.addProperty(correlationCol, "Can't calculate correlation with Data");
