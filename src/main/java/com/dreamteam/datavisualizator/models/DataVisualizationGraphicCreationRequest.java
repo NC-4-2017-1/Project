@@ -4,6 +4,7 @@ public class DataVisualizationGraphicCreationRequest {
     private String[] xAxis;
     private String[] yAxis;
     private String[] mathCol;
+    private String[] correlationCol;
 
     public DataVisualizationGraphicCreationRequest() {
     }
@@ -32,6 +33,12 @@ public class DataVisualizationGraphicCreationRequest {
         this.mathCol = mathCol;
     }
 
+    public String[] getcorrelationCol() {
+        return correlationCol;
+    }
 
+    public void setcorrelationCol(String[] correlationCol) {
+        this.correlationCol = correlationCol;
+    }
 
 }

@@ -51,6 +51,16 @@
                 </c:forEach>
             </select>
         </div>
+
+        <label class="control-label col-sm-2 col-sm-offset-3">CorrelationColumn:</label>
+        <div class="col-sm-3">
+            <select class="form-control input-sm corrSelect" name="Correlation">
+                <%--  <option value=""></option>--%>
+                <c:forEach items="${tableKeys}" var="entry">
+                    <option value="${entry}">${entry}</option>
+                </c:forEach>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
@@ -87,6 +97,7 @@
                 <th  class="active" style="width:30%">X-axis</th>
                 <th  class="active" style="width:30%">Y-axis</th>
                 <th  class="active" style="width:30%">MathDataColumn</th>
+                <th  class="active" style="width:30%">CorrelationColumn</th>
             </tr>
         </table>
     </div>
@@ -99,6 +110,7 @@
             var x = $(".xAxisSelect :selected").val();
             var y = $(".yAxisSelect :selected").val();
             var math = $(".mathSelect :selected").val();
+            var corr = $(".corrSelect :selected").val();
             var table = document.querySelector(".js-table");
             $(table).removeClass("hidden");
             tr = table.insertRow(1);
@@ -117,6 +129,9 @@
             td = tr.insertCell(3);
             td.appendChild(document.createTextNode(math));
             $(td).addClass("selectForMath");
+            td = tr.insertCell(4);
+            td.appendChild(document.createTextNode(corr));
+            $(td).addClass("selectForCorr");
         });
 
         $("#removeGraph").click(function () {
@@ -138,10 +153,12 @@
             var xAxisArray = [];
             var yAxisArray = [];
             var mathArray = [];
+            var corrArray = [];
 
             var xAxis = $(".xAxis");
             var yAxis = $(".yAxis");
             var math = $(".selectForMath");
+            var corr = $(".selectForCorr");
 
             $.each(xAxis, function (index, value) {
                 var val = value.textContent;
@@ -159,10 +176,17 @@
 
             });
 
+            $.each(corr, function(index, value){
+                var val = value.textContent;
+                corrArray.push(val);
+
+            });
+
             var data = {
                 xAxis: xAxisArray,
                 yAxis: yAxisArray,
-                mathCol: mathArray
+                mathCol: mathArray,
+                correlationCol: corrArray
             };
             return data;
         };

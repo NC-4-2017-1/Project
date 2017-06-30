@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -123,6 +124,23 @@ public class JsonSerializer {
         return jsonGraph;
     }
 
+    public static JsonObject addCorrelationToJsonObj(JsonObject jsonObj, List<Map<String, Object>> dataForSerialize, String yAxis, String correlationCol){
+        JsonObject dataWithCorrelation = new JsonObject();
+        JsonObject oneElementOfCorrelation = new JsonObject();
+
+        if (!(dataForSerialize.get(0).get(yAxis) instanceof Data) && !(dataForSerialize.get(0).get(correlationCol) instanceof Data)) {
+            BigDecimal correlationResult = CalculationService.calculateCorrelation(dataForSerialize, yAxis, correlationCol);
+            oneElementOfCorrelation.addProperty(correlationCol, correlationResult.toString());
+        }
+        else{
+            oneElementOfCorrelation.addProperty(correlationCol, "Can't calculate correlation with Data");
+        }
+
+        dataWithCorrelation.add(yAxis, oneElementOfCorrelation);
+        jsonObj.addProperty("correlation", dataWithCorrelation.toString());
+
+        return jsonObj;
+    }
 
     private JsonArray addToArray(Map<String, Object> elementOfSerialize, String columnName, JsonArray arrayWithData){
         for(Map.Entry<String, Object> elementOfList : elementOfSerialize.entrySet()){

@@ -31,8 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -235,6 +237,7 @@ public class ProjectController {
         LOGGER.info("Got x axis from client: " + Arrays.toString(dvGraphicCreationRequest.getxAxis()));
         LOGGER.info("Got y axis from client: " + Arrays.toString(dvGraphicCreationRequest.getyAxis()));
         LOGGER.info("Got columns for math from client: " + Arrays.toString(dvGraphicCreationRequest.getmathCol()));
+        LOGGER.info("Got columns for correlation from client: " + Arrays.toString(dvGraphicCreationRequest.getcorrelationCol()));
 
         FileType fileType = FileType.getType(sessionScopeBean.getCustomerProject().getFileType());
         File file = sessionScopeBean.getCustomerProject().getFile();
@@ -244,6 +247,7 @@ public class ProjectController {
         List<Graphic> graphicList = new ArrayList<>();
         for (int i = 0; i < dvGraphicCreationRequest.getyAxis().length && i < dvGraphicCreationRequest.getxAxis().length; i++) {
             JsonObject jsonObj = JsonSerializer.serializeGraph(result, dvGraphicCreationRequest.getxAxis()[i], dvGraphicCreationRequest.getyAxis()[i], dvGraphicCreationRequest.getmathCol()[i]);
+            jsonObj = JsonSerializer.addCorrelationToJsonObj(jsonObj, result, dvGraphicCreationRequest.getyAxis()[i], dvGraphicCreationRequest.getcorrelationCol()[i]);
 
             int xLength = dvGraphicCreationRequest.getxAxis()[i].length();
             int yLength = dvGraphicCreationRequest.getyAxis()[i].length();

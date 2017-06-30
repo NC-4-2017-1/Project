@@ -106,6 +106,24 @@
                     </tr>
                     </tbody>
                 </table>
+                <div id="correlation${graph.id}">
+
+                </div>
+                <script>
+                    var correlation = JSON.parse(t.correlation);
+                    console.log(JSON.parse(t.correlation));
+                    var corrDiv = $("#correlation${graph.id}");
+                    corrDiv.append("<span><strong>Correlation</strong></span>");
+                    $.each(correlation, function(key, value){
+                        console.log(key) ;
+                        console.log(value);
+                        $.each(value, function(corrColumnName, corrValue){
+                            var corrP = $("<p>");
+                            corrP.text("Between "+key+" and "+corrColumnName+" is "+ corrValue);
+                            corrDiv.append(corrP);
+                        });
+                    });
+                </script>
 
                 <%--<div class="graphmathitem">
                     <b> Average:</b> <c:out value="${graph.average}"/>
