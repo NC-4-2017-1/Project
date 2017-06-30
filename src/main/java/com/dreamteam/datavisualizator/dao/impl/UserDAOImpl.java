@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -352,22 +353,22 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     private class ProjectSimpleRowMapper implements RowMapper<Project> {
         @Override
         public Project mapRow(ResultSet resultSet, int rownum) throws SQLException {
-            BigInteger id = resultSet.getBigDecimal(ProjectColumnName.id.toString()).toBigInteger();
-            String name = resultSet.getString(ProjectColumnName.name.toString());
-            BigInteger type_id = resultSet.getBigDecimal(ProjectColumnName.typeId.toString()).toBigInteger();
-            Date creationDate = resultSet.getDate(ProjectColumnName.creationDate.toString());
-            BigInteger author = resultSet.getBigDecimal(ProjectColumnName.author.toString()).toBigInteger();
-            String authorName = resultSet.getString(ProjectColumnName.authorName.toString());
-            String description = resultSet.getString(ProjectColumnName.description.toString());
-            if (type_id.equals(BigInteger.valueOf(3L))) {
-                HealthMonitorProject.Builder hmbuilder = new HealthMonitorProject.Builder(id, name, creationDate, description, author, authorName);
-                return hmbuilder.buildProject();
-            } else {
-                DataVisualizationProject.Builder dvbuilder = new DataVisualizationProject.Builder(name, creationDate, author, authorName);
-                dvbuilder.buildId(id);
-                dvbuilder.buildDescription(description);
-                return dvbuilder.buildProject();
-            }
+                BigInteger id = resultSet.getBigDecimal(ProjectColumnName.id.toString()).toBigInteger();
+                String name = resultSet.getString(ProjectColumnName.name.toString());
+                BigInteger type_id = resultSet.getBigDecimal(ProjectColumnName.typeId.toString()).toBigInteger();
+                Timestamp creationDate = resultSet.getTimestamp(ProjectColumnName.creationDate.toString());
+                BigInteger author = resultSet.getBigDecimal(ProjectColumnName.author.toString()).toBigInteger();
+                String authorName = resultSet.getString(ProjectColumnName.authorName.toString());
+                String description = resultSet.getString(ProjectColumnName.description.toString());
+                if (type_id.equals(BigInteger.valueOf(3L))) {
+                    HealthMonitorProject.Builder hmbuilder = new HealthMonitorProject.Builder(id, name, creationDate, description, author, authorName);
+                    return hmbuilder.buildProject();
+                } else {
+                    DataVisualizationProject.Builder dvbuilder = new DataVisualizationProject.Builder(name, creationDate, author, authorName);
+                    dvbuilder.buildId(id);
+                    dvbuilder.buildDescription(description);
+                    return dvbuilder.buildProject();
+                }
         }
     }
 
@@ -412,9 +413,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
     }
 
-    private static final String SELECT_ALL_USERS_PROJECT = "select id, name, type_id, creation_date, author,author_name, description from (" +
+    private static final String SELECT_ALL_USERS_PROJECT = "select id, name, type_id, to_char(creation_date_,'yyyy-mm-dd hh:mi:ss') creation_date, author,author_name, description from (" +
             " select project.object_id id, project.name name, project.object_type_id type_id, " +
-            " creation_date.date_value creation_date, author.object_id author, author.name author_name, description.value description" +
+            " creation_date.date_value creation_date_, author.object_id author, author.name author_name, description.value description" +
             " from objects project, attributes creation_date, objects author, attributes description, objreference ref" +
             " where project.object_id = creation_date.object_id" +
             " and creation_date.attr_id = 6" +
@@ -426,7 +427,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and author.object_id=?" +
             " union" +
             " select project.object_id id, project.name name, project.object_type_id type_id," +
-            " creation_date.date_value creation_date, author.object_id author,  author.name author_name,description.value description" +
+            " creation_date.date_value creation_date_, author.object_id author,  author.name author_name,description.value description" +
             " from objects project, attributes creation_date, objects have_access, attributes description, " +
             " objects author, objreference ref_author, objreference ref_access" +
             " where project.object_id = creation_date.object_id" +
@@ -439,9 +440,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and author.object_id = ?" +
             " )";
 
-    private static final String SELECT_ALL_SHARED_TO_USER_PROJECT = "select id, name, type_id, creation_date, author,author_name, description from (" +
+    private static final String SELECT_ALL_SHARED_TO_USER_PROJECT = "select id, name, type_id, to_char(creation_date_,'yyyy-mm-dd hh:mi:ss') creation_date, author,author_name, description from (" +
             " select project.object_id id, project.name name, project.object_type_id type_id, " +
-            " creation_date.date_value creation_date, author.object_id author, author.name author_name, description.value description" +
+            " creation_date.date_value creation_date_, author.object_id author, author.name author_name, description.value description" +
             " from objects project, attributes creation_date, objects author, attributes description, objreference ref" +
             " where project.object_id = creation_date.object_id" +
             " and creation_date.attr_id = 6" +
@@ -456,7 +457,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             " and author.object_id=?" +
             " union" +
             " select project.object_id id, project.name name, project.object_type_id type_id," +
-            " creation_date.date_value creation_date, author.object_id author,  author.name author_name,description.value description" +
+            " creation_date.date_value creation_date_, author.object_id author,  author.name author_name,description.value description" +
             " from objects project, attributes creation_date, objects have_access, attributes description, " +
             " objects author, objreference ref_author, objreference ref_access" +
             " where project.object_id = creation_date.object_id" +

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -156,7 +157,8 @@
                                 </c:choose>
                             </td>
                             <td class="pr-date">
-                                    ${project.creationDate}
+                                <%--${project.creationDate}--%>
+                                <fmt:formatDate pattern = "dd-MM-yyyy HH:mm:ss"  value = "${project.creationDate}" />
                             </td>
                             <td class="pr-type">
                                     ${project.type.toString()}
@@ -329,7 +331,8 @@
                                 </c:choose>
                             </td>
                             <td class="pr-date">
-                                    ${project.creationDate}
+                                    <%--${project.creationDate}--%>
+                                        <fmt:formatDate pattern = "dd-MM-yyyy HH:mm:ss"  value = "${project.creationDate}" />
                             </td>
                             <td class="pr-type">
                                     ${project.type.toString()}
