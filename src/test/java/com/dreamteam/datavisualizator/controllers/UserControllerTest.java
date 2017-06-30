@@ -232,7 +232,7 @@ public class UserControllerTest {
         when(userDaoMock.deleteUser(user)).thenReturn(true);
 
         mockMvc.perform(get("/user/delete?id=" + id))
-                .andExpect(redirectedUrl("/user/admin-panel"))
+                .andExpect(redirectedUrl("/user/admin-panel?field=email&sortType=asc&whereEmail="))
                 .andReturn();
 
         verify(userDaoMock, times(1)).getUserById(id);

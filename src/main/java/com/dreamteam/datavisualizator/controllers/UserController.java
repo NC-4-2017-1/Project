@@ -228,7 +228,11 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping(path = "/delete", method = RequestMethod.GET)
-    public String deleteUser(@RequestParam(value = "id") String idUser, RedirectAttributes redir) {
+    public String deleteUser(@RequestParam(value = "id") String idUser,
+                             @RequestParam(value = "whereEmail", defaultValue = "") String SearchUserEmail,
+                             @RequestParam(value = "field", required = false, defaultValue = "email") String field,
+                             @RequestParam(value = "sortType", required = false, defaultValue = "asc") String sortType,
+                             RedirectAttributes redir) {
         try {
             Integer id = Integer.parseInt(idUser.trim());
             User user = userDAO.getUserById(BigInteger.valueOf(id));
@@ -241,7 +245,7 @@ public class UserController {
                 redir.addFlashAttribute("deleteMessageFalse","User " + user.getFullName() + " with email: " +
                         user.getEmail()+ " was not deleted.");
             }
-            return "redirect:/user/admin-panel";
+            return "redirect:/user/admin-panel?field=" + field + "&sortType=" + sortType + "&whereEmail=" + SearchUserEmail;
         } catch (NumberFormatException e) {
             LOGGER.error("User delete error - user id '" + idUser + "' is wrong. Can not parsed this id to number.", e);
             redir.addFlashAttribute("deleteMessageFalse","User delete error - user id '" + idUser + "' is wrong.");

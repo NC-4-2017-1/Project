@@ -140,7 +140,7 @@
                                        class="deleteUser"
                                        onclick="deleteObj(${user.id});"/>--%>
                                    <a class = "userDelete btn btn-danger btn-xs  pull-right" id ="${user.id}"
-                                      href="/user/delete?id=${user.id}">Delete</a>
+                                      href="/user/delete?id=${user.id}&field=${sortF}&sortType=${sortT}&whereEmail=${SearchUserEmail}">Delete</a>
                             </td>
                         </tr>
                     </c:forEach>
