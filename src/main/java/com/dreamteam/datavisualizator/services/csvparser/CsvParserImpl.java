@@ -60,6 +60,7 @@ public class CsvParserImpl implements CsvParser {
             List<CSVRecord> records = csvParser.getRecords();
             int i = 0;
             for (CSVRecord record : records) {
+
                 elements = new LinkedHashMap<>();
                 Map<String, String> headerValue = record.toMap();
                 parseRowByType(dateFormat, elements, headers, headerValue);

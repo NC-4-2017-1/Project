@@ -2,7 +2,7 @@ package com.dreamteam.datavisualizator.dao;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.ServletContext;
-import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
+import com.dreamteam.datavisualizator.common.exceptions.ConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.models.*;
 import com.dreamteam.datavisualizator.models.impl.GraphicHMImpl;
@@ -88,7 +88,7 @@ public class HealthMonitorProjectDAOImplTest {
         return (HealthMonitorProject) dao.saveProject(project);
     }
 
-    @Test(expected = HMConnectionException.class)
+    @Test(expected = ConnectionException.class)
     public void setDataSourceTemplateWithIncorrectData(){
         HealthMonitorProject project = (HealthMonitorProject) hmProject;
         dao.setDataSourceTemplate(project.getServerName(), project.getPort(), project.getSid(), project.getUserName(), project.getPassword());

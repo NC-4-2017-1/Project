@@ -139,6 +139,11 @@
             <artifactId>jsoup</artifactId>
             <version>1.10.2</version>
         </dependency>
+        <dependency>
+            <groupId>commons-graph</groupId>
+            <artifactId>commons-graph</artifactId>
+            <version>0.8.1</version>
+        </dependency>
     </dependencies>
 
     <build>

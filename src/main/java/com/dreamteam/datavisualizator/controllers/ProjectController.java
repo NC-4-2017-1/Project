@@ -3,7 +3,7 @@ package com.dreamteam.datavisualizator.controllers;
 import com.dreamteam.datavisualizator.common.beans.CustomerProject;
 import com.dreamteam.datavisualizator.common.beans.SessionScopeBean;
 import com.dreamteam.datavisualizator.common.dateconverter.DateFormat;
-import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
+import com.dreamteam.datavisualizator.common.exceptions.ConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
 import com.dreamteam.datavisualizator.common.selectors.SelectorCreator;
@@ -369,7 +369,7 @@ public class ProjectController {
             return "Connection fields can not be empty!";
         } catch (NumberFormatException e) {
             return "Enter number for port.";
-        } catch (HMConnectionException e) {
+        } catch (ConnectionException e) {
             LOGGER.error("Hm connection error." + e.getMessage());
             return e.getMessage();
         }
@@ -401,7 +401,7 @@ public class ProjectController {
             return "Connection fields can not be empty!";
         } catch (NumberFormatException e) {
             return "Enter number for port";
-        } catch (HMConnectionException e) {
+        } catch (ConnectionException e) {
             LOGGER.error("Hm connection error" + e.getMessage());
             return e.getMessage();
         }

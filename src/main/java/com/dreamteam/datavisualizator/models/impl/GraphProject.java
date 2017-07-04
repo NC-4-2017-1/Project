@@ -1,9 +1,9 @@
 package com.dreamteam.datavisualizator.models.impl;
 
+import com.dreamteam.datavisualizator.models.GraphType;
 import com.dreamteam.datavisualizator.models.ProjectTypes;
 import com.dreamteam.datavisualizator.models.User;
 import com.google.gson.JsonObject;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -18,7 +18,7 @@ public class GraphProject extends AbstractProject {
     private BigInteger idFirstElemGraph;
     private BigInteger referenceAttributeGraph;
     private JsonObject graphJson;
-
+    private GraphType graphType;
 
 
     private GraphProject(GraphBuilder builder) {
@@ -37,6 +37,7 @@ public class GraphProject extends AbstractProject {
         this.setIdFirstElemGraph(builder.idFirstElemGraph);
         this.setType(ProjectTypes.GRAPH);
         this.setGraphJson(builder.graphJson);
+        this.setGraphType(builder.graphType);
     }
 
     public String getSid() {
@@ -95,12 +96,21 @@ public class GraphProject extends AbstractProject {
     public void setReferenceAttributeGraph(BigInteger referenceAttributeGraph) {
         this.referenceAttributeGraph = referenceAttributeGraph;
     }
+
     public JsonObject getGraphJson() {
         return graphJson;
     }
 
     public void setGraphJson(JsonObject graphJson) {
         this.graphJson = graphJson;
+    }
+
+    public GraphType getGraphType() {
+        return graphType;
+    }
+
+    public void setGraphType(GraphType graphType) {
+        this.graphType = graphType;
     }
 
     public static class GraphBuilder {
@@ -119,9 +129,10 @@ public class GraphProject extends AbstractProject {
         private BigInteger idFirstElemGraph;
         private BigInteger referenceAttributeGraph;
         private JsonObject graphJson;
+        private GraphType graphType;
 
 
-        public GraphBuilder(BigInteger id, String name, Date creationDate, String description, BigInteger author, String authorFullName){
+        public GraphBuilder(BigInteger id, String name, Date creationDate, String description, BigInteger author, String authorFullName) {
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
@@ -132,11 +143,13 @@ public class GraphProject extends AbstractProject {
         }
 
         public GraphBuilder(BigInteger id, String name, Date creationDate, String description, BigInteger author, String authorFullName,
-                       String sid, String port, String serverName, String userName, String password,BigInteger idFirstElemGraph,JsonObject graphJson) {
+                            String sid, String port, String serverName, String userName, String password, BigInteger idFirstElemGraph, JsonObject graphJson) {
             this.id = id;
             this.name = name;
             this.creationDate = creationDate;
             this.description = description;
+            this.author = author;
+            this.authorFullName = authorFullName;
             this.sid = sid;
             this.port = port;
             this.serverName = serverName;
@@ -145,10 +158,10 @@ public class GraphProject extends AbstractProject {
             this.author = author;
             this.authorFullName = authorFullName;
             this.idFirstElemGraph = idFirstElemGraph;
-            this.graphJson=graphJson;
+            this.graphJson = graphJson;
         }
 
-        public GraphBuilder buildreferenceAttribute(BigInteger val) {
+        public GraphBuilder buildReferenceAttribute(BigInteger val) {
             referenceAttributeGraph = val;
             return this;
         }
@@ -158,7 +171,12 @@ public class GraphProject extends AbstractProject {
             return this;
         }
 
-        public GraphProject buildProject(){
+        public GraphBuilder buildGraphType(GraphType val) {
+            graphType = val;
+            return this;
+        }
+
+        public GraphProject buildProject() {
             return new GraphProject(this);
         }
 

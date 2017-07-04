@@ -2,7 +2,7 @@ package com.dreamteam.datavisualizator.dao.impl;
 
 import com.dreamteam.datavisualizator.common.IdList;
 import com.dreamteam.datavisualizator.common.configurations.HMDataSource;
-import com.dreamteam.datavisualizator.common.exceptions.HMConnectionException;
+import com.dreamteam.datavisualizator.common.exceptions.ConnectionException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphException;
 import com.dreamteam.datavisualizator.common.exceptions.HMGraphSerializerException;
 import com.dreamteam.datavisualizator.common.exceptions.SelectorCreateException;
@@ -75,12 +75,12 @@ public class HealthMonitorProjectDAOImpl extends AbstractDAO implements HealthMo
         catch (DataAccessException e) {
             LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
-            throw new HMConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
+            throw new ConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ".");
         }catch (Exception e) {
             LOGGER.error("Connection with parameters SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + " have error: \n", e);
-            throw new HMConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
+            throw new ConnectionException("Connection with wrong parameters: SERVER - " + serverName + "; PORT - " + port + "; SID - "
                     + sid + "; USER NAME - " + username + "; PASSWORD - "+ password + ".");
         }
     }

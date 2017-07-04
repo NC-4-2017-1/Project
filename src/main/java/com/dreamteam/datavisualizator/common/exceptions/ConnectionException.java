@@ -3,9 +3,9 @@ package com.dreamteam.datavisualizator.common.exceptions;
 
 import org.springframework.dao.DataAccessException;
 
-public class HMConnectionException extends DataAccessException {
+public class ConnectionException extends DataAccessException {
 
-    public HMConnectionException(String message)
+    public ConnectionException(String message)
     {
         super(message);
     }
