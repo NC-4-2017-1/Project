@@ -33,17 +33,6 @@ public class CalculationService {
         }
     }
 
-    private static ArrayList<BigDecimal> convertParseDate(List<Map<String, Object>> data, String header) {
-        if (!(data.get(0).get(header) instanceof BigDecimal)) {
-            return null;
-        }
-        ArrayList<BigDecimal> dataForCalculate = new ArrayList<>();
-        for (Map<String, Object> map : data) {
-            dataForCalculate.add((BigDecimal) map.get(header));
-        }
-        return dataForCalculate;
-    }
-
     public static BigDecimal calculateOlympicAverage(List<Map<String, Object>> parseData, String header) {
         ArrayList<BigDecimal> dataForCalculate = convertParseDate(parseData, header);
         if(dataForCalculate == null){
@@ -134,18 +123,6 @@ public class CalculationService {
         return new BigDecimal(expectedValue);
     }
 
-    private double[] arrayListToDouble(ArrayList<BigDecimal> listToCalculate) {
-        double[] arrayOfValues = new double[listToCalculate.size()];
-
-        int i = 0;
-        for (BigDecimal oneValue : listToCalculate) {
-            arrayOfValues[i] = oneValue.doubleValue();
-            i++;
-        }
-
-        return arrayOfValues;
-    }
-
     public static Map<String, BigDecimal> getAllCorreletion(List<Map<String, Object>> parseData) {
         List<String> headerWichClassTypeBigDecimal = new ArrayList<>();
         Map<String, BigDecimal> resultCorrelationMap = new LinkedHashMap<>();
@@ -164,5 +141,31 @@ public class CalculationService {
             }
         }
         return resultCorrelationMap;
+    }
+
+    private double[] arrayListToDouble(ArrayList<BigDecimal> listToCalculate) {
+        double[] arrayOfValues = new double[listToCalculate.size()];
+
+        int i = 0;
+        for (BigDecimal oneValue : listToCalculate) {
+            arrayOfValues[i] = oneValue.doubleValue();
+            i++;
+        }
+
+        return arrayOfValues;
+    }
+
+    private static ArrayList<BigDecimal> convertParseDate(List<Map<String, Object>> data, String header) {
+        if(data == null){
+            return null;
+        }
+        if (!(data.get(0).get(header) instanceof BigDecimal)) {
+            return null;
+        }
+        ArrayList<BigDecimal> dataForCalculate = new ArrayList<>();
+        for (Map<String, Object> map : data) {
+            dataForCalculate.add((BigDecimal) map.get(header));
+        }
+        return dataForCalculate;
     }
 }
