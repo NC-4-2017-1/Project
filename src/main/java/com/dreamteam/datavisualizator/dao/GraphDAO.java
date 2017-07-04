@@ -11,7 +11,11 @@ import java.util.List;
 public interface GraphDAO {
     void setDataSourceTemplate(String serverName, String port, String sid, String username, String password);
 
+    String getProjectName(BigInteger id);
+
     Project getProjectById(BigInteger id);
+
+    Project getProjectByName(String name);
 
     List<GraphProject> getProjectsByAuthor(User user);
 

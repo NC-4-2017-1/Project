@@ -8,18 +8,20 @@ public class ObjectGraph implements Vertex {
     private BigInteger id;
     private String nameObject;
     private BigInteger parentId;
+    private BigInteger level;
 
 
-    public ObjectGraph(BigInteger id, String nameObject, BigInteger parentId) {
+    public ObjectGraph(BigInteger id, String nameObject, BigInteger parentId, BigInteger level) {
         this.id = id;
         this.nameObject = nameObject;
         this.parentId = parentId;
+        this.level = level;
     }
 
-    public ObjectGraph(BigInteger id, String nameObject) {
+    public ObjectGraph(BigInteger id, String nameObject, BigInteger level) {
         this.id = id;
         this.nameObject = nameObject;
-
+        this.level = level;
     }
 
     public BigInteger getId() {
@@ -36,6 +38,23 @@ public class ObjectGraph implements Vertex {
 
     public void setNameObject(String nameObject) {
         this.nameObject = nameObject;
+    }
+
+    public BigInteger getParentId() {
+
+        return parentId;
+    }
+
+    public void setParentId(BigInteger parentId) {
+        this.parentId = parentId;
+    }
+
+    public BigInteger getLevel() {
+        return level;
+    }
+
+    public void setLevel(BigInteger level) {
+        this.level = level;
     }
 
     @Override
@@ -58,12 +77,5 @@ public class ObjectGraph implements Vertex {
         return result;
     }
 
-    public BigInteger getParentId() {
 
-        return parentId;
-    }
-
-    public void setParentId(BigInteger parentId) {
-        this.parentId = parentId;
-    }
 }
