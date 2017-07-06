@@ -119,7 +119,8 @@
                         console.log(value);
                         $.each(value, function(corrColumnName, corrValue){
                             var corrP = $("<p>");
-                            corrP.text("Between "+key+" and "+corrColumnName+" is "+ corrValue);
+//                            corrP.text("Between "+key+" and "+corrColumnName+" is "+ corrValue);
+                            corrP.text("Between "+key+" and "+corrColumnName+" is "+ Math.round(corrValue*1000)/1000);
                             corrDiv.append(corrP);
                         });
                     });
